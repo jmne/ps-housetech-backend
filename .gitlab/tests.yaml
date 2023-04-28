@@ -1,0 +1,44 @@
+run-tests:
+  stage: test
+  needs: []
+  script:
+    - echo "Running unit tests..."
+    - poetry run pytest -v --junitxml=report.xml
+  artifacts:
+    when: always
+    paths:
+      - report.xml
+    reports:
+      junit: report.xml
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - when: always
+check-coverage:
+  stage: test
+  needs: []
+  script:
+    - echo "Running coverage..."
+    - poetry run coverage run -m pytest
+    - poetry run coverage report
+    - poetry run coverage xml
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - when: always
+run-linting:
+  stage: test
+  needs: []
+  script:
+    - echo "Running pre-commit..."
+    - poetry run pre-commit run -a
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - when: always

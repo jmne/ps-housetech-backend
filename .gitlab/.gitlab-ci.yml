@@ -1,0 +1,24 @@
+image: python:3.11.2
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  POETRY_CACHE_DIR: "$CI_PROJECT_DIR/.cache/poetry"
+
+cache:
+  key:
+    files:
+      - poetry.lock
+      - .gitlab-ci.yml
+  paths:
+    - .venv
+    - .cache/pip
+    - .cache/poetry
+
+before_script:
+  - pip install poetry
+  - poetry config virtualenvs.in-project true
+  - poetry install --no-root
+  - source `poetry env info --path`/bin/activate
+
+include:
+  - ".gitlab/*.yaml"

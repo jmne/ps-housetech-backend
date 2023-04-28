@@ -1,0 +1,21 @@
+generate-badges:
+  stage: deploy
+  needs: ["run-tests"]
+  variables:
+    PRIVATE_TOKEN: "$GENERATE_BADGES_TOKEN"
+  script:
+    - pip install badges-gitlab
+    - badges-gitlab -V
+    - badges-gitlab
+  dependencies:
+    - run-tests
+  artifacts:
+    when: always
+    paths:
+      - public/badges/
+    expire_in: 1 day
+    expose_as: "badges"
+  rules:
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+      when: never
+    - when: always
