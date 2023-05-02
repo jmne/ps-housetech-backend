@@ -22,13 +22,16 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.11.2"
+python = "^3.11.3"
 pre-commit = "^3.1.1"
 pytest = "^7.2.2"
 pytest-cov = "^4.0.0"
 pydocstyle = "^6.3.0"
 Flake8-pyproject = "^1.2.2"
 coverage = "^7.2.1"
+flask = "^2.3.2"
+flask-cors = "^3.0.10"
+
 
 [pytest]
 addopts = [
@@ -53,7 +56,7 @@ per-file-ignores = ["__init__.py:F401", ]
 junit_xml = "report.xml"
 static_badges = [
     ["Poetry", "1.0.0", "green"],
-    ["Python", "3.11.2", "green"],
+    ["Python", "3.11.3", "green"],
     ["Pre-commit", "3.1.1", "green"],
     ["Pytest", "7.2.2", "green"],
     ["Pytest-cov", "4.0.0", "green"],
