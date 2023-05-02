@@ -1,3 +1,3 @@
-from exchange import Exchange
+from .exchange import Exchange
 
 __all__ = ['Exchange']
