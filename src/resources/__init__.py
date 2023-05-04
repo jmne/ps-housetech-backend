@@ -1,3 +1,3 @@
-from .exchange import Exchange
+from .BusInfo import BusInfo
 
-__all__ = ['Exchange']
+__all__ = ['BusInfo']

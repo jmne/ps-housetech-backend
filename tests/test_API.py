@@ -10,11 +10,7 @@ def app():
         'TESTING': True,
     })
 
-    # other setup can go here
-
     yield app
-
-    # clean up / reset resources here
 
 
 @pytest.fixture()
@@ -27,9 +23,15 @@ def runner(app):
     return app.test_cli_runner()
 
 
-def test_json_data(client):
-    response = client.get('/api/hello')
+def test_bus_data(client):
+    response = client.get('/api/bus')
     assert (
-        response.json['content'] ==
-        'hello, i am running the hello function of exchange.py'
+        response.json['bus_data'] is not None
+    )
+
+
+def test_stop_data(client):
+    response = client.get('/api/bus')
+    assert (
+        response.json['stop_data'] is not None
     )

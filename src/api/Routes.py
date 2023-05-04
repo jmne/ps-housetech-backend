@@ -1,13 +1,13 @@
 from flask_restful import Api
 from flask_restful import Resource
 
-from src.resources import Exchange
+from src.resources import BusInfo
 
 # initializing Flask API
 api = Api()
 
 
-class TestRoute(Resource):
+class Bus(Resource):
     """
     Test route for the API.
 
@@ -22,13 +22,12 @@ class TestRoute(Resource):
             self
 
         Returns:
-            "hello"
+            Live bus data from Stadtwerke Muenster
 
         """
-        ex1 = Exchange()
-        return ex1.hello()
+        return BusInfo().data()
 
 
 # API endpoints
 
-api.add_resource(TestRoute, '/api/hello')
+api.add_resource(Bus, '/api/bus')

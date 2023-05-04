@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 
-from .routes import api
+from .Routes import api
 
 
 def create_app():
@@ -10,7 +10,7 @@ def create_app():
     Returns: An instance of the Flask app
     """
     app = Flask(__name__)  # initialize Flask APP
-    api.init_app(app)  # connecting api from routes.py with app
+    api.init_app(app)  # connecting api from Routes.py with app
     CORS(app)  #
 
     return app
