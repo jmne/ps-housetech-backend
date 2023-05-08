@@ -11,7 +11,12 @@ if __name__ == '__main__':
 
 
 @app.route('/health')
-def health():
-    resp = jsonify(health="healthy")
+def health():  # dead: disable
+    """Health check endpoint.
+
+    Returns:
+        Healthy 200
+    """
+    resp = jsonify(health='healthy')
     resp.status_code = 200
     return resp
