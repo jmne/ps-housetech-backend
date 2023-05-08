@@ -1,7 +1,7 @@
 from flask_restful import Api
 from flask_restful import Resource
 
-from src.resources import Exchange
+from ..resources import Exchange
 
 # initializing Flask API
 api = Api()
