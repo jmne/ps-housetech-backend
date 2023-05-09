@@ -1,5 +1,7 @@
 import requests
 import json
+import time
+from datetime import datetime, timedelta
 
 class BusTracker:
     """ BusTracker class using the API of Stadtwerke Münster:
@@ -17,6 +19,7 @@ class BusTracker:
             """
         self.stations = stations
         self.session = requests.session()
+        self.start_time = ""
     
     def get_future_rides(self):
         """
@@ -46,10 +49,10 @@ class BusTracker:
                     "direction": "Einwärts" if station == 4552102 else "Auswärts",
                     "line": entry["linientext"],
                     "going_to": entry["richtungstext"],
-                    "planned_departure_time": entry["abfahrtszeit"],
-                    "actual_departure_time": entry["tatsaechliche_abfahrtszeit"],
-                    "minutes_delay":entry["delay"],
-                    "minutes_until_departure": "Not yet implemented"
+                    "planned_departure_time": datetime.fromtimestamp(entry["abfahrtszeit"]).strftime("%H:%M"),
+                    "actual_departure_time": datetime.fromtimestamp(entry["tatsaechliche_abfahrtszeit"]).strftime("%H:%M"),
+                    "minutes_delay":int(entry["delay"]/60),
+                    "minutes_until_departure":int(((datetime.fromtimestamp(entry["tatsaechliche_abfahrtszeit"]) - datetime.now()).total_seconds())/60)
                 }) 
         print(result)
         return result
