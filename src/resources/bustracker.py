@@ -6,10 +6,10 @@ from datetime import datetime, timedelta
 class BusTracker:
     """ BusTracker class using the API of Stadtwerke Münster:
         DOCS: https://api.busradar.conterra.de/#/
-        bus station numbers for Leonardo-Campus: [4552102,4552101],[Einwärts,Auswärts]
+        bus station numbers for Leonardo-Campus: ,[Einwärts,Auswärts]
         """
 
-    def __init__(self, stations):
+    def __init__(self):
         """
         Initilization of BusTracker class.
 
@@ -17,7 +17,7 @@ class BusTracker:
             self,
             stations: List of station numbers to monitor 
             """
-        self.stations = stations
+        self.stations = [4552102,4552101]
         self.session = requests.session()
         self.start_time = ""
     
@@ -57,7 +57,4 @@ class BusTracker:
         print(result)
         return result
 
-if __name__ == "__main__": 
-    bustracker1 = BusTracker(stations=[4552102,4552101])
-    bustracker1.get_future_rides()
 
