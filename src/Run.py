@@ -6,6 +6,7 @@ from .api import create_app
 app = create_app()
 
 if __name__ == '__main__':
+    """Run the app in debug mode."""
     # run app on port 8000
     app.run(debug=True, port=8000)
 

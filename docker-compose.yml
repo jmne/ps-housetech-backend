@@ -11,7 +11,7 @@ services:
     depends_on:
       - flask-app
     healthcheck:
-      test: ["CMD-SHELL", "curl --silent --fail localhost:80/health-check || exit 1"]
+      test: ["CMD-SHELL", "curl --silent --fail http://ps-housetech.uni-muenster.de/health-check || exit 1"]
       interval: 10s
       timeout: 10s
       retries: 3
@@ -20,9 +20,9 @@ services:
     build: ./
     restart: always
     ports:
-      - '8000:8000'
+      - "8000:8000"
     healthcheck:
-      test: ["CMD-SHELL", "curl --silent --fail localhost:8000/health || exit 1"]
+      test: ["CMD-SHELL", "curl --silent --fail 127.0.0.1:8000/health || exit 1"]
       interval: 10s
       timeout: 10s
       retries: 3
