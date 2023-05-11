@@ -34,6 +34,7 @@ flask-cors = "^3.0.10"
 flask-restful = "^0.3.8"
 python-decouple= "^3.8"
 requests= "^2.29.0"
+DateTime= "^5.1"
 
 [pytest]
 addopts = [

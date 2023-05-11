@@ -1,13 +1,16 @@
-import requests
 import json
-import time
-from datetime import datetime, timedelta
+from datetime import datetime
+
+import requests
+
 
 class BusTracker:
-    """ BusTracker class using the API of Stadtwerke Münster:
-        DOCS: https://api.busradar.conterra.de/#/
-        bus station numbers for Leonardo-Campus: ,[Einwärts,Auswärts]
-        """
+    """
+    BusTracker class using the API of Stadtwerke Münster.
+
+    DOCS: https://api.busradar.conterra.de/#/
+    bus station numbers for Leonardo-Campus: ,[Einwärts,Auswärts]
+    """
 
     def __init__(self):
         """
@@ -15,19 +18,20 @@ class BusTracker:
 
         Args:
             self,
-            stations: List of station numbers to monitor 
-            """
-        self.stations = [4552102,4552101]
+            stations: List of station numbers to monitor
+        """
+        self.stations = [4552102, 4552101]
         self.session = requests.session()
-        self.start_time = ""
-    
+        self.start_time = ''
+
     def get_future_rides(self):
         """
-        Method that calls the API and transforms the data in the desired format
+        Method that calls the API and transforms the data in the desired format.
 
         Args:
             self
-        Returns: List of dictionaries. Dictionaries contain data for the specific bus stations 
+        Returns: List of dictionaries.
+        Dictionaries contain data for the specific bus stations
 
         [{  "station": str, z.B. "Leonardo-Campus"
             "direction": str, # einwärts oder auswärts
@@ -38,23 +42,34 @@ class BusTracker:
             "minutes_delay": int, # z.B. "6"
             "minutes_until_departure": int, # z.B. "11"
             }]
-            """
+        """
         result = []
         for station in self.stations:
-            response = self.session.get(f"https://rest.busradar.conterra.de/prod/haltestellen/{station}/abfahrten?sekunden=1800&maxanzahl=3")
+            response = self.session.get(
+                f'https://rest.busradar.conterra.de/prod/haltestellen/{station}'
+                '/abfahrten?sekunden=1800&maxanzahl=3',
+            )
             response = json.loads(response.text)
             for entry in response:
                 result.append({
-                    "station": entry["lbez"],
-                    "direction": "Einwärts" if station == 4552102 else "Auswärts",
-                    "line": entry["linientext"],
-                    "going_to": entry["richtungstext"],
-                    "planned_departure_time": datetime.fromtimestamp(entry["abfahrtszeit"]).strftime("%H:%M"),
-                    "actual_departure_time": datetime.fromtimestamp(entry["tatsaechliche_abfahrtszeit"]).strftime("%H:%M"),
-                    "minutes_delay":int(entry["delay"]/60),
-                    "minutes_until_departure":int(((datetime.fromtimestamp(entry["tatsaechliche_abfahrtszeit"]) - datetime.now()).total_seconds())/60)
-                }) 
-        print(result)
+                    'station': entry['lbez'],
+                    'direction': 'Einwärts' if station == 4552102 else 'Auswärts',
+                    'line': entry['linientext'],
+                    'going_to': entry['richtungstext'],
+                    'planned_departure_time': datetime
+                    .fromtimestamp(entry['abfahrtszeit'])
+                    .strftime('%H:%M'),
+                    'actual_departure_time': datetime
+                    .fromtimestamp(entry['tatsaechliche_abfahrtszeit'])
+                    .strftime('%H:%M'),
+                    'minutes_delay': int(entry['delay']/60),
+                    'minutes_until_departure': int(
+                        ((
+                            datetime
+                            .fromtimestamp(entry['tatsaechliche_abfahrtszeit']) -
+                            datetime.now()
+                        )
+                            .total_seconds())/60,
+                    ),
+                })
         return result
-
-
