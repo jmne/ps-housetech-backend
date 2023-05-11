@@ -5,6 +5,7 @@ from src.api import create_app
 
 @pytest.fixture()
 def app():
+    """Create instance of Flask App for tests."""
     app = create_app()
     app.config.update({
         'TESTING': True,
@@ -19,17 +20,11 @@ def app():
 
 @pytest.fixture()
 def client(app):
+    """Returns the test-client."""
     return app.test_client()
 
 
 @pytest.fixture()
 def runner(app):
+    """Returns the test-client runner."""
     return app.test_cli_runner()
-
-
-def test_json_data(client):
-    response = client.get('/api/hello')
-    assert (
-        response.json['content'] ==
-        'hello, i am running the hello function of exchange.py'
-    )
