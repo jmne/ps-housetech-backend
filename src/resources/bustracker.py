@@ -6,7 +6,7 @@ import requests
 
 class BusTracker:
     """
-    BusTracker class using the API of Stadtwerke Münster.
+    BusTracker class using the API of Stadtwerke Muenster.
 
     DOCS: https://api.busradar.conterra.de/#/
     bus station numbers for Leonardo-Campus: ,[Einwärts,Auswärts]
