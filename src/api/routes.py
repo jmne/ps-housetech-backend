@@ -1,3 +1,4 @@
+import flask
 from flask_restful import Api
 from flask_restful import Resource
 
@@ -47,7 +48,7 @@ class EInk(Resource):
             "hello"
 
         """
-        return EInkGenerator().get_data()
+        return flask.make_response(EInkGenerator().get_data(), 200)
 
 
 # API endpoints
