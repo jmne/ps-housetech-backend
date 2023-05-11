@@ -1,13 +1,13 @@
 from flask_restful import Api
 from flask_restful import Resource
 
-from src.resources import Exchange
+from src.resources.bustracker import BusTracker
 
 # initializing Flask API
 api = Api()
 
 
-class TestRoute(Resource):
+class Bus(Resource):
     """
     Test route for the API.
 
@@ -25,10 +25,9 @@ class TestRoute(Resource):
             "hello"
 
         """
-        ex1 = Exchange()
-        return ex1.hello()
+        return BusTracker().get_future_rides()
 
 
 # API endpoints
 
-api.add_resource(TestRoute, '/api/hello')
+api.add_resource(Bus, '/api/bus')
