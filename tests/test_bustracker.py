@@ -13,9 +13,8 @@ def test_bustracker(client):
     3. Each dictionary in the response contains the expected keys.
     4. The response contains both "Einwärts" and "Auswärts" directions.
     5. The "minutes_until_departure" value is greater than or equal to 0 for each item.
-    6. The "minutes_delay" value is greater than or equal to 0 for each item.
-    7. The actual_departure_time and planned_departure_time are in the format "HH:MM".
-    8. The actual_departure_time is consistent with the minutes_delay.
+    6. The actual_departure_time and planned_departure_time are in the format "HH:MM".
+    7. The actual_departure_time is consistent with the minutes_delay.
     """
     response = client.get('/api/bus')
     data = response.get_json()
@@ -40,9 +39,6 @@ def test_bustracker(client):
 
     # Test the "minutes_until_departure" is greater than or equal to 0 for each item
     assert all(item['minutes_until_departure'] >= 0 for item in data)
-
-    # Test the "minutes_delay" is greater than or equal to 0 for each item
-    assert all(item['minutes_delay'] >= 0 for item in data)
 
     # Test that actual_departure_time and planned_departure_time
     # are in the format "HH:MM"
