@@ -14,7 +14,7 @@ class BusTracker:
 
     def __init__(self):
         """
-        Initilization of BusTracker class.
+        Initialization of BusTracker class.
 
         Args:
             self,
