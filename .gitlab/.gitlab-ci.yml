@@ -26,7 +26,5 @@ before_script:
 include:
 - ".gitlab/*.yaml"
 - template: Security/SAST.gitlab-ci.yml
-stages:
-- test
 sast:
   stage: test
