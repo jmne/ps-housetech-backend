@@ -16,7 +16,7 @@ class Calendar(Resource):
 
     def get(self):  # dead: disable
         """
-        Creates a CalendarTracker instance and runs get_calendar_items() method.
+        Creates a ExchangeCalendar instance and runs get_calendar_items() method.
 
         Args:
             self
