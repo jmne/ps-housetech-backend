@@ -1,7 +1,9 @@
+import os
 from datetime import datetime
 from datetime import timedelta
 
 import pytz
+from dotenv import load_dotenv
 from exchangelib import Account
 from exchangelib import Configuration
 from exchangelib import Credentials
@@ -14,13 +16,18 @@ class ExchangeCalendar:
     def __init__(self):
         """Get access to exchange server."""
         # connect to server
-        username = 'room_username'
-        email = 'room@wi.uni-muenster.de'
-        password = 'room_password'
+        load_dotenv('../secrets.env')
+        username = os.getenv('USERNAME')
+        email = os.getenv('EMAIL')
+        password = os.getenv('PASSWORD')
         server = 'mail.wiwi.uni-muenster.de/ews/exchange.asmx'
 
-        credentials = Credentials(username=username, password=password)
-        config = Configuration(server=server, credentials=credentials)
+        credentials = Credentials(
+            username=username, password=password,
+        )
+        config = Configuration(
+            server=server, credentials=credentials,
+        )
 
         self.a = Account(
             primary_smtp_address=email, config=config, autodiscover=False,
@@ -41,15 +48,6 @@ class ExchangeCalendar:
         items = []
 
         for item in calendar_items:
-            # Get the required and optional attendees
-            required_attendees = item.required_attendees \
-                if item.required_attendees else []
-            optional_attendees = item.optional_attendees \
-                if item.optional_attendees else []
-
-            # Calculate the total number of attendees
-            total_attendees = len(required_attendees) + len(optional_attendees)
-
             items.append({
                 'title': item.subject,
                 'body': item.body,
@@ -57,10 +55,8 @@ class ExchangeCalendar:
                 'end': item.end.isoformat(),
                 'duration': str(item.duration),
                 'location': str(item.location),
-                'organizer_name': item.organizer.name if item.organizer else '',
-                'organizer_email': item.organizer.email_address if item.organizer else '',
-                'conference_type': str(item.conference_type),
-                'total_attendees': total_attendees,
+                'organizer_name': item.organizer.name,
+                'organizer_email': item.organizer.email_address,
             })
 
         return items
