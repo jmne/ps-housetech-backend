@@ -1,9 +1,7 @@
-import os
 from datetime import datetime
 from datetime import timedelta
 
 import pytz
-from dotenv import load_dotenv
 from exchangelib import Account
 from exchangelib import Configuration
 from exchangelib import Credentials
@@ -16,10 +14,9 @@ class ExchangeCalendar:
     def __init__(self):
         """Get access to exchange server."""
         # connect to server
-        load_dotenv('../secrets.env')
-        username = os.getenv('USERNAME')
-        email = os.getenv('EMAIL')
-        password = os.getenv('PASSWORD')
+        username = 'WIWI\\3100R022'
+        email = 'wi.r022@wi.uni-muenster.de'
+        password = '!esqfPmqQ6Y4KFu7re25L#'
         server = 'mail.wiwi.uni-muenster.de/ews/exchange.asmx'
 
         credentials = Credentials(
