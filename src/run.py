@@ -13,7 +13,7 @@ if __name__ == '__main__':
 @app.route('/api/health-check')
 def health():  # dead: disable
     """Return health status of the API."""
-    resp = jsonify(health='healthy')
+    resp = jsonify(status='running')
     resp.status_code = 200
 
     return resp
