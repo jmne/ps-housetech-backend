@@ -7,25 +7,27 @@ from src.resources.exchange import ExchangeCalendar
 api = Api()
 
 
-class Calendar(Resource):
+class Exchange(Resource):
     """
-    Calendar route for the API.
+    Test route for the API.
 
     method: GET
     """
 
     def get(self):  # dead: disable
         """
-        Creates a ExchangeCalendar instance and runs get_calendar_items() method.
+        Creates an Exchange instance and runs hello() method.
 
         Args:
             self
 
         Returns:
-            List of calendar items
+            "hello"
+
         """
         return ExchangeCalendar().get_calendar_items()
 
 
 # API endpoints
-api.add_resource(Calendar, '/api/calendar')
+
+api.add_resource(Exchange, '/api/bus')
