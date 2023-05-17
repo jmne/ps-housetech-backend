@@ -82,5 +82,5 @@ class Cris(Resource):
 
 # API endpoints
 api.add_resource(Bus, '/api/bus')
-api.add_resource(Cris, 'api/cris')
+api.add_resource(Cris, '/api/cris')
 api.add_resource(Mensa, '/api/mensa')

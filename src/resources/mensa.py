@@ -1,3 +1,6 @@
+import re
+from datetime import datetime
+
 import requests
 import xmltodict
 
@@ -32,5 +35,37 @@ class MensaTracker:
             self
         Returns: Dict with keys "menue", "@location" and "date".
         """
+        weekdays = {
+            '0': 'Monday',
+            '1': 'Tuesday',
+            '2': 'Wednesday',
+            '3': 'Thursday',
+            '4': 'Friday',
+            '5': 'Saturday',
+            '6': 'Sunday',
+        }
+
         response = self.session.get(self.url_de).text
-        return xmltodict.parse(response)
+        response_list = xmltodict.parse(response)
+        response_list = response_list['menue']['date']
+        for day in response_list:
+            day['date'] = datetime.fromtimestamp(
+                int(day['@timestamp']),
+            ).strftime('%Y-%m-%d')
+            day['weekday'] = weekdays[
+                str(
+                    datetime.fromtimestamp(int(day['@timestamp'])).weekday(),
+                )
+            ]
+            del day['@timestamp']
+            # hier noch durch items loopen und mit regex einen die Allergien abdecken
+            for entry in day['item']:
+                allergens = re.findall(r'\((.*?)\)', entry['meal'])
+                entry['allergens'] = allergens[0] if allergens else None
+                entry['meal'] = re.sub(
+                    r'\([^)]*\)', '',
+                    entry['meal'],
+                )  # filter out allergens
+                del entry['weight_unit']
+
+        return response_list
