@@ -34,4 +34,4 @@ RUN poetry config installer.max-workers 10
 
 RUN poetry install --no-interaction
 
-CMD [".venv/bin/gunicorn", "src.Run:app", "--bind", "0.0.0.0:8000", "--workers", "4", "--timeout", "120", "-n", "ps-housetech-backend"]
+CMD [".venv/bin/gunicorn", "src.run:app", "--bind", "0.0.0.0:8000", "--workers", "4", "--timeout", "120", "-n", "ps-housetech-backend"]
