@@ -57,7 +57,10 @@ class MensaTracker:
                     datetime.fromtimestamp(int(day['@timestamp'])).weekday(),
                 )
             ]
-            del day['@timestamp']
+            try:
+                del day['@timestamp']
+            except Exception as e:
+                print('There is not @timestamp key', e)
             # hier noch durch items loopen und mit regex einen die Allergien abdecken
             for entry in day['item']:
                 allergens = re.findall(r'\((.*?)\)', entry['meal'])
@@ -66,6 +69,13 @@ class MensaTracker:
                     r'\([^)]*\)', '',
                     entry['meal'],
                 )  # filter out allergens
-                del entry['weight_unit']
+                try:
+                    del entry['weight_unit']
+                except Exception as e:
+                    print("couldnt delete key 'weight_unit'", e)
+                try:
+                    del entry['prodgrp_id']
+                except Exception as e:
+                    print("couldnt delete key 'prodgrp_id'", e)
 
         return response_list
