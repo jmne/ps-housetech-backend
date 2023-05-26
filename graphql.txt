@@ -1,3 +1,5 @@
+###### Use the id's from the employee's to find the needed information ######
+
 findIDS: 
 
 CURL:
@@ -43,6 +45,8 @@ query findIDS {
 }
 END findIDS
 
+###### Find the name of specific employee ######
+
 findNameWithVariable:
 
 query findName($vorname: String!,$nachname: String!) {
@@ -73,6 +77,37 @@ query findName($vorname: String!,$nachname: String!) {
 
 END findNameWithVariable
 
+###### Find all organisations from Wirtschaftsinformatik that are active (status = 5) ######
+
+findWIOrganisations:
+
+query findWIOrganisations($name: String!, $status: String!) {
+  organisationList(
+    select: {
+      filter: [
+        { match: { cfName: { query: $name } } },
+        { match: { status: { query: $status } } }
+      ]
+    }
+  ) {
+    list {
+			node {
+        id
+        cfName
+        status
+      }
+    }
+  }
+}
+
+{
+  "name": "Wirtschaftsinformatik",
+  "status": "5"
+}
+
+END findWIOrganisations
+
+###### Find the organisation of employee by their user id ######
 
 findOrganisationFromUserID:
 
@@ -93,6 +128,7 @@ query findOrganisationFromUserID {
 
 END findOrganisationFromUserID
 
+###### Find the first 100 employee id's from a specific organisation, in this case "Lehrstuhl für Wirtschaftsinformatik und Informationsmanagement (Prof. Becker)" ######
 
 findMitarbeiterWICursorInitial:
 
@@ -119,6 +155,8 @@ query findMitarbeiterWIInitial {
 }
 
 END findMitarbeiterWICursorInitial
+
+###### If the field "hasNextPage" was true in the inital query above, find the next 100 employee id's from a specific organisation and iterate over all employee's, until "hasNextPage" is false. To iterate over the employee's use the cursor from the query before and put it into after:"<cursor>" ######
 
 findMitarbeiterWICursor:
 
