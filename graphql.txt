@@ -1,0 +1,44 @@
+findIDS: 
+
+CURL:
+curl 'https://cris-api-staging.uni-muenster.de/' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: https://cris-api-staging.uni-muenster.de' --data-binary '{"query":"query findIDS {\n  nodes(ids: [47462165, 46644531, 46718889]) {\n    ... on Person {\n      node {\n        id\n        cfFirstNames\n        cfFamilyNames\n        status\n        academicTitle\n        postpositionedTitle\n      }\n      connections {\n        organisations {\n          edges {\n            node {\n              id\n              cfName\n              nameShort\n              status\n              cfUri\n            }\n          }\n        }\n        cards {\n          edges {\n            node {\n              roomNumber\n              email\n              phone\n              status\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"}' --compressed
+
+Query:
+query findIDS {
+  nodes(ids: [47462165, 46644531, 46718889]) {
+    ... on Person {
+      node {
+        id
+        cfFirstNames
+        cfFamilyNames
+        status
+        academicTitle
+        postpositionedTitle
+      }
+      connections {
+        organisations {
+          edges {
+            node {
+              id
+              cfName
+              nameShort
+              status
+              cfUri
+            }
+          }
+        }
+        cards {
+          edges {
+            node {
+              roomNumber
+              email
+              phone
+              status
+            }
+          }
+        }
+      }
+    }
+  }
+}
+END findIDS
