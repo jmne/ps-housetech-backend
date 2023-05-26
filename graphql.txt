@@ -42,3 +42,105 @@ query findIDS {
   }
 }
 END findIDS
+
+findNameWithVariable:
+
+query findName($vorname: String!,$nachname: String!) {
+  personList(
+    select: {
+      filter: [
+        { match: { cfFirstNames: { query: $vorname } } },
+        { match: { cfFamilyNames: { query: $nachname } } }
+      ]
+    }
+  ) {
+    list {
+			node {
+        id
+        academicTitle
+        postpositionedTitle
+				cfFirstNames
+        cfFamilyNames
+      }
+    }
+  }
+}
+
+{
+  "vorname": "Benedikt",
+  "nachname": "Berger"
+}
+
+END findNameWithVariable
+
+
+findOrganisationFromUserID:
+
+query findOrganisationFromUserID {
+  person(id: 79213436) {
+    connections {
+      organisations {
+        edges {
+          node {
+            id
+            cfName
+          }
+        }
+      }
+    }
+  }
+}
+
+END findOrganisationFromUserID
+
+
+findMitarbeiterWICursorInitial:
+
+query findMitarbeiterWIInitial {
+  organisation(id: 31914156) {
+    connections {
+      persons(first: 100) {
+        pageInfo {
+          startCursor
+          endCursor
+          hasPreviousPage
+          hasNextPage
+        }
+        edges {
+          node {
+            id
+            cfFirstNames
+            cfFamilyNames
+          }
+        }
+      }
+    }
+  }
+}
+
+END findMitarbeiterWICursorInitial
+
+findMitarbeiterWICursor:
+
+query findMitarbeiterWICursor {
+  organisation(id: 31914156) {
+    connections {
+      persons(first: 100 after:"WzQ2OTg3MzQzXQ==") {
+        pageInfo {
+          startCursor
+          endCursor
+          hasNextPage
+        }
+        edges {
+          node {
+            id
+            cfFirstNames
+            cfFamilyNames
+          }
+        }
+      }
+    }
+  }
+}
+
+END findMitarbeiterWICursor
