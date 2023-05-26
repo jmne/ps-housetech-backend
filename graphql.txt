@@ -7,7 +7,7 @@ curl 'https://cris-api-staging.uni-muenster.de/' -H 'Accept-Encoding: gzip, defl
 
 Query:
 query findIDS {
-  nodes(ids: [47462165, 46644531, 46718889]) {
+  nodes(ids: [47462165, 46644531, 46718889, 79213436]) {
     ... on Person {
       node {
         id
@@ -39,10 +39,18 @@ query findIDS {
             }
           }
         }
+        pictures {
+          edges {
+            node {
+              id
+            }
+          }
+        }
       }
     }
   }
 }
+
 END findIDS
 
 ###### Find the name of specific employee ######
