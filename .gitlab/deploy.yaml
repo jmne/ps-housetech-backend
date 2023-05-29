@@ -12,8 +12,8 @@ deploy-container:
     - echo $CI_REGISTRY
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD https://zivgitlab.wwu.io
     - echo "Logged in successfully."
-    - docker build -t https://zivgitlab.wwu.io/ml-de/teaching/ps-housetech:backend-$CI_COMMIT_BRANCH .
-    - docker push https://zivgitlab.wwu.io/ml-de/teaching/ps-housetech:backend-$CI_COMMIT_BRANCH
+    - docker build -t zivgitlab.wwu.io/ml-de/teaching/ps-housetech:backend_$CI_COMMIT_BRANCH .
+    - docker push zivgitlab.wwu.io/ml-de/teaching/ps-housetech:backend_$CI_COMMIT_BRANCH
     - echo "Application successfully deployed."
   rules:
     - if: $CI_COMMIT_BRANCH == "microcontroller-test"
