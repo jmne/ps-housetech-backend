@@ -2,6 +2,9 @@ deploy-container:
   stage: deploy
   needs: ["run-tests", "run-linting"]
   image: docker:20.10.16
+  before_script: []
+  tags:
+    - mike
   services:
     - docker:20.10.16-dind
   script:
