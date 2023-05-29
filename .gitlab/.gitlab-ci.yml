@@ -1,10 +1,11 @@
-image: python:3.11.3
-
 stages:
   - build
   - test
   - deploy
   - webhook
+
+image: python:3.11.3
+
 
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
