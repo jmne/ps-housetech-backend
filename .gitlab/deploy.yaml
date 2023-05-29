@@ -1,14 +1,18 @@
-deploy-packages:
+deploy-container:
   stage: deploy
   needs: ["run-tests", "run-linting"]
-  environment: production
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
   script:
     - echo "Deploying application..."
-    - poetry build
-    - echo "Application successfully build."
-    - poetry config repositories.gitlab "https://zivgitlab.uni-muenster.de/api/v4/projects/$CI_PROJECT_ID/packages/pypi"
-    - poetry config http-basic.gitlab gitlab-ci-token "$CI_JOB_TOKEN"
-    - poetry publish --repository gitlab
+    - echo $CI_REGISTRY
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD https://zivgitlab.wwu.io
+    - echo "Logged in successfully."
+    - docker build -t https://zivgitlab.wwu.io/ml-de/teaching/ps-housetech:backend-CI_COMMIT_BRANCH .
+    - docker push https://zivgitlab.wwu.io/ml-de/teaching/ps-housetech:backend-CI_COMMIT_BRANCH
     - echo "Application successfully deployed."
   rules:
-    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == "microcontroller-test"
+      when: always
+    - when: never
