@@ -1,5 +1,11 @@
 image: python:3.11.3
 
+stages:
+  - build
+  - test
+  - deploy
+  - webhook
+
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   POETRY_CACHE_DIR: "$CI_PROJECT_DIR/.cache/poetry"

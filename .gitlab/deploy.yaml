@@ -22,7 +22,7 @@ deploy-container:
       when: always
     - when: never
 run-webhook:
-  stage: .post
+  stage: webhook
   needs: [ "deploy-container" ]
   before_script: []
   script:
