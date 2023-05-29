@@ -15,15 +15,10 @@ deploy-container:
     - docker build -t zivgitlab.wwu.io/ml-de/teaching/ps-housetech/ps-housetech-backend:$CI_COMMIT_BRANCH .
     - docker push zivgitlab.wwu.io/ml-de/teaching/ps-housetech/ps-housetech-backend:$CI_COMMIT_BRANCH
     - echo "Application successfully pushed."
+    - echo "Triggering webhook..."
   rules:
     - if: $CI_COMMIT_BRANCH == "development"
       when: always
     - if: $CI_COMMIT_BRANCH == "main"
       when: always
     - when: never
-run-webhook:
-  stage: webhook
-  needs: [ "deploy-container" ]
-  before_script: []
-  script:
-    - echo "Triggering webhook..."
