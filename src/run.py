@@ -1,6 +1,7 @@
-from api import create_app
 from flask import jsonify
 from flask import redirect
+
+from .api import create_app
 
 # create an instance of app
 app = create_app()
