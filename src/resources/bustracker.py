@@ -73,6 +73,3 @@ class BusTracker:
                     ),
                 })
         return result
-
-
-print(BusTracker().get_future_rides())
