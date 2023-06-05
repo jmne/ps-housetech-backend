@@ -62,14 +62,14 @@ class BusTracker:
                     'actual_departure_time': datetime
                     .fromtimestamp(entry['tatsaechliche_abfahrtszeit'])
                     .strftime('%H:%M'),
-                    'minutes_delay': int(entry['delay']/60),
+                    'minutes_delay': int(entry['delay'] / 60),
                     'minutes_until_departure': int(
                         ((
                             datetime
                             .fromtimestamp(entry['tatsaechliche_abfahrtszeit']) -
                             datetime.now()
                         )
-                            .total_seconds())/60,
+                            .total_seconds()) / 60,
                     ),
                 })
         return result
