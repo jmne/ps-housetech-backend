@@ -9,14 +9,14 @@ api = Api()
 
 class Exchange(Resource):
     """
-    Test route for the API.
+    Route for the calendar API.
 
     method: GET
     """
 
     def get(self):  # dead: disable
         """
-        Creates an Exchange instance and runs hello() method.
+        Get the calendar items.
 
         Args:
             self
@@ -30,4 +30,4 @@ class Exchange(Resource):
 
 # API endpoints
 
-api.add_resource(Exchange, '/api/bus')
+api.add_resource(Exchange, '/api/calendar')
