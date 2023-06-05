@@ -1,6 +1,7 @@
 run-tests:
   stage: test
   needs: []
+  allow_failure: false
   script:
     - echo "Running unit tests..."
     - poetry run pytest -v --junitxml=report.xml
@@ -17,6 +18,7 @@ run-tests:
 check-coverage:
   stage: test
   needs: []
+  allow_failure: false
   script:
     - echo "Running coverage..."
     - poetry run coverage run -m pytest
@@ -35,6 +37,7 @@ check-coverage:
 run-linting:
   stage: test
   needs: []
+  allow_failure: false
   script:
     - echo "Running pre-commit..."
     - poetry run pre-commit run -a
