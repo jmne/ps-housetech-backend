@@ -47,7 +47,6 @@ class ExchangeCalendar:
         for item in calendar_items:
             items.append({
                 'title': item.subject,
-                'body': item.body,
                 'start': item.start.isoformat(),
                 'end': item.end.isoformat(),
                 'duration': str(item.duration),

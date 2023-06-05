@@ -26,7 +26,7 @@ def test_each_dictionary_contains_expected_keys():
     calendar = ExchangeCalendar()
     data = calendar.get_calendar_items()
     expected_keys = {
-        'title', 'body', 'start', 'end', 'duration',
+        'title', 'start', 'end', 'duration',
         'location', 'organizer_name', 'organizer_email',
     }
     for item in data:
@@ -82,7 +82,7 @@ def test_duration_is_valid_time_duration():
 
 def test_string_fields_are_strings():
     """
-    Test 'title', 'body', 'location',
+    Test 'title',  'location',
     'organizer_name', and 'organizer_email' are strings
 
     """
@@ -90,7 +90,6 @@ def test_string_fields_are_strings():
     data = calendar.get_calendar_items()
     for item in data:
         assert isinstance(item['title'], str)
-        assert item['body'] is None or isinstance(item['body'], str)
         assert isinstance(item['location'], str)
         assert isinstance(item['organizer_name'], str)
         assert isinstance(item['organizer_email'], str)
