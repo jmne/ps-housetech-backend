@@ -1,5 +1,6 @@
 deploy-container:
   image: ubuntu
+  stage: deploy
   before_script:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
     - eval $(ssh-agent -s)
@@ -8,9 +9,8 @@ deploy-container:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
 
-    - ssh-keyscan ps-housetech.uni-muenster.de >> ~/.ssh/known_hosts
+    - ssh-keyscan 10.2.22.12 >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
-
   script:
     # try to connect to GitLab.com
     - ssh house-admin@ps-housetech.uni-muenster.de:2222
@@ -18,3 +18,9 @@ deploy-container:
     # try to clone yourself. A *PUBLIC* key paired to the SSH_PRIVATE_KEY was added as deploy key to this repository
     - hostname
     - echo 'Welcome!!!' > welcome.txt
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
+    - development
