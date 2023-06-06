@@ -1,17 +1,20 @@
 deploy-container:
-  stage: deploy
-  needs: ["run-tests", "run-linting"]
-  image: docker:20.10.16
-  before_script: []
-  tags:
-    - mike
-  services:
-    - docker:20.10.16-dind
+  image: ubuntu
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+
+    - ssh-keyscan ps-housetech.uni-muenster.de >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+
   script:
-    - echo "Deploying application..."
-  rules:
-    - if: $CI_COMMIT_BRANCH == "development"
-      when: always
-    - if: $CI_COMMIT_BRANCH == "main"
-      when: always
-    - when: never
+    # try to connect to GitLab.com
+    - ssh house-admin@ps-housetech.uni-muenster.de:2222
+
+    # try to clone yourself. A *PUBLIC* key paired to the SSH_PRIVATE_KEY was added as deploy key to this repository
+    - hostname
+    - echo 'Welcome!!!' > welcome.txt
