@@ -12,10 +12,7 @@ deploy-container:
     - ssh-keyscan -p 2222 10.2.22.12 >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
-    # try to connect to GitLab.com
-    - ssh house-admin@ps-housetech.uni-muenster.de:2222
-
-    # try to clone yourself. A *PUBLIC* key paired to the SSH_PRIVATE_KEY was added as deploy key to this repository
+    - ssh house-admin@10.2.22.12:2222
     - hostname
     - echo 'Welcome!!!' > welcome.txt
   artifacts:
