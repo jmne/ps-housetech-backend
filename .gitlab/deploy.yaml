@@ -12,12 +12,7 @@ deploy-container:
     - ssh-keyscan -p 2222 10.2.22.12 >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
-    - ssh house-admin@10.2.22.12 -p2222 "hostname && echo 'Welcome!!!' > welcome.txt && sudo service backend-dev restart"
-    - hostname
-    - echo 'Welcome!!!' > welcome.txt
-  artifacts:
-    paths:
-      - public
+    - ssh house-admin@10.2.22.12 -p2222 "git pull --all ./ps-housetech-backend-dev && sudo service backend-dev restart"
   only:
     - master
     - development

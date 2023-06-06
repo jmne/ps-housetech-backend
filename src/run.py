@@ -14,7 +14,7 @@ if __name__ == '__main__':
 @app.route('/api/health-check-flask')
 def health():  # dead: disable
     """Return health status of the API."""
-    resp = jsonify(status='running')
+    resp = jsonify(status='runninG')
     resp.status_code = 200
 
     return resp
