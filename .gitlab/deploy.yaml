@@ -9,7 +9,7 @@ deploy-container:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
 
-    - ssh-keyscan 10.2.22.12 >> ~/.ssh/known_hosts
+    - ssh-keyscan -p 2222 10.2.22.12 >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
     # try to connect to GitLab.com
