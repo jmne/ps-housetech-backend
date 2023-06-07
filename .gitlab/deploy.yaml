@@ -12,9 +12,13 @@ deploy-container-dev:
     - ssh-keyscan -p 2222 10.2.22.12 >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
+    - echo "Deploy to development server"
     - ssh house-admin@10.2.22.12 -p2222 "cd ps-housetech-backend-dev/ && sudo git pull --all && sudo /etc/poetry/bin/poetry install && sudo service backend-dev restart"
   only:
     - development
+  environment:
+    name: development
+    url: https://ps-housetech.uni-muenster.de:444/
 
 deploy-container-main:
   image: ubuntu
@@ -30,6 +34,10 @@ deploy-container-main:
     - ssh-keyscan -p 2222 10.2.22.12 >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
+    - echo "Deploy to production server"
     - ssh house-admin@10.2.22.12 -p2222 "cd ps-housetech-backend-main/ && sudo git pull --all && sudo poetry install && sudo service backend-main restart"
   only:
     - main
+  environment:
+    name: production
+    url: https://ps-housetech.uni-muenster.de:444/
