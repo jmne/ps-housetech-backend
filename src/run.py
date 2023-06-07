@@ -32,7 +32,7 @@ def redirect_to_docs():  # dead: disable
 
 @app.route('/api/help', methods=['GET'])
 def help():  # dead: disable
-    """Print available functions."""
+    """Print available API endpoints."""
     func_list = {}
     for rule in app.url_map.iter_rules():
         if rule.endpoint != 'static':

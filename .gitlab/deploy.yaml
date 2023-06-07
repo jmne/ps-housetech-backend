@@ -18,7 +18,7 @@ deploy-container-dev:
     - development
   environment:
     name: development
-    url: https://ps-housetech.uni-muenster.de:444/
+    url: https://ps-housetech.uni-muenster.de:444/api/help
 
 deploy-container-main:
   image: ubuntu
@@ -40,4 +40,4 @@ deploy-container-main:
     - main
   environment:
     name: production
-    url: https://ps-housetech.uni-muenster.de/
+    url: https://ps-housetech.uni-muenster.de/api/help
