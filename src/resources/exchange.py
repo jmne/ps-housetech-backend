@@ -26,6 +26,10 @@ class ExchangeCalendar:
         email = os.getenv('R022_EMAIL')
         server = 'mail.wiwi.uni-muenster.de/ews/exchange.asmx'
 
+        print(username)
+        print(password)
+        print(email)
+
         credentials = Credentials(
             username=username, password=password,
         )
