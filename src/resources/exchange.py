@@ -24,10 +24,6 @@ class ExchangeCalendar:
         email = os.getenv('R022_EMAIL')
         server = 'mail.wiwi.uni-muenster.de/ews/exchange.asmx'
 
-        print(username)
-        print(password)
-        print(email)
-
         credentials = Credentials(
             username=username, password=password,
         )
@@ -35,11 +31,18 @@ class ExchangeCalendar:
             server=server, credentials=credentials,
         )
 
+        print(credentials.username)
+        print(credentials.password)
+        print(config.server)
+        print(credentials)
+
         self.a = Account(
             primary_smtp_address=email, config=config, autodiscover=False,
             access_type=DELEGATE,
         )
         self.utc = pytz.utc
+
+        print(self.a)
 
     def get_calendar_items(self):
         """
