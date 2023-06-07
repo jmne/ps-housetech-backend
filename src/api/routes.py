@@ -77,7 +77,7 @@ class Cris(Resource):
         Returns:
             tbd.
         """
-        return CrisTracker().xyz()
+        return CrisTracker().get_cris_data()
 
 
 # API endpoints
