@@ -11,11 +11,7 @@ api = Api()
 
 
 class Bus(Resource):
-    """
-    Test route for the API.
-
-    method: GET
-    """
+    """Return Bus data from BusTracker API."""
 
     def get(self):  # dead: disable
         """
@@ -32,11 +28,7 @@ class Bus(Resource):
 
 
 class EInk(Resource):
-    """
-    Test route for the API.
-
-    method: GET
-    """
+    """Return E-Ink data from EInkGenerator API."""
 
     def get(self):  # dead: disable
         """
@@ -53,11 +45,7 @@ class EInk(Resource):
 
 
 class Exchange(Resource):
-    """
-    Route for the calendar API.
-
-    method: GET
-    """
+    """Return Exchange data from Exchange API."""
 
     def get(self):  # dead: disable
         """
