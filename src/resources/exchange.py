@@ -1,11 +1,16 @@
+import os
 from datetime import datetime
 from datetime import timedelta
 
 import pytz
+from dotenv import load_dotenv
 from exchangelib import Account
 from exchangelib import Configuration
 from exchangelib import Credentials
 from exchangelib import DELEGATE
+
+# Load the .env file
+load_dotenv('../secrets.env')
 
 
 class ExchangeCalendar:
@@ -14,9 +19,9 @@ class ExchangeCalendar:
     def __init__(self):
         """Get access to exchange server."""
         # connect to server
-        username = 'WIWI\\3100R022'
-        email = 'wi.r022@wi.uni-muenster.de'
-        password = '!esqfPmqQ6Y4KFu7re25L#'
+        username = os.getenv('R022_USERNAME')
+        password = os.getenv('R022_PASSWORD')
+        email = os.getenv('R022_EMAIL')
         server = 'mail.wiwi.uni-muenster.de/ews/exchange.asmx'
 
         credentials = Credentials(
@@ -26,11 +31,18 @@ class ExchangeCalendar:
             server=server, credentials=credentials,
         )
 
+        print(credentials.username)
+        print(credentials.password)
+        print(config.server)
+        print(credentials)
+
         self.a = Account(
             primary_smtp_address=email, config=config, autodiscover=False,
             access_type=DELEGATE,
         )
         self.utc = pytz.utc
+
+        print(self.a)
 
     def get_calendar_items(self):
         """
@@ -54,5 +66,4 @@ class ExchangeCalendar:
                 'organizer_name': item.organizer.name,
                 'organizer_email': item.organizer.email_address,
             })
-
         return items
