@@ -12,7 +12,7 @@ deploy-container-dev:
     - ssh-keyscan -p 2222 10.2.22.12 >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
-    - ssh house-admin@10.2.22.12 -p2222 "cd ps-housetech-backend-dev/ && sudo git pull --all && sudo poetry install && sudo service backend-dev restart"
+    - ssh house-admin@10.2.22.12 -p2222 "cd ps-housetech-backend-dev/ && sudo git pull --all && sudo /etc/poetry/bin/poetry install && sudo service backend-dev restart"
   only:
     - development
 
