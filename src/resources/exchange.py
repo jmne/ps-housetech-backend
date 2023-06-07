@@ -10,9 +10,7 @@ from exchangelib import Credentials
 from exchangelib import DELEGATE
 
 # Load the .env file
-current_dir = os.getcwd()
-relative_path = os.path.join(current_dir, '..', '..', 'secrets.env')
-load_dotenv(relative_path)
+load_dotenv('../secrets.env')
 
 
 class ExchangeCalendar:
