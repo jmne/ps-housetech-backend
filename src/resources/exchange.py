@@ -31,18 +31,11 @@ class ExchangeCalendar:
             server=server, credentials=credentials,
         )
 
-        print(credentials.username)
-        print(credentials.password)
-        print(config.server)
-        print(credentials)
-
         self.a = Account(
             primary_smtp_address=email, config=config, autodiscover=False,
             access_type=DELEGATE,
         )
         self.utc = pytz.utc
-
-        print(self.a)
 
     def get_calendar_items(self):
         """
