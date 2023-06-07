@@ -1,8 +1,12 @@
 from datetime import datetime
 
 import pytest
+from dotenv import load_dotenv
 
 from src.resources.exchange import ExchangeCalendar
+
+# Load the .env file
+load_dotenv('secrets.env')
 
 
 def test_response_is_list_of_dictionaries():
