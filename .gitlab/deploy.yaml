@@ -40,4 +40,4 @@ deploy-container-main:
     - main
   environment:
     name: production
-    url: https://ps-housetech.uni-muenster.de:444/
+    url: https://ps-housetech.uni-muenster.de/
