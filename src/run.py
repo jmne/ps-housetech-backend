@@ -14,7 +14,7 @@ if __name__ == '__main__':
 @app.route('/api/health-check-flask')
 def health():  # dead: disable
     """Return health status of the API."""
-    resp = jsonify(status='running')
+    resp = jsonify(status='Running')
     resp.status_code = 200
 
     return resp
@@ -24,6 +24,6 @@ def health():  # dead: disable
 def redirect_to_docs():  # dead: disable
     """Redirect to API documentation."""
     return redirect(
-        'https://ml-de.zivgitlabpages.uni-muenster.de/teaching/ps-housetech/ps-housetech-website/api',  # noqa: E501
+        'https://ml-de.zivgitlabpages.uni-muenster.de/teaching/ps-housetech/ps-housetech-website/api/einleitung',  # noqa: E501
         code=302,
     )
