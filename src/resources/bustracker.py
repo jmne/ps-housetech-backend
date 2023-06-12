@@ -22,7 +22,6 @@ class BusTracker:
         """
         self.stations = [4552102, 4552101]
         self.session = requests.session()
-        self.start_time = ''
 
     def get_future_rides(self):
         """
