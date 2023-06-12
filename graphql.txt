@@ -1,0 +1,192 @@
+###### Use the id's from the employee's to find the needed information ######
+
+findIDS:
+
+CURL:
+curl 'https://cris-api-staging.uni-muenster.de/' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: https://cris-api-staging.uni-muenster.de' --data-binary '{"query":"query findIDS {\n  nodes(ids: [47462165, 46644531, 46718889]) {\n    ... on Person {\n      node {\n        id\n        cfFirstNames\n        cfFamilyNames\n        status\n        academicTitle\n        postpositionedTitle\n      }\n      connections {\n        organisations {\n          edges {\n            node {\n              id\n              cfName\n              nameShort\n              status\n              cfUri\n            }\n          }\n        }\n        cards {\n          edges {\n            node {\n              roomNumber\n              email\n              phone\n              status\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"}' --compressed
+
+Query:
+query findIDS {
+  nodes(ids: [47462165, 46644531, 46718889, 79213436]) {
+    ... on Person {
+      node {
+        id
+        cfFirstNames
+        cfFamilyNames
+        status
+        academicTitle
+        postpositionedTitle
+      }
+      connections {
+        organisations {
+          edges {
+            node {
+              id
+              cfName
+              nameShort
+              status
+              cfUri
+            }
+          }
+        }
+        cards {
+          edges {
+            node {
+              roomNumber
+              email
+              phone
+              status
+            }
+          }
+        }
+        pictures {
+          edges {
+            node {
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+END findIDS
+
+###### Find the name of specific employee ######
+
+findNameWithVariable:
+
+query findName($vorname: String!,$nachname: String!) {
+  personList(
+    select: {
+      filter: [
+        { match: { cfFirstNames: { query: $vorname } } },
+        { match: { cfFamilyNames: { query: $nachname } } }
+      ]
+    }
+  ) {
+    list {
+			node {
+        id
+        academicTitle
+        postpositionedTitle
+				cfFirstNames
+        cfFamilyNames
+      }
+    }
+  }
+}
+
+{
+  "vorname": "Benedikt",
+  "nachname": "Berger"
+}
+
+END findNameWithVariable
+
+###### Find all organisations from Wirtschaftsinformatik that are active (status = 5) ######
+
+findWIOrganisations:
+
+query findWIOrganisations($name: String!, $status: String!) {
+  organisationList(
+    select: {
+      filter: [
+        { match: { cfName: { query: $name } } },
+        { match: { status: { query: $status } } }
+      ]
+    }
+  ) {
+    list {
+			node {
+        id
+        cfName
+        status
+      }
+    }
+  }
+}
+
+{
+  "name": "Wirtschaftsinformatik",
+  "status": "5"
+}
+
+END findWIOrganisations
+
+###### Find the organisation of employee by their user id ######
+
+findOrganisationFromUserID:
+
+query findOrganisationFromUserID {
+  person(id: 79213436) {
+    connections {
+      organisations {
+        edges {
+          node {
+            id
+            cfName
+          }
+        }
+      }
+    }
+  }
+}
+
+END findOrganisationFromUserID
+
+###### Find the first 100 employee id's from a specific organisation, in this case "Lehrstuhl für Wirtschaftsinformatik und Informationsmanagement (Prof. Becker)" ######
+
+findMitarbeiterWICursorInitial:
+
+query findMitarbeiterWIInitial {
+  organisation(id: 31914156) {
+    connections {
+      persons(first: 100) {
+        pageInfo {
+          startCursor
+          endCursor
+          hasPreviousPage
+          hasNextPage
+        }
+        edges {
+          node {
+            id
+            cfFirstNames
+            cfFamilyNames
+          }
+        }
+      }
+    }
+  }
+}
+
+END findMitarbeiterWICursorInitial
+
+###### If the field "hasNextPage" was true in the inital query above, find the next 100 employee id's from a specific organisation and iterate over all employee's, until "hasNextPage" is false. To iterate over the employee's use the cursor from the query before and put it into after:"<cursor>" ######
+
+findMitarbeiterWICursor:
+
+query findMitarbeiterWICursor {
+  organisation(id: 31914156) {
+    connections {
+      persons(first: 100 after:"WzQ2OTg3MzQzXQ==") {
+        pageInfo {
+          startCursor
+          endCursor
+          hasNextPage
+        }
+        edges {
+          node {
+            id
+            cfFirstNames
+            cfFamilyNames
+          }
+        }
+      }
+    }
+  }
+}
+
+END findMitarbeiterWICursor
