@@ -8,3 +8,7 @@ print-info:
     - poetry run python -m pip --version
     - poetry run python -m pip list
     - poetry run pre-commit --version
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - when: always

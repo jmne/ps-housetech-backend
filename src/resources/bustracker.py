@@ -6,7 +6,7 @@ import requests
 
 class BusTracker:
     """
-    BusTracker class using the API of Stadtwerke Münster.
+    BusTracker class using the API of Stadtwerke Muenster.
 
     DOCS: https://api.busradar.conterra.de/#/
     bus station numbers for Leonardo-Campus: ,[Einwärts,Auswärts]
@@ -14,7 +14,7 @@ class BusTracker:
 
     def __init__(self):
         """
-        Initilization of BusTracker class.
+        Initialization of BusTracker class.
 
         Args:
             self,
@@ -22,7 +22,6 @@ class BusTracker:
         """
         self.stations = [4552102, 4552101]
         self.session = requests.session()
-        self.start_time = ''
 
     def get_future_rides(self):
         """
@@ -62,14 +61,14 @@ class BusTracker:
                     'actual_departure_time': datetime
                     .fromtimestamp(entry['tatsaechliche_abfahrtszeit'])
                     .strftime('%H:%M'),
-                    'minutes_delay': int(entry['delay']/60),
+                    'minutes_delay': int(entry['delay'] / 60),
                     'minutes_until_departure': int(
                         ((
                             datetime
                             .fromtimestamp(entry['tatsaechliche_abfahrtszeit']) -
                             datetime.now()
                         )
-                            .total_seconds())/60,
+                            .total_seconds()) / 60,
                     ),
                 })
         return result

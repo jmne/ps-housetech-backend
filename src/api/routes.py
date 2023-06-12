@@ -1,8 +1,11 @@
+import flask
 from flask_restful import Api
 from flask_restful import Resource
 
 from src.resources.bustracker import BusTracker
 from src.resources.cris import CrisTracker
+from src.resources.einkgenerator import EInkGenerator
+from src.resources.exchange import ExchangeCalendar
 from src.resources.mensa import MensaTracker
 
 # initializing Flask API
@@ -80,7 +83,43 @@ class Cris(Resource):
         return CrisTracker().get_cris_data()
 
 
+class EInk(Resource):
+    """Return E-Ink data from EInkGenerator API."""
+
+    def get(self):  # dead: disable
+        """
+        Creates an Exchange instance and runs hello() method.
+
+        Args:
+            self
+
+        Returns:
+            "hello"
+
+        """
+        return flask.make_response(EInkGenerator().get_data(), 200)
+
+
+class Exchange(Resource):
+    """Return Exchange data from Exchange API."""
+
+    def get(self):  # dead: disable
+        """
+        Get the calendar items.
+
+        Args:
+            self
+
+        Returns:
+            "hello"
+
+        """
+        return ExchangeCalendar().get_calendar_items()
+
+
 # API endpoints
 api.add_resource(Bus, '/api/bus')
 api.add_resource(Cris, '/api/cris')
 api.add_resource(Mensa, '/api/mensa')
+api.add_resource(EInk, '/api/eink')
+api.add_resource(Exchange, '/api/calendar')

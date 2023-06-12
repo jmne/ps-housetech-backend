@@ -1,14 +1,43 @@
-deploy-packages:
+deploy-container-dev:
+  image: ubuntu
   stage: deploy
-  needs: ["run-tests", "run-linting"]
-  environment: production
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+
+    - ssh-keyscan -p 2222 10.2.22.12 >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
   script:
-    - echo "Deploying application..."
-    - poetry build
-    - echo "Application successfully build."
-    - poetry config repositories.gitlab "https://zivgitlab.uni-muenster.de/api/v4/projects/$CI_PROJECT_ID/packages/pypi"
-    - poetry config http-basic.gitlab gitlab-ci-token "$CI_JOB_TOKEN"
-    - poetry publish --repository gitlab
-    - echo "Application successfully deployed."
-  rules:
-    - if: $CI_COMMIT_TAG
+    - echo "Deploy to development server"
+    - ssh house-admin@10.2.22.12 -p2222 "cd ps-housetech-backend-dev/ && sudo git fetch --all && sudo git reset --hard origin/development && sudo /etc/poetry/bin/poetry install && sudo service backend-dev restart"
+  only:
+    - development
+  environment:
+    name: development
+    url: https://ps-housetech.uni-muenster.de:444/api/help
+
+deploy-container-main:
+  image: ubuntu
+  stage: deploy
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+
+    - ssh-keyscan -p 2222 10.2.22.12 >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - echo "Deploy to production server"
+    - ssh house-admin@10.2.22.12 -p2222 "cd ps-housetech-backend-main/ && sudo git fetch --all && sudo git reset --hard origin/main && sudo poetry install && sudo service backend-main restart"
+  only:
+    - main
+  environment:
+    name: production
+    url: https://ps-housetech.uni-muenster.de/api/help
