@@ -41,14 +41,10 @@ def test_mensa(client):
     for item in data:
         assert date_pattern.match(item['date'])
 
-    # Test that "price1" and "price3" values are in the correct
-    # format and convertible to float
-    # -> >=1 nums followed "," and exactly 2 nums
-    price_pattern = re.compile(r'^\d{1,},\d{2}$')
-    for item in data:
-        for meal_item in item['item']:
-            assert price_pattern.match(meal_item['price1'])
-            assert price_pattern.match(meal_item['price3'])
-            # If the price can't be converted to float, it will raise a ValueError
-            float(meal_item['price1'].replace(',', '.'))
-            float(meal_item['price3'].replace(',', '.'))
+    # Test that foodicons are returned as list
+    # Test that the price is a float
+    for day in data:
+        for meal in day['item']:
+            assert isinstance(meal['foodicons'], list)
+            assert isinstance(meal['price1'], float)
+            assert isinstance(meal['price3'], float)

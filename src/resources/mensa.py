@@ -48,6 +48,7 @@ class MensaTracker:
         response = self.session.get(self.url_de).text
         response_list = xmltodict.parse(response)
         response_list = response_list['menue']['date']
+        print(response_list)
         for day in response_list:
             day['date'] = datetime.fromtimestamp(
                 int(day['@timestamp']),
@@ -63,6 +64,7 @@ class MensaTracker:
                 print('There is not @timestamp key', e)
             # hier noch durch items loopen und mit regex einen die Allergien abdecken
             for entry in day['item']:
+                entry['foodicons'] = [str(entry['foodicons'])]
                 allergens = re.findall(r'\((.*?)\)', entry['meal'])
                 entry['allergens'] = allergens[0] if allergens else None
                 entry['meal'] = re.sub(
@@ -70,12 +72,14 @@ class MensaTracker:
                     entry['meal'],
                 )  # filter out allergens
                 try:
-                    del entry['weight_unit']
+                    entry['price1'] = float(entry['price1'].replace(',', '.'))
+                    entry['price3'] = float(entry['price3'].replace(',', '.'))
                 except Exception as e:
-                    print("couldnt delete key 'weight_unit'", e)
+                    print('couldnt convert prices to float', e)
                 try:
+                    del entry['weight_unit']
                     del entry['prodgrp_id']
                 except Exception as e:
-                    print("couldnt delete key 'prodgrp_id'", e)
+                    print("couldnt delete key 'prodgrp_id'/'weight_unit", e)
 
         return response_list
