@@ -1,5 +1,8 @@
 class EInkGenerator:
-    """E-Ink."""
+    """E-Ink.
+
+    proxies are not included yet.
+    """
 
     def __init__(self):
         """
