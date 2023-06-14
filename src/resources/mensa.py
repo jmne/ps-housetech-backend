@@ -51,7 +51,6 @@ class MensaTracker:
         response = self.session.get(self.url_de).text
         response_list = xmltodict.parse(response)
         response_list = response_list['menue']['date']
-        print(response_list)
         for day in response_list:
             day['date'] = datetime.fromtimestamp(
                 int(day['@timestamp']),
