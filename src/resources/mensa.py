@@ -4,6 +4,8 @@ from datetime import datetime
 import requests
 import xmltodict
 
+from .proxy_config import proxies
+
 
 class MensaTracker:
     """
@@ -23,6 +25,7 @@ class MensaTracker:
         self.url_de = 'https://speiseplan.stw-muenster.de/mensa_da_vinci.xml'
         self.url_en = ''  # tbd
         self.session = requests.session()
+        self.session.proxies.update(proxies)
 
     # TODO: appropiate adoptions for frontend implementations
     def get_current_meals(self):
@@ -48,7 +51,6 @@ class MensaTracker:
         response = self.session.get(self.url_de).text
         response_list = xmltodict.parse(response)
         response_list = response_list['menue']['date']
-        print(response_list)
         for day in response_list:
             day['date'] = datetime.fromtimestamp(
                 int(day['@timestamp']),
