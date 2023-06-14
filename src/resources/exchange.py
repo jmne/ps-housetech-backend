@@ -14,7 +14,10 @@ load_dotenv('../secrets.env')
 
 
 class ExchangeCalendar:
-    """CalendarTracker class using the exchangelib library."""
+    """CalendarTracker class using the exchangelib library.
+
+    proxies are not included yet.
+    """
 
     def __init__(self):
         """Get access to exchange server."""
