@@ -28,7 +28,87 @@ class CrisTracker:
             'DNT': '1',
             'Origin': 'https://cris-api-staging.uni-muenster.de',
         }
-        self.chairs = []  # list of dicts with chairs
+        self.chairs = [
+            {
+                'chair_id': '31914156', 'chair_name': (
+                    'Lehrstuhl für'
+                    ' Wirtschaftsinformatik und Informationsmanagement (Prof. Becker)'
+                ),
+            },
+            {
+                'chair_id': '31923392', 'chair_name': (
+                    'Institut für'
+                    ' Wirtschaftsinformatik'
+                ),
+            },
+            {
+                'chair_id': '40279283', 'chair_name': (
+                    'Lehrstuhl für'
+                    ' Wirtschaftsinformatik und Interorganisationssysteme (Prof. Klein)'
+                ),
+            },
+            {
+                'chair_id': '40279346', 'chair_name': (
+                    'Lehrstuhl für'
+                    ' Wirtschaftsinformatik und Logistik (Prof. Hellingrath)'
+                ),
+            },
+            {
+                'chair_id': '40279415', 'chair_name': (
+                    'Institut für'
+                    ' Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler'
+                ),
+            },
+            {
+                'chair_id': '79139069', 'chair_name': (
+                    'Juniorprofessur für'
+                    ' Wirtschaftsinformatik, insbesondere Digitale Transformation'
+                    ' und Gesellschaft (Prof. Berger)'
+                ),
+            },
+            {
+                'chair_id': '40279220', 'chair_name': (
+                    'Professur für'
+                    ' Statistik und Optimierung (Prof. Trautmann)'
+                ),
+            },
+            {
+                'chair_id': '59575309', 'chair_name': (
+                    'Professur für'
+                    ' Maschinelles Lernen und Data Engineering (Prof. Gieseke)'
+                ),
+            },
+            {
+                'chair_id': '40279157', 'chair_name': (
+                    'Lehrstuhl für'
+                    ' Praktische Informatik in der Wirtschaft (Prof. Kuchen)'
+                ),
+            },
+            {
+                'chair_id': '31921637', 'chair_name': (
+                    'Lehrstuhl für'
+                    ' Informatik (Prof. Vossen)'
+                ),
+            },
+            {
+                'chair_id': '77369668', 'chair_name': (
+                    'Professur für'
+                    ' Digitale Innovation und der öffentliche Sektor (Prof. Brandt)'
+                ),
+            },
+            {
+                'chair_id': '40279346', 'chair_name': (
+                    'Lehrstuhl für'
+                    ' Wirtschaftsinformatik und Logistik (Prof. Hellingrath)'
+                ),
+            },
+            {
+                'chair_id': '55472869', 'chair_name': (
+                    'Juniorprofessur für'
+                    ' IT-Sicherheit (Prof. Hupperich)'
+                ),
+            },
+        ]
         self.employees = []  # list of dicts with employee_id and employees chair
         self.result = []  # to return
         self.session = requests.session()
@@ -40,54 +120,6 @@ class CrisTracker:
         returns the list a list of lists with max_length.
         """
         return [input_list[i:i+max_length] for i in range(0, len(input_list), max_length)]
-
-    def update_chairs(self):
-        """Append all active chairs (chair ids) to Cris instance."""
-        payload = {
-            'query': """
-                        query findWIOrganisations {
-                            organisationList(
-                                select: {
-                                    filter: [
-                                        {
-                                            match: {
-                                                cfName: {
-                                                    query: "Wirtschaftsinformatik"
-                                                }
-                                            }
-                                        },
-                                        {
-                                            match: {
-                                                status: {
-                                                    query: "5"
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            ) {
-                                list {
-                                    node {
-                                        id
-                                        cfName
-                                        status
-                                    }
-                                }
-                            }
-                        }
-                    """,
-        }
-        response = json.loads(
-            self.session.post(
-                self.url, headers=self.header, json=payload,
-            ).text,
-        )
-        for chair in response['data']['organisationList']['list']:
-            self.chairs.append({
-                'chair_id': chair['node']['id'],
-                'chair_name': chair['node']['cfName'],
-            })
-        return
 
     def update_employees(self):
         """Append all employee_ids of the chairs to cris instance.
@@ -221,11 +253,30 @@ class CrisTracker:
 
         return
 
+    def remove_duplicate_employees(self):
+        """Function that removes duplicates from employee list.
+
+        Keeps the first entry and removes all subsequent entries.
+        """
+        temp_dict = {i['id']: i for i in reversed(self.employees)}
+        result = list(temp_dict.values())[::-1]
+        return result
+
+    def add_addresses(self):
+        """Function that adds addresses for every employee.
+
+        Address depends on the chair the person is working in.
+        """
+        pass
+
     def get_cris_data(self):
         """Function that returns the desired result."""
-        self.update_chairs()
         self.update_employees()
+        print(len(self.employees))
+        self.employees = self.remove_duplicate_employees()
+        print(len(self.employees))
         self.update_result()
+        self.add_addresses()
         return self.result
 
 
