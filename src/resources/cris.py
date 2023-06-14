@@ -2,6 +2,8 @@ import json
 
 import requests
 
+from .proxy_config import proxies
+
 
 class CrisTracker:
     """
@@ -29,6 +31,8 @@ class CrisTracker:
         self.chairs = []  # list of dicts with chairs
         self.employees = []  # list of dicts with employee_id and employees chair
         self.result = []  # to return
+        self.session = requests.session()
+        self.session.proxies.update(proxies)
 
     def split_list(self, input_list, max_length):
         """Splitting the input list into lists with len(max_length).
@@ -74,7 +78,7 @@ class CrisTracker:
                     """,
         }
         response = json.loads(
-            requests.post(
+            self.session.post(
                 self.url, headers=self.header, json=payload,
             ).text,
         )
@@ -115,7 +119,7 @@ class CrisTracker:
                         """,
             }
             response = json.loads(
-                requests.post(
+                self.session.post(
                     self.url, headers=self.header, json=payload,
                 ).text,
             )
@@ -180,7 +184,7 @@ class CrisTracker:
                             """,
             }
             response = json.loads(
-                requests.post(
+                self.session.post(
                     self.url, headers=self.header, json=payload,
                 ).text,
             )
