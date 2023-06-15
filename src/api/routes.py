@@ -1,4 +1,6 @@
 import flask
+from flask import current_app
+from flask import jsonify
 from flask_restful import Api
 from flask_restful import Resource
 
@@ -117,9 +119,35 @@ class Exchange(Resource):
         return ExchangeCalendar().get_calendar_items()
 
 
+class ApiInfo(Resource):
+    """Return API info."""
+
+    def get(self):
+        """
+        Return API info.
+
+        Args:
+            self
+
+        Returns:
+            "hello"
+
+        """
+        func_list = {}
+        for rule in current_app.url_map.iter_rules():
+            if rule.endpoint != 'static':
+                func_list[rule.rule] = current_app.view_functions[rule.endpoint].__doc__
+        for key in func_list:
+            func_list[key] = func_list[key].replace('\n', '').replace(
+                '    ', '',
+            ).replace('method', ' | method')
+        return jsonify(func_list)
+
+
 # API endpoints
 api.add_resource(Bus, '/api/bus')
 api.add_resource(Cris, '/api/cris')
 api.add_resource(Mensa, '/api/mensa')
 api.add_resource(EInk, '/api/eink')
 api.add_resource(Exchange, '/api/calendar')
+api.add_resource(ApiInfo, '/api/help')
