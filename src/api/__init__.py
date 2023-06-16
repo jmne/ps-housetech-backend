@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from .routes import api
@@ -13,6 +14,11 @@ def create_app():
     app.wsgi_app = ProxyFix(
         app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1,
     )  # fix for proxy
+    CORS(
+        app, origins=[
+            'ps-housetech.uni-muenster.de', 'ml-de.zivgitlabpages.uni-muenster.de',
+        ],
+    )  # enable CORS
     api.init_app(app)  # connecting api from routes.py with app
 
     return app
