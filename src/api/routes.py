@@ -6,6 +6,7 @@ from flask_restful import Resource
 
 from src.resources.bustracker import BusTracker
 from src.resources.cris import CrisTracker
+from src.resources.drupal import DrupalTracker
 from src.resources.einkgenerator import EInkGenerator
 from src.resources.exchange import ExchangeCalendar
 from src.resources.mensa import MensaTracker
@@ -119,6 +120,32 @@ class Exchange(Resource):
         return ExchangeCalendar().get_calendar_items()
 
 
+class Drupal(Resource):
+    """Return API info."""
+
+    def get(self, content_type):
+        """
+        Return API info.
+
+        Args:
+            self
+
+        Returns:
+            "hello"
+
+        """
+        drupal = DrupalTracker()
+        url = None
+        if content_type == 'event':
+            url = drupal.event_url
+        elif content_type == 'overlay':
+            url = drupal.overlay_url
+        else:
+            return """no valid input; choose 'event' or 'overlay'"""
+
+        return drupal.get_response(url)
+
+
 class ApiInfo(Resource):
     """Return API info."""
 
@@ -150,4 +177,5 @@ api.add_resource(Cris, '/api/cris')
 api.add_resource(Mensa, '/api/mensa')
 api.add_resource(EInk, '/api/eink')
 api.add_resource(Exchange, '/api/calendar')
+api.add_resource(Drupal, '/api/drupal/<content_type>')
 api.add_resource(ApiInfo, '/api/help')

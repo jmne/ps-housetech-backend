@@ -147,8 +147,6 @@ class CrisTracker:
                                             edges{{
                                                 node{{
                                                     id
-                                                    cfFirstNames
-                                                    cfFamilyNames
                                                     status
                                                 }}
                                             }}
