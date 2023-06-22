@@ -15,9 +15,9 @@ deploy-container-dev:
     - echo "Deploy to development server"
     - |
       ssh house-admin@10.2.22.12 -p2222 "
-      export POETRY_R022_EMAIL=$R022_EMAIL &&
-      export POETRY_R022_PASSWORD=$R022_PASSWORD &&
-      export POETRY_R022_USERNAME=$R022_USERNAME &&
+      export R022_EMAIL=$POETRY_R022_EMAIL &&
+      export R022_PASSWORD=$POETRY_R022_PASSWORD &&
+      export R022_USERNAME=$POETRY_R022_USERNAME &&
       cd ps-housetech-backend-dev/ &&
       sudo git fetch --all &&
       sudo git reset --hard origin/development &&
@@ -46,9 +46,9 @@ deploy-container-main:
     - echo "Deploy to production server"
     - |
       ssh house-admin@10.2.22.12 -p2222 "
-      export R022_EMAIL=$R022_EMAIL &&
-      export R022_PASSWORD=$R022_PASSWORD &&
-      export R022_USERNAME=$R022_USERNAME &&
+      export R022_EMAIL=$POETRY_R022_EMAIL &&
+      export R022_PASSWORD=$POETRY_R022_PASSWORD &&
+      export R022_USERNAME=$POETRY_R022_USERNAME &&
       cd ps-housetech-backend-main/ &&
       sudo git fetch --all &&
       sudo git reset --hard origin/main &&
