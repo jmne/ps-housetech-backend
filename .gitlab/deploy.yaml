@@ -13,7 +13,16 @@ deploy-container-dev:
     - chmod 644 ~/.ssh/known_hosts
   script:
     - echo "Deploy to development server"
-    - ssh house-admin@10.2.22.12 -p2222 "cd ps-housetech-backend-dev/ && sudo git fetch --all && sudo git reset --hard origin/development && sudo R022_EMAIL=$R022_EMAIL R022_PASSWORD=$R022_PASSWORD R022_USERNAME=$R022_USERNAME /etc/poetry/bin/poetry install && sudo service backend-dev restart"
+    - |
+      ssh house-admin@10.2.22.12 -p2222 "
+      export POETRY_R022_EMAIL=$R022_EMAIL &&
+      export POETRY_R022_PASSWORD=$R022_PASSWORD &&
+      export POETRY_R022_USERNAME=$R022_USERNAME &&
+      cd ps-housetech-backend-dev/ &&
+      sudo git fetch --all &&
+      sudo git reset --hard origin/development &&
+      sudo /etc/poetry/bin/poetry install &&
+      sudo service backend-dev restart"
   only:
     - development
   environment:
@@ -35,7 +44,16 @@ deploy-container-main:
     - chmod 644 ~/.ssh/known_hosts
   script:
     - echo "Deploy to production server"
-    - ssh house-admin@10.2.22.12 -p2222 "cd ps-housetech-backend-main/ && sudo git fetch --all && sudo git reset --hard origin/main && sudo R022_EMAIL=$R022_EMAIL R022_PASSWORD=$R022_PASSWORD R022_USERNAME=$R022_USERNAME /etc/poetry/bin/poetry install && sudo service backend-main restart"
+    - |
+      ssh house-admin@10.2.22.12 -p2222 "
+      export R022_EMAIL=$R022_EMAIL &&
+      export R022_PASSWORD=$R022_PASSWORD &&
+      export R022_USERNAME=$R022_USERNAME &&
+      cd ps-housetech-backend-main/ &&
+      sudo git fetch --all &&
+      sudo git reset --hard origin/main &&
+      sudo /etc/poetry/bin/poetry install &&
+      sudo service backend-main restart"
   only:
     - main
   environment:

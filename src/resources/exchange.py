@@ -22,9 +22,9 @@ class ExchangeCalendar:
     def __init__(self):
         """Get access to exchange server."""
         # connect to server
-        username = os.getenv('R022_USERNAME')
-        password = os.getenv('R022_PASSWORD')
-        email = os.getenv('R022_EMAIL')
+        username = os.getenv('POETRY_R022_USERNAME')
+        password = os.getenv('POETRY_R022_PASSWORD')
+        email = os.getenv('POETRY_R022_EMAIL')
         server = 'mail.wiwi.uni-muenster.de/ews/exchange.asmx'
 
         credentials = Credentials(
