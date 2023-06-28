@@ -12,8 +12,6 @@ def create_app():
     Returns: An instance of the Flask app
     """
     app = Flask(__name__)  # initialize Flask APP
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../../db/housetech.db'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     cache.init_app(app)
     app.wsgi_app = ProxyFix(
         app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1,

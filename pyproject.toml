@@ -42,7 +42,6 @@ exchangelib = "^5.0.3"
 pyuwsgi = "^2.0.21"
 xmltodict= "^0.13.0"
 pyinstrument = "^4.5.0"
-Flask-SQLAlchemy="^3.0.5"
 Flask-Caching="^2.0.2"
 Pillow = "^9.5.0"
 
