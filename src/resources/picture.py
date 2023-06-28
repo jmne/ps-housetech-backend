@@ -1,7 +1,9 @@
 import base64
+from io import BytesIO
 
 import xmltodict
 from flask import make_response
+from PIL import Image
 
 from .tracker import Tracker
 
@@ -32,9 +34,18 @@ class PictureTracker(Tracker):
         for attr in response_list['infoObject']['attribute']:
             if attr['@name'] != 'File data':
                 continue
-            response = make_response(
-                base64.urlsafe_b64decode(attr['data'].replace('"', '')),
+            image = Image.open(
+                BytesIO(
+                    base64.urlsafe_b64decode(attr['data'].replace('"', '')),
+                ),
             )
-            response.headers['Content-Type'] = 'image/jpg'
+            aspect_ratio = image.height / image.width
+            new_width = 1000
+            new_height = int(new_width * aspect_ratio)
+            image = image.resize((new_width, new_height), Image.ANTIALIAS)
+            byte_arr = BytesIO()
+            image.save(byte_arr, format='JPEG', optimize=True, quality=90)
+            response = make_response(byte_arr.getvalue())
+            response.headers['Content-Type'] = 'image/jpeg'
             return response
         return None
