@@ -1,19 +1,23 @@
 import flask
 from flask import current_app
 from flask import jsonify
+from flask_caching import Cache
 from flask_restful import Api
 from flask_restful import Resource
 
+from src.resources.tracker import Tracker
 from src.resources.bustracker import BusTracker
 from src.resources.cris import CrisTracker
 from src.resources.drupal import DrupalTracker
 from src.resources.einkgenerator import EInkGenerator
 from src.resources.exchange import ExchangeCalendar
 from src.resources.mensa import MensaTracker
+from src.resources.picture import PictureTracker
+from .models import PictureMapping, db
 
 # initializing Flask API
 api = Api()
-
+cache = Cache(config={'CACHE_TYPE': 'SimpleCache', 'CACHE_DEFAULT_TIMEOUT': 300})
 
 class Bus(Resource):
     """
@@ -21,7 +25,11 @@ class Bus(Resource):
 
     method: GET
     """
+    def __repr__(self) -> str:
+        """repr function used for the cache."""
+        return "%s(%s)"%(self.__class__.__name__,1)
 
+    @cache.memoize(15)
     def get(self):
         """
         Creates an BusTracker instance.
@@ -45,7 +53,11 @@ class Mensa(Resource):
 
     method: GET
     """
+    def __repr__(self) -> str:
+        """repr function used for the cache."""
+        return "%s(%s)"%(self.__class__.__name__,1)
 
+    @cache.memoize(30)
     def get(self):
         """
         Creates an MensaTracker instance.
@@ -71,6 +83,11 @@ class Cris(Resource):
     method: GET
     """
 
+    def __repr__(self) -> str:
+        """repr function used for the cache."""
+        return "%s(%s)"%(self.__class__.__name__,1)
+
+    @cache.memoize(30)
     def get(self):
         """
         Creates an CrisTracker instance.
@@ -106,6 +123,11 @@ class EInk(Resource):
 class Exchange(Resource):
     """Return Exchange data from Exchange API."""
 
+    def __repr__(self) -> str:
+        """repr function used for the cache."""
+        return "%s(%s)"%(self.__class__.__name__,1)
+
+    @cache.memoize(30)
     def get(self):  # dead: disable
         """
         Get the calendar items.
@@ -123,6 +145,11 @@ class Exchange(Resource):
 class Drupal(Resource):
     """Return API info."""
 
+    def __repr__(self) -> str:
+        """repr function used for the cache."""
+        return "%s(%s)"%(self.__class__.__name__,1)
+
+    @cache.memoize(30)
     def get(self, content_type):
         """
         Return API info.
@@ -131,7 +158,7 @@ class Drupal(Resource):
             self
 
         Returns:
-            "hello"
+            Drupal events or overlays.
 
         """
         drupal = DrupalTracker()
@@ -144,6 +171,25 @@ class Drupal(Resource):
             return """no valid input; choose 'event' or 'overlay'"""
 
         return drupal.get_response(url)
+
+class Picture(Resource): 
+    """Return Picture for image id."""
+    def __repr__(self) -> str:
+        """repr function used for the cache."""
+        return "%s(%s)"%(self.__class__.__name__,1)
+        
+    @cache.memoize(86400)
+    def get(self, image_id):
+        """
+        Return Picture for image id.
+
+        Args:
+            self, image_id
+
+        Returns:
+            picture blob as base64.
+        """
+        return PictureTracker(image_id).get_picture()
 
 
 class ApiInfo(Resource):
@@ -179,3 +225,5 @@ api.add_resource(EInk, '/api/eink')
 api.add_resource(Exchange, '/api/calendar')
 api.add_resource(Drupal, '/api/drupal/<content_type>')
 api.add_resource(ApiInfo, '/api/help')
+api.add_resource(Picture, '/api/picture/<image_id>')
+

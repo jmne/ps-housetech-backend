@@ -1,11 +1,8 @@
 import json
 
-import requests
+from .tracker import Tracker
 
-from .proxy_config import proxies
-
-
-class DrupalTracker:
+class DrupalTracker(Tracker):
     """DrupalTracker class using the Drupal URLS."""
 
     def __init__(self):
@@ -15,12 +12,9 @@ class DrupalTracker:
         Args:
             self.
         """
-        self.event_url = '''https://www.wi.uni-muenster.de/ws/
-                            informationdisplays/events'''
-        self.overlay_url = '''https://www.wi.uni-muenster.de/ws/
-                            informationdisplays/overlays'''
-        self.session = requests.session()
-        self.session.proxies.update(proxies)
+        super().__init__()
+        self.event_url = '''https://www.wi.uni-muenster.de/ws/informationdisplays/events'''
+        self.overlay_url = '''https://www.wi.uni-muenster.de/ws/informationdisplays/overlays'''
 
     def get_response(self, url):
         """Response method returning data."""

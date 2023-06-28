@@ -1,13 +1,11 @@
 import re
 from datetime import datetime
 
-import requests
 import xmltodict
 
-from .proxy_config import proxies
+from .tracker import Tracker
 
-
-class MensaTracker:
+class MensaTracker(Tracker):
     """
     MensaTracker class using the website of stw-muenster.
 
@@ -22,10 +20,10 @@ class MensaTracker:
         Args:
             self
         """
+        super().__init__()
         self.url_de = 'https://speiseplan.stw-muenster.de/mensa_da_vinci.xml'
         self.url_en = ''  # tbd
-        self.session = requests.session()
-        self.session.proxies.update(proxies)
+        
 
     # TODO: appropiate adoptions for frontend implementations
     def get_current_meals(self):

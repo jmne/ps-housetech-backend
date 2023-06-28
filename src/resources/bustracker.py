@@ -1,12 +1,10 @@
 import json
 from datetime import datetime
 
-import requests
-
-from .proxy_config import proxies
+from .tracker import Tracker
 
 
-class BusTracker:
+class BusTracker(Tracker):
     """
     BusTracker class using the API of Stadtwerke Muenster.
 
@@ -22,9 +20,8 @@ class BusTracker:
             self,
             stations: List of station numbers to monitor
         """
+        super().__init__()
         self.stations = [4552102, 4552101]
-        self.session = requests.session()
-        self.session.proxies.update(proxies)
 
     def get_future_rides(self):
         """
