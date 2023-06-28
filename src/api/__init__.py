@@ -1,9 +1,10 @@
 from flask import Flask
 from flask_cors import CORS
-
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from .routes import api, cache
+from .routes import api
+from .routes import cache
+
 
 def create_app():
     """Initialize the Flask app.
@@ -23,5 +24,5 @@ def create_app():
         ],
     )  # enable CORS
     api.init_app(app)  # connecting api from routes.py with app
-    
+
     return app

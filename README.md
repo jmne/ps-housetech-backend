@@ -7,4 +7,4 @@ Create New Database
 
 Call Update function
 go into src
-type python3 -m batch.manage   
+type python3 -m batch.manage

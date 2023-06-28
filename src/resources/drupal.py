@@ -2,6 +2,7 @@ import json
 
 from .tracker import Tracker
 
+
 class DrupalTracker(Tracker):
     """DrupalTracker class using the Drupal URLS."""
 
@@ -13,8 +14,8 @@ class DrupalTracker(Tracker):
             self.
         """
         super().__init__()
-        self.event_url = '''https://www.wi.uni-muenster.de/ws/informationdisplays/events'''
-        self.overlay_url = '''https://www.wi.uni-muenster.de/ws/informationdisplays/overlays'''
+        self.event_url = '''https://www.wi.uni-muenster.de/ws/informationdisplays/events'''  # noqa: E501
+        self.overlay_url = '''https://www.wi.uni-muenster.de/ws/informationdisplays/overlays'''  # noqa: E501
 
     def get_response(self, url):
         """Response method returning data."""

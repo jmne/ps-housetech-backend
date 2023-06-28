@@ -5,6 +5,7 @@ import xmltodict
 
 from .tracker import Tracker
 
+
 class MensaTracker(Tracker):
     """
     MensaTracker class using the website of stw-muenster.
@@ -23,9 +24,9 @@ class MensaTracker(Tracker):
         super().__init__()
         self.url_de = 'https://speiseplan.stw-muenster.de/mensa_da_vinci.xml'
         self.url_en = ''  # tbd
-        
 
     # TODO: appropiate adoptions for frontend implementations
+
     def get_current_meals(self):
         """
         Method that requests XML file for the Mensa meals.
