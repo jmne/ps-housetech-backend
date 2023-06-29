@@ -24,8 +24,8 @@ def health():  # dead: disable
 def redirect_to_docs():  # dead: disable
     """Redirect to API documentation."""
     return redirect(
-        'https://ml-de.zivgitlabpages.uni-muenster.de/teaching/ps-housetech/ps-housetech-website/api/einleitung',  # noqa: E501
-        # noqa: E501
+        """https://ml-de.zivgitlabpages.uni-muenster.de/teaching
+        /ps-housetech/ps-housetech-website/api/einleitung""",
         code=302,
     )
 
