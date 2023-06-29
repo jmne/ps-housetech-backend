@@ -17,7 +17,7 @@ def create_app():
     CORS(
         app, origins=[
             'ps-housetech.uni-muenster.de', 'ml-de.zivgitlabpages.uni-muenster.de',
-            'http://localhost:3000', '*',  # remove * and localhost for production
+            'http://localhost:3000',  # remove localhost for production
         ],
     )  # enable CORS
     api.init_app(app)  # connecting api from routes.py with app
