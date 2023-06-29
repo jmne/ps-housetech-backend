@@ -1,12 +1,10 @@
 import json
 
-import requests
-
-from .proxy_config import proxies
+from .tracker import Tracker
 # import xmltodict
 
 
-class CrisTracker:
+class CrisTracker(Tracker):
     """
     CRIS class using the API of Uni-Muenster.
 
@@ -20,6 +18,7 @@ class CrisTracker:
         Args:
             self
         """
+        super().__init__()
         self.url = 'https://cris-api-staging.uni-muenster.de/'
         self.base_picture_url = '''https://www.uni-muenster.de/converis/
                                     ws/public/infoobject/get/Picture/'''
@@ -114,8 +113,6 @@ class CrisTracker:
         ]
         self.employees = []  # list of dicts with employee_id and employees chair
         self.result = []  # to return
-        self.session = requests.session()
-        self.session.proxies.update(proxies)
 
     def split_list(self, input_list, max_length):
         """Splitting the input list into lists with len(max_length).
