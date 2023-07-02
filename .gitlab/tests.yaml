@@ -35,6 +35,11 @@ check-coverage:
       when: never
     - when: always
 run-linting:
+  variables:
+    PRE_COMMIT_HOME: ${CI_PROJECT_DIR}/.cache/pre-commit
+  cache:
+    paths:
+      - ${PRE_COMMIT_HOME}
   stage: test
   needs: []
   allow_failure: false
