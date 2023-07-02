@@ -19,4 +19,5 @@ class Tracker:
             self.
         """
         self.session = requests.session()
+        self.session.encoding = 'utf-8'
         self.session.proxies.update(proxies)
