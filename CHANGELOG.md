@@ -21,7 +21,7 @@ ___
 ### ❌ Breaking Change
 ### ✨ Feature
 
-- Initial commit
+- Initial commit.
 
 ### 🛠️ Bugfix
 
