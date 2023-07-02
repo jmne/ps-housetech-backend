@@ -10,7 +10,6 @@ cache:
   key:
     files:
       - poetry.lock
-      - .gitlab-ci.yml
       - pre-commit-config.yaml
   paths:
     - .venv
