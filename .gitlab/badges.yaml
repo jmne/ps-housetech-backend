@@ -16,6 +16,6 @@ generate-badges:
     expire_in: 1 day
     expose_as: "badges"
   rules:
-    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH != "main"
       when: never
     - when: always
