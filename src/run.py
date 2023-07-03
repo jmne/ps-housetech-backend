@@ -9,18 +9,10 @@ app = create_app()
 if __name__ == '__main__':
     # run app on port 8000
     app.run(debug=True, port=8000)
+    app.config['JSON_AS_ASCII'] = False
 
 
-@app.route('/api/health-check-flask')
-def health():  # dead: disable
-    """Return health status of the API."""
-    resp = jsonify(status='Running')
-    resp.status_code = 200
-
-    return resp
-
-
-@app.route('/api')
+@app.route('/api', methods=['GET'])
 def redirect_to_docs():  # dead: disable
     """Redirect to API documentation."""
     return redirect(
@@ -31,7 +23,7 @@ def redirect_to_docs():  # dead: disable
 
 
 @app.route('/api/help', methods=['GET'])
-def help():  # dead: disable
+def get_help():  # dead: disable
     """Print available API endpoints."""
     func_list = {}
     for rule in app.url_map.iter_rules():
