@@ -1,3 +1,5 @@
+import os
+
 from flask import make_response
 
 from .tracker import Tracker
@@ -18,7 +20,7 @@ class WeatherTracker(Tracker):
             self,
         """
         super().__init__()
-        self.appid = '6da02b6612aee0c7845c4b7f0fced0cd'
+        self.appid = os.getenv('WEATHER_API_KEY')
 
     def get_future_weather(self):
         """
