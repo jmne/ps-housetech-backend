@@ -1,5 +1,7 @@
 import json
 
+from flask import make_response
+
 from .tracker import Tracker
 # import xmltodict
 
@@ -188,7 +190,7 @@ class CrisTracker(Tracker):
     def update_result(self):
         """Appends dicts with infos about employees to result list."""
         employee_ids = [item['id'] for item in self.employees]
-        # splitted employee ids up in list of 100 entries
+        # split employee ids up in list of 100 entries
         employee_ids_splitted = self.split_list(employee_ids, 100)
         employee_chairs = [item['chair'] for item in self.employees]
         employee_chairs_splitted = self.split_list(employee_chairs, 100)
@@ -320,8 +322,10 @@ class CrisTracker(Tracker):
         """Function that returns the desired result."""
         self.update_employees()
         self.employees = self.remove_duplicate_employees()
-        print(len(self.employees))
         self.update_result()
         self.add_addresses()
         # self.add_pictures()
-        return self.result
+        return make_response(
+            json.dumps(self.result, ensure_ascii=False), 200,
+            {'Content-Type': 'application/json', 'charset': 'utf-8'},
+        )
