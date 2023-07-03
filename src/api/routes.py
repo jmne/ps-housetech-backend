@@ -12,9 +12,19 @@ from src.resources.einkgenerator import EInkGenerator
 from src.resources.exchange import ExchangeCalendar
 from src.resources.mensa import MensaTracker
 from src.resources.picture import PictureTracker
+from src.resources.weather import WeatherTracker
 
 # initializing Flask API
-api = Api()
+api = Api(
+    catch_all_404s=True, errors={
+        'NotFound':
+        {
+            'message': 'The requested URL was not found on the server.'
+                       ' Checkout /api/help for available endpoints.',
+            'status': 404,
+        },
+    },
+)
 cache = Cache(
     config={
         'CACHE_TYPE': 'SimpleCache',
@@ -225,6 +235,27 @@ class ApiInfo(Resource):
         return jsonify(func_list)
 
 
+class Weather(Resource):
+    """Return Weather."""
+
+    def __repr__(self) -> str:
+        """Repr function used for the cache."""
+        return f'{self.__class__.__name__}({1})'
+
+    @cache.memoize(1)
+    def get(self):
+        """
+        Return Weather.
+
+        Args:
+            self
+
+        Returns:
+            Future weather.
+        """
+        return WeatherTracker().get_future_weather()
+
+
 # API endpoints
 api.add_resource(Bus, '/api/bus')
 api.add_resource(Cris, '/api/cris')
@@ -234,3 +265,4 @@ api.add_resource(Exchange, '/api/calendar')
 api.add_resource(Drupal, '/api/drupal/<content_type>')
 api.add_resource(ApiInfo, '/api/help')
 api.add_resource(Picture, '/api/picture/<image_id>')
+api.add_resource(Weather, '/api/weather')
