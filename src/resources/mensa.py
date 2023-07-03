@@ -1,7 +1,9 @@
+import json
 import re
 from datetime import datetime
 
 import xmltodict
+from flask import make_response
 
 from .tracker import Tracker
 
@@ -63,15 +65,16 @@ class MensaTracker(Tracker):
                 del day['@timestamp']
             except Exception as e:
                 print('There is not @timestamp key', e)
-            # hier noch durch items loopen und mit regex einen die Allergien abdecken
             for entry in day['item']:
-                entry['foodicons'] = [str(entry['foodicons'])]
+                entry['foodicons'] = [entry['foodicons'].split(',')]
                 allergens = re.findall(r'\((.*?)\)', entry['meal'])
-                entry['allergens'] = allergens[0] if allergens else None
+                entry['allergens'] = allergens[0].split(
+                    ',',
+                ) if allergens else None
                 entry['meal'] = re.sub(
                     r'\([^)]*\)', '',
                     entry['meal'],
-                )  # filter out allergens
+                ).replace('  ', ' ').strip()  # filter out allergens
                 try:
                     entry['price1'] = float(entry['price1'].replace(',', '.'))
                     entry['price3'] = float(entry['price3'].replace(',', '.'))
@@ -83,4 +86,7 @@ class MensaTracker(Tracker):
                 except Exception as e:
                     print("couldnt delete key 'prodgrp_id'/'weight_unit", e)
 
-        return response_list
+        return make_response(
+            json.dumps(response_list, ensure_ascii=False), 200,
+            {'Content-Type': 'application/json', 'charset': 'utf-8'},
+        )
