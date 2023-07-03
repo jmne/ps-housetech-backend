@@ -42,7 +42,7 @@ class PictureTracker(Tracker):
             aspect_ratio = image.height / image.width
             new_width = 1000
             new_height = int(new_width * aspect_ratio)
-            image = image.resize((new_width, new_height), Image.ANTIALIAS)
+            image = image.resize((new_width, new_height), Image.LANCZOS)
             byte_arr = BytesIO()
             image.save(byte_arr, format='JPEG', optimize=True, quality=90)
             response = make_response(byte_arr.getvalue())
