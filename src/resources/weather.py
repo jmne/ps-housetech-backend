@@ -34,8 +34,8 @@ class WeatherTracker(Tracker):
 
         """
         response = self.session.get(
-            'https://api.openweathermap.org/data/2.5/'
-            'forecast?lat=51.97&lon=7.60&units=metric&lang=de'
+            'https://pro.openweathermap.org/data/2.5/forecast/hourly'
+            '?lat=51.97&lon=7.60&units=metric&lang=de'
             f'&appid={self.appid}',
         )
 
