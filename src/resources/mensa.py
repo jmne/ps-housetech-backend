@@ -66,7 +66,7 @@ class MensaTracker(Tracker):
             except Exception as e:
                 print('There is not @timestamp key', e)
             for entry in day['item']:
-                entry['foodicons'] = [entry['foodicons'].split(',')]
+                entry['foodicons'] = entry['foodicons'].split(',')
                 allergens = re.findall(r'\((.*?)\)', entry['meal'])
                 entry['allergens'] = allergens[0].split(
                     ',',
