@@ -10,6 +10,7 @@ from src.resources.cris import CrisTracker
 from src.resources.drupal import DrupalTracker
 from src.resources.einkgenerator import EInkGenerator
 from src.resources.exchange import ExchangeCalendar
+from src.resources.instagram import InstagramTracker
 from src.resources.mensa import MensaTracker
 from src.resources.picture import PictureTracker
 from src.resources.weather import WeatherTracker
@@ -210,6 +211,27 @@ class Picture(Resource):
         return PictureTracker(image_id).get_picture()
 
 
+class Instagram(Resource):
+    """Return latest Instagram posts."""
+
+    def __repr__(self) -> str:
+        """Repr function used for the cache."""
+        return f'{self.__class__.__name__}({1})'
+
+    @cache.memoize(3600)
+    def get(self):
+        """
+        Return latest Instagram posts.
+
+        Args:
+            self
+
+        Returns:
+            media urls, timestamps and captions
+        """
+        return InstagramTracker().get_latest_posts(5)
+
+
 class ApiInfo(Resource):
     """Return API info."""
 
@@ -265,4 +287,5 @@ api.add_resource(Exchange, '/api/calendar')
 api.add_resource(Drupal, '/api/drupal/<content_type>')
 api.add_resource(ApiInfo, '/api/help')
 api.add_resource(Picture, '/api/picture/<image_id>')
+api.add_resource(Instagram, '/api/instagram')
 api.add_resource(Weather, '/api/weather')
