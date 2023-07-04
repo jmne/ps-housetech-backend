@@ -4,16 +4,20 @@ image: python:3.11.3
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   POETRY_CACHE_DIR: "$CI_PROJECT_DIR/.cache/poetry"
+  PRE_COMMIT_HOME: "$CI_PROJECT_DIR/.cache/pre-commit"
 
 cache:
   key:
     files:
       - poetry.lock
-      - .gitlab-ci.yml
+      - pre-commit-config.yaml
   paths:
     - .venv
     - .cache/pip
     - .cache/poetry
+    - $PIP_CACHE_DIR
+    - $POETRY_CACHE_DIR
+    - $PRE_COMMIT_HOME
 
 before_script:
   - pip install poetry
