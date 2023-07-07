@@ -38,9 +38,6 @@ pre-commit:
     PRE_COMMIT_AUTO_FIX: "1"
     PRE_COMMIT_DEDUPLICATE_MR_AND_BRANCH: "true"
 
-  before_script: []
-
-  image: registry.gitlab.com/yesolutions/docker-pre-commit
   script: |
     if [[ -n "$PRE_COMMIT_AUTO_FIX_BRANCH_ONLY" && -n "$PRE_COMMIT_AUTO_FIX_MR_ONLY" ]]; then
         echo "invalid configuration. PRE_COMMIT_AUTO_FIX_BRANCH_ONLY and PRE_COMMIT_AUTO_FIX_MR_ONLY are mutually exclusive"
