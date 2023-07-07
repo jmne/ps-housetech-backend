@@ -44,7 +44,7 @@ class CrisTracker(Tracker):
                     'Institut für'
                     ' Wirtschaftsinformatik'
                 ),
-            },
+            }
             {
                 'chair_id': '40279283', 'chair_name': (
                     'Lehrstuhl für'
