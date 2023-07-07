@@ -54,7 +54,7 @@ class MensaTracker(Tracker):
         response_list = response_list['menue']['date']
         for day in response_list:
             day['date'] = datetime.fromtimestamp(
-                int(day['@timestamp'])
+                int(day['@timestamp']),
             ).strftime('%Y-%m-%d')
             day['weekday'] = weekdays[
                 str(
