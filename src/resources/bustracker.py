@@ -46,7 +46,7 @@ class BusTracker(Tracker):
         for station in self.stations:
             response = self.session.get(
                 f'https://rest.busradar.conterra.de/prod/haltestellen/{station}'
-                '/abfahrten?sekunden=1800&maxanzahl=3',
+                '/abfahrten?sekunden=3600&maxanzahl=3',
             )
             response = json.loads(response.text)
             for entry in response:
