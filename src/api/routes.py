@@ -14,6 +14,7 @@ from src.resources.instagram import InstagramTracker
 from src.resources.mensa import MensaTracker
 from src.resources.picture import PictureTracker
 from src.resources.weather import WeatherTracker
+from src.resources.eink_image import EinkImage
 
 # initializing Flask API
 api = Api(
@@ -118,6 +119,18 @@ class Cris(Resource):
             tbd.
         """
         return CrisTracker().get_cris_data()
+
+class EinkImagePNG:
+    """Return PNG doorsign for the correct room number."""
+    def get(self):  # dead: disable
+        """
+        Creates an Exchange instance and runs hello() method.
+
+
+
+        """
+        return EinkImage.get_data()
+
 
 
 class EInk(Resource):
@@ -289,3 +302,4 @@ api.add_resource(ApiInfo, '/api/help')
 api.add_resource(Picture, '/api/picture/<image_id>')
 api.add_resource(Instagram, '/api/instagram')
 api.add_resource(Weather, '/api/weather')
+api.add_resource(EinkImagePNG, '/api/einkimage')
