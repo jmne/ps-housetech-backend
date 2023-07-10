@@ -1,9 +1,14 @@
 import json
 
+import i18n
 from flask import make_response
+from flask import request
 
 from .tracker import Tracker
 # import xmltodict
+
+i18n.load_path.append('../cris-translation.yaml')
+i18n.set('fallback', 'de')
 
 
 class CrisTracker(Tracker):
@@ -21,6 +26,11 @@ class CrisTracker(Tracker):
             self
         """
         super().__init__()
+
+        lang = request.args.get('lang', default='de', type=str)
+
+        i18n.set('locale', lang)
+
         self.url = 'https://cris-api-staging.uni-muenster.de/'
         self.base_picture_url = '''https://www.uni-muenster.de/converis/
                                     ws/public/infoobject/get/Picture/'''
@@ -34,82 +44,82 @@ class CrisTracker(Tracker):
         }
         self.chairs = [
             {
-                'chair_id': '31914156', 'chair_name': (
-                    'Lehrstuhl für'
-                    ' Wirtschaftsinformatik und Informationsmanagement (Prof. Becker)'
+                'chair_id': '31914156', 'chair_name': i18n.t(
+                    'chairs.Lehrstuhl für'
+                    ' Wirtschaftsinformatik und Informationsmanagement (Prof. Becker)',
                 ),
             },
             {
-                'chair_id': '31923392', 'chair_name': (
-                    'Institut für'
-                    ' Wirtschaftsinformatik'
+                'chair_id': '31923392', 'chair_name': i18n.t(
+                    'chairs.Institut für'
+                    ' Wirtschaftsinformatik',
                 ),
             },
             {
-                'chair_id': '40279283', 'chair_name': (
-                    'Lehrstuhl für'
-                    ' Wirtschaftsinformatik und Interorganisationssysteme (Prof. Klein)'
+                'chair_id': '40279283', 'chair_name': i18n.t(
+                    'chairs.Lehrstuhl für'
+                    ' Wirtschaftsinformatik und Interorganisationssysteme (Prof. Klein)',
                 ),
             },
             {
-                'chair_id': '40279346', 'chair_name': (
-                    'Lehrstuhl für'
-                    ' Wirtschaftsinformatik und Logistik (Prof. Hellingrath)'
+                'chair_id': '40279346', 'chair_name': i18n.t(
+                    'chairs.Lehrstuhl für'
+                    ' Wirtschaftsinformatik und Logistik (Prof. Hellingrath)',
                 ),
             },
             {
-                'chair_id': '40279415', 'chair_name': (
-                    'Institut für'
-                    ' Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler'
+                'chair_id': '40279415', 'chair_name': i18n.t(
+                    'chairs.Institut für'
+                    ' Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler',
                 ),
             },
             {
-                'chair_id': '79139069', 'chair_name': (
-                    'Juniorprofessur für'
+                'chair_id': '79139069', 'chair_name': i18n.t(
+                    'chairs.Juniorprofessur für'
                     ' Wirtschaftsinformatik, insbesondere Digitale Transformation'
-                    ' und Gesellschaft (Prof. Berger)'
+                    ' und Gesellschaft (Prof. Berger)',
                 ),
             },
             {
-                'chair_id': '40279220', 'chair_name': (
-                    'Professur für'
-                    ' Statistik und Optimierung (Prof. Trautmann)'
+                'chair_id': '40279220', 'chair_name': i18n.t(
+                    'chairs.Professur für'
+                    ' Statistik und Optimierung (Prof. Trautmann)',
                 ),
             },
             {
-                'chair_id': '59575309', 'chair_name': (
-                    'Professur für'
-                    ' Maschinelles Lernen und Data Engineering (Prof. Gieseke)'
+                'chair_id': '59575309', 'chair_name': i18n.t(
+                    'chairs.Professur für'
+                    ' Maschinelles Lernen und Data Engineering (Prof. Gieseke)',
                 ),
             },
             {
-                'chair_id': '40279157', 'chair_name': (
-                    'Lehrstuhl für'
-                    ' Praktische Informatik in der Wirtschaft (Prof. Kuchen)'
+                'chair_id': '40279157', 'chair_name': i18n.t(
+                    'chairs.Lehrstuhl für'
+                    ' Praktische Informatik in der Wirtschaft (Prof. Kuchen)',
                 ),
             },
             {
-                'chair_id': '31921637', 'chair_name': (
-                    'Lehrstuhl für'
-                    ' Informatik (Prof. Vossen)'
+                'chair_id': '31921637', 'chair_name': i18n.t(
+                    'chairs.Lehrstuhl für'
+                    ' Informatik (Prof. Vossen)',
                 ),
             },
             {
-                'chair_id': '77369668', 'chair_name': (
-                    'Professur für'
-                    ' Digitale Innovation und der öffentliche Sektor (Prof. Brandt)'
+                'chair_id': '77369668', 'chair_name': i18n.t(
+                    'chairs.Professur für'
+                    ' Digitale Innovation und der öffentliche Sektor (Prof. Brandt)',
                 ),
             },
             {
-                'chair_id': '40279346', 'chair_name': (
-                    'Lehrstuhl für'
-                    ' Wirtschaftsinformatik und Logistik (Prof. Hellingrath)'
+                'chair_id': '40279346', 'chair_name': i18n.t(
+                    'chairs.Lehrstuhl für'
+                    ' Wirtschaftsinformatik und Logistik (Prof. Hellingrath)',
                 ),
             },
             {
-                'chair_id': '55472869', 'chair_name': (
-                    'Juniorprofessur für'
-                    ' IT-Sicherheit (Prof. Hupperich)'
+                'chair_id': '55472869', 'chair_name': i18n.t(
+                    'chairs.Juniorprofessur für'
+                    ' IT-Sicherheit (Prof. Hupperich)',
                 ),
             },
         ]
@@ -324,6 +334,10 @@ class CrisTracker(Tracker):
         self.employees = self.remove_duplicate_employees()
         self.update_result()
         self.add_addresses()
+        # Translating the chair name
+        for chair in self.result:
+            chair['chair'] = i18n.t(chair['chair'])
+
         # self.add_pictures()
         return make_response(
             json.dumps(self.result, ensure_ascii=False), 200,
