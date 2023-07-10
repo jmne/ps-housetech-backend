@@ -27,10 +27,6 @@ class CrisTracker(Tracker):
         """
         super().__init__()
 
-        lang = request.args.get('lang', default='de', type=str)
-
-        i18n.set('locale', lang)
-
         self.url = 'https://cris-api-staging.uni-muenster.de/'
         self.base_picture_url = '''https://www.uni-muenster.de/converis/
                                     ws/public/infoobject/get/Picture/'''
@@ -334,9 +330,12 @@ class CrisTracker(Tracker):
         self.employees = self.remove_duplicate_employees()
         self.update_result()
         self.add_addresses()
+        lang = request.args.get('lang', default='de', type=str)
+        i18n.set('locale', lang)
         # Translating the chair name
         for chair in self.result:
-            chair['chair'] = i18n.t(chair['chair'])
+            translation_key = 'chairs.' + chair['chair_name']
+            chair['chair_name'] = i18n.t(translation_key)
 
         # self.add_pictures()
         return make_response(
