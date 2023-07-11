@@ -331,10 +331,9 @@ class CrisTracker(Tracker):
         self.update_result()
         self.add_addresses()
 
+        # Translating the chair name
         lang = request.args.get('lang', default='de', type=str)
         i18n.set('locale', lang)
-
-        # Translating the chair name
         for chair in self.result:
             translation_key = 'chairs.' + chair['chair_name']
             chair['chair_name'] = i18n.t(translation_key)
