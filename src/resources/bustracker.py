@@ -1,10 +1,10 @@
 import json
 from datetime import datetime
 
-from .tracker import Tracker
+import requests
 
 
-class BusTracker(Tracker):
+class BusTracker:
     """
     BusTracker class using the API of Stadtwerke Muenster.
 
@@ -20,8 +20,9 @@ class BusTracker(Tracker):
             self,
             stations: List of station numbers to monitor
         """
-        super().__init__()
         self.stations = [4552102, 4552101]
+        self.session = requests.session()
+        self.start_time = ''
 
     def get_future_rides(self):
         """

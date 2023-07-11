@@ -330,6 +330,7 @@ class CrisTracker(Tracker):
         self.employees = self.remove_duplicate_employees()
         self.update_result()
         self.add_addresses()
+
         lang = request.args.get('lang', default='de', type=str)
         i18n.set('locale', lang)
         # Translating the chair name

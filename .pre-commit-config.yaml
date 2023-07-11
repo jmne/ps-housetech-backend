@@ -83,3 +83,8 @@ repos:
       hooks:
         - id: poetry-check
         - id: poetry-lock
+  -   repo: https://github.com/python-poetry/poetry
+      rev: '1.5.1'
+      hooks:
+        - id: poetry-check
+        - id: poetry-lock
