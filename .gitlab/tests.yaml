@@ -35,8 +35,6 @@ check-coverage:
       when: never
     - when: always
 run-linting:
-  tags:
-    - jim
   variables:
     PRE_COMMIT_HOME: ${CI_PROJECT_DIR}/.cache/pre-commit
   cache:
