@@ -23,7 +23,6 @@ cache:
       - $PRE_COMMIT_HOME
 
 before_script:
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   - pip install poetry
   - poetry config virtualenvs.in-project true
   - poetry install --no-root
