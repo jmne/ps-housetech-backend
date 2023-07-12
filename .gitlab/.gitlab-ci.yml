@@ -1,4 +1,4 @@
-image: ml-de/teaching/ps-housetech/ps-housetech-backend:python3.11.3
+image: zivgitlab.wwu.io/ml-de/teaching/ps-housetech/ps-housetech-backend:python3.11.3
 
 
 variables:
@@ -23,6 +23,7 @@ cache:
       - $PRE_COMMIT_HOME
 
 before_script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   - pip install poetry
   - poetry config virtualenvs.in-project true
   - poetry install --no-root
