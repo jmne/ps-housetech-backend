@@ -54,6 +54,7 @@ class WeatherTracker(Tracker):
                         'time': datetime.fromtimestamp(hour['dt']).strftime('%H:%M'),
                         'temp': hour['main']['temp'],
                         'icon': hour['weather'][0]['icon'],
+                        'pop': hour['pop'],
                     },
                 )
         # requesting daily data
@@ -72,9 +73,25 @@ class WeatherTracker(Tracker):
                     'weekday': datetime.fromtimestamp(day['dt']).strftime('%A'),
                     'temp': day['temp']['max'],
                     'icon': day['weather'][0]['icon'],
+                    'pop': day['pop'],
                 },
             )
+        # requesting current data
+        response = self.session.get(
+            'https://api.openweathermap.org/data/2.5/'
+            'weather?lat=51.97&lon=7.60&units=metric&lang=de'
+            f'&appid={self.appid}',
+        ).text
+        response_json = json.loads(response)
+        current_data = [{
+            'temp': response_json['main']['temp'],
+            'icon': response_json['weather'][0]['icon'],
+        }]
 
-        result = {'daily': daily_data, 'hourly': hourly_data}
+        result = {
+            'daily': daily_data,
+            'hourly': hourly_data,
+            'current': current_data,
+        }
 
         return result
