@@ -45,6 +45,9 @@ run-linting:
   allow_failure: false
   script:
     - echo "Running pre-commit..."
+    - poetry show --outdated
+    - poetry lock --check
+    -
     - poetry run pre-commit run -a
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
