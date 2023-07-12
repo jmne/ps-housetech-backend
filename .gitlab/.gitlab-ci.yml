@@ -6,21 +6,21 @@ variables:
   POETRY_CACHE_DIR: "$CI_PROJECT_DIR/.cache/poetry"
   PRE_COMMIT_HOME: "$CI_PROJECT_DIR/.cache/pre-commit"
 
-cache:
-  - key:
-      files:
-        - poetry.lock
-    paths:
-      - .venv
-      - .cache/pip
-      - .cache/poetry
-      - $PIP_CACHE_DIR
-      - $POETRY_CACHE_DIR
-  - key:
-      files:
-        - pre-commit-config.yaml
-    paths:
-      - $PRE_COMMIT_HOME
+#cache:
+#  - key:
+#      files:
+#        - poetry.lock
+#    paths:
+#      - .venv
+#      - .cache/pip
+#      - .cache/poetry
+#      - $PIP_CACHE_DIR
+#      - $POETRY_CACHE_DIR
+#  - key:
+#      files:
+#        - pre-commit-config.yaml
+#    paths:
+#      - $PRE_COMMIT_HOME
 
 before_script:
   - pip install --upgrade pip
