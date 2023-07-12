@@ -275,7 +275,7 @@ class Weather(Resource):
         Returns:
             Future weather.
         """
-        return WeatherTracker().get_future_weather()
+        return WeatherTracker().get_cleaned_weather()
 
 
 # API endpoints
