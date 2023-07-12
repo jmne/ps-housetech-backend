@@ -1,5 +1,8 @@
 image: zivgitlab.wwu.io/ml-de/teaching/ps-housetech/ps-housetech-backend:python3.11.3
 
+job:
+  tags:
+    - jim
 
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
