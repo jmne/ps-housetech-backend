@@ -26,9 +26,10 @@ before_script:
   - python3 -m pip install --user pipx
   - python3 -m pipx ensurepath
   - python3 -m pipx install poetry
-  - python3 -m poetry config virtualenvs.in-project true
-  - python3 -m poetry install --no-root
-  - source `python3 -m poetry env info --path`/bin/activate
+  - export PATH=$PATH
+  - poetry config virtualenvs.in-project true
+  - poetry install --no-root
+  - source `poetry env info --path`/bin/activate
 
 include:
   - ".gitlab/*.yaml"
