@@ -1,5 +1,6 @@
 release:
   stage: release
+  image: python:latest
   script:
     - pip3 install gitlab-release gitlab-release-notes-generator
     - Output=$(gitlab-release-notes-generator --private-token $RELEASE_CLI)
