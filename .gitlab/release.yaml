@@ -2,7 +2,7 @@ release:
   stage: release
   script:
     - pip3 install gitlab-release gitlab-release-notes-generator
-    - Output=$(gitlab-release-notes-generator --private-token $CI_JOB_TOKEN)
+    - Output=$(gitlab-release-notes-generator --private-token $RELEASE_CLI)
     - gitlab-release --description "${Output}" --zip "release-${CI_COMMIT_TAG}.zip" *
   only:
     - tags
