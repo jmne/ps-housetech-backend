@@ -31,10 +31,7 @@ cache:
 
 before_script:
   - pip install --upgrade pip
-  - python3 -m pip install --user pipx
-  - python3 -m pipx ensurepath
-  - export PATH="$PATH:/root/.local/bin"
-  - pipx install poetry
+  - pip install poetry
   - poetry config virtualenvs.in-project true
   - poetry install --no-root
   - source `poetry env info --path`/bin/activate
