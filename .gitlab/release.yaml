@@ -3,9 +3,7 @@ release:
   image: python3
   script:
     - pip3 install gitlab-release gitlab-release-notes-generator
-    - Output=$(gitlab-release-notes-generator --private-token $GITLAB_ACCESS_TOKEN)
+    - Output=$(gitlab-release-notes-generator --private-token $CI_JOB_TOKEN)
     - gitlab-release --description "${Output}" --zip "release-${CI_COMMIT_TAG}.zip" *
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
   only:
     - tags
