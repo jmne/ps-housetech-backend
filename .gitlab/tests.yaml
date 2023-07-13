@@ -45,7 +45,7 @@ run-linting:
   allow_failure: false
   script:
     - echo "Running pre-commit..."
-    - python3 -m poetry run pre-commit run -a --show-diff-on-failure
+    - poetry run pre-commit run -a --show-diff-on-failure
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
