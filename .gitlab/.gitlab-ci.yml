@@ -5,6 +5,14 @@ variables:
   POETRY_CACHE_DIR: "$CI_PROJECT_DIR/.cache/poetry"
   PRE_COMMIT_HOME: "$CI_PROJECT_DIR/.cache/pre-commit"
 
+stages:
+  - .pre
+  - build
+  - test
+  - deploy
+  - release
+  - .post
+
 cache:
   - key:
       files:
