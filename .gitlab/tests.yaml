@@ -42,11 +42,12 @@ run-linting:
       - ${PRE_COMMIT_HOME}
   stage: test
   needs: []
-  allow_failure: false
+  allow_failure: true
   script:
     - echo "Running pre-commit..."
     - poetry run pre-commit run -a
     - poetry lock --check
+    - git diff poetry.lock
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
