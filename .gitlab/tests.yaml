@@ -42,7 +42,7 @@ run-linting:
       - ${PRE_COMMIT_HOME}
   stage: test
   needs: []
-  allow_failure: true
+  allow_failure: false
   script:
     - echo "Running pre-commit..."
     - poetry run pre-commit run -a --show-diff-on-failure
