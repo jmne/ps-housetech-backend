@@ -8,23 +8,23 @@ from flask_restful import Resource
 from src.resources.bustracker import BusTracker
 from src.resources.cris import CrisTracker
 from src.resources.drupal import DrupalTracker
+from src.resources.eink_image import EinkImage
 from src.resources.einkgenerator import EInkGenerator
 from src.resources.exchange import ExchangeCalendar
 from src.resources.instagram import InstagramTracker
 from src.resources.mensa import MensaTracker
 from src.resources.picture import PictureTracker
 from src.resources.weather import WeatherTracker
-from src.resources.eink_image import EinkImage
 
 # initializing Flask API
 api = Api(
     catch_all_404s=True, errors={
         'NotFound':
-        {
-            'message': 'The requested URL was not found on the server.'
-                       ' Checkout /api/help for available endpoints.',
-            'status': 404,
-        },
+            {
+                'message': 'The requested URL was not found on the server.'
+                           ' Checkout /api/help for available endpoints.',
+                'status': 404,
+            },
     },
 )
 cache = Cache(
@@ -120,17 +120,13 @@ class Cris(Resource):
         """
         return CrisTracker().get_cris_data()
 
-class EinkImagePNG:
+
+class EinkImagePNG(Resource):
     """Return PNG doorsign for the correct room number."""
+
     def get(self):  # dead: disable
-        """
-        Creates an Exchange instance and runs hello() method.
-
-
-
-        """
-        return EinkImage.get_data()
-
+        """Return PNG doorsign for the correct room number."""
+        return EinkImage.get_image(EinkImage(), 'test')
 
 
 class EInk(Resource):

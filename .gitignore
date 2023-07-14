@@ -190,3 +190,6 @@ dmypy.json
 cython_debug/
 
 secrets.env
+
+/src/resources/static
+!/src/resources/static/DoorsignSeed.html
