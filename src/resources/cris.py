@@ -1,14 +1,12 @@
 import json
+import os
 
 import i18n
+import yaml
 from flask import make_response
-from flask import request
 
 from .tracker import Tracker
 # import xmltodict
-
-i18n.load_path.append('../cris-translation.yaml')
-i18n.set('fallback', 'de')
 
 
 class CrisTracker(Tracker):
@@ -40,87 +38,116 @@ class CrisTracker(Tracker):
         }
         self.chairs = [
             {
-                'chair_id': '31914156', 'chair_name': i18n.t(
-                    'chairs.Lehrstuhl für'
-                    ' Wirtschaftsinformatik und Informationsmanagement (Prof. Becker)',
+                'chair_id': '31914156', 'chair_name': (
+                    'Lehrstuhl für'
+                    ' Wirtschaftsinformatik und Informationsmanagement (Prof. Becker)'
                 ),
             },
             {
-                'chair_id': '31923392', 'chair_name': i18n.t(
-                    'chairs.Institut für'
-                    ' Wirtschaftsinformatik',
+                'chair_id': '31923392', 'chair_name': (
+                    'Institut für'
+                    ' Wirtschaftsinformatik'
                 ),
             },
             {
-                'chair_id': '40279283', 'chair_name': i18n.t(
-                    'chairs.Lehrstuhl für'
-                    ' Wirtschaftsinformatik und Interorganisationssysteme (Prof. Klein)',
+                'chair_id': '40279283', 'chair_name': (
+                    'Lehrstuhl für'
+                    ' Wirtschaftsinformatik und Interorganisationssysteme (Prof. Klein)'
                 ),
             },
             {
-                'chair_id': '40279346', 'chair_name': i18n.t(
-                    'chairs.Lehrstuhl für'
-                    ' Wirtschaftsinformatik und Logistik (Prof. Hellingrath)',
+                'chair_id': '40279346', 'chair_name': (
+                    'Lehrstuhl für'
+                    ' Wirtschaftsinformatik und Logistik (Prof. Hellingrath)'
                 ),
             },
             {
-                'chair_id': '40279415', 'chair_name': i18n.t(
-                    'chairs.Institut für'
-                    ' Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler',
+                'chair_id': '40279415', 'chair_name': (
+                    'Institut für'
+                    ' Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler'
                 ),
             },
             {
-                'chair_id': '79139069', 'chair_name': i18n.t(
-                    'chairs.Juniorprofessur für'
+                'chair_id': '79139069', 'chair_name': (
+                    'Juniorprofessur für'
                     ' Wirtschaftsinformatik, insbesondere Digitale Transformation'
-                    ' und Gesellschaft (Prof. Berger)',
+                    ' und Gesellschaft (Prof. Berger)'
                 ),
             },
             {
-                'chair_id': '40279220', 'chair_name': i18n.t(
-                    'chairs.Professur für'
-                    ' Statistik und Optimierung (Prof. Trautmann)',
+                'chair_id': '40279220', 'chair_name': (
+                    'Professur für'
+                    ' Statistik und Optimierung (Prof. Trautmann)'
                 ),
             },
             {
-                'chair_id': '59575309', 'chair_name': i18n.t(
-                    'chairs.Professur für'
-                    ' Maschinelles Lernen und Data Engineering (Prof. Gieseke)',
+                'chair_id': '59575309', 'chair_name': (
+                    'Professur für'
+                    ' Maschinelles Lernen und Data Engineering (Prof. Gieseke)'
                 ),
             },
             {
-                'chair_id': '40279157', 'chair_name': i18n.t(
-                    'chairs.Lehrstuhl für'
-                    ' Praktische Informatik in der Wirtschaft (Prof. Kuchen)',
+                'chair_id': '40279157', 'chair_name': (
+                    'Lehrstuhl für'
+                    ' Praktische Informatik in der Wirtschaft (Prof. Kuchen)'
                 ),
             },
             {
-                'chair_id': '31921637', 'chair_name': i18n.t(
-                    'chairs.Lehrstuhl für'
-                    ' Informatik (Prof. Vossen)',
+                'chair_id': '31921637', 'chair_name': (
+                    'Lehrstuhl für'
+                    ' Informatik (Prof. Vossen)'
                 ),
             },
             {
-                'chair_id': '77369668', 'chair_name': i18n.t(
-                    'chairs.Professur für'
-                    ' Digitale Innovation und der öffentliche Sektor (Prof. Brandt)',
+                'chair_id': '77369668', 'chair_name': (
+                    'Professur für'
+                    ' Digitale Innovation und der öffentliche Sektor (Prof. Brandt)'
                 ),
             },
             {
-                'chair_id': '40279346', 'chair_name': i18n.t(
-                    'chairs.Lehrstuhl für'
-                    ' Wirtschaftsinformatik und Logistik (Prof. Hellingrath)',
+                'chair_id': '40279346', 'chair_name': (
+                    'Lehrstuhl für'
+                    ' Wirtschaftsinformatik und Logistik (Prof. Hellingrath)'
                 ),
             },
             {
-                'chair_id': '55472869', 'chair_name': i18n.t(
-                    'chairs.Juniorprofessur für'
-                    ' IT-Sicherheit (Prof. Hupperich)',
+                'chair_id': '55472869', 'chair_name': (
+                    'Juniorprofessur für'
+                    ' IT-Sicherheit (Prof. Hupperich)'
                 ),
             },
         ]
+
         self.employees = []  # list of dicts with employee_id and employees chair
         self.result = []  # to return
+
+        self.chair_keys = {
+            'Lehrstuhl für '
+            'Wirtschaftsinformatik und Informationsmanagement (Prof. Becker)': 'chair1',
+            'Institut für '
+            'Wirtschaftsinformatik': 'chair2',
+            'Lehrstuhl für '
+            'Wirtschaftsinformatik und Interorganisationssysteme (Prof. Klein)': 'chair3',
+            'Lehrstuhl für '
+            'Wirtschaftsinformatik und Logistik (Prof. Hellingrath)': 'chair4',
+            'Institut für '
+            'Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler': 'chair5',
+            'Juniorprofessur für'
+            ' Wirtschaftsinformatik, insbesondere Digitale Transformation'
+            ' und Gesellschaft (Prof. Berger)': 'chair6',
+            'Professur für '
+            'Statistik und Optimierung (Prof. Trautmann)': 'chair7',
+            'Professur für '
+            'Maschinelles Lernen und Data Engineering (Prof. Gieseke)': 'chair8',
+            'Lehrstuhl für '
+            'Praktische Informatik in der Wirtschaft (Prof. Kuchen)': 'chair9',
+            'Lehrstuhl für '
+            'Informatik (Prof. Vossen)': 'chair10',
+            'Professur für '
+            'Digitale Innovation und der öffentliche Sektor (Prof. Brandt)': 'chair11',
+            'Juniorprofessur für '
+            'IT-Sicherheit (Prof. Hupperich)': 'chair12',
+        }
 
     def split_list(self, input_list, max_length):
         """Splitting the input list into lists with len(max_length).
@@ -324,20 +351,45 @@ class CrisTracker(Tracker):
                     continue
                 card['image'] = attr['data']'''
 
-    def get_cris_data(self):
+    def get_translation(self, lang):
+        """
+        Translates chair names from German to English using i18n package.
+
+        Args:
+            lang: Language code (e.g., 'en' for English, 'de' for German)
+
+        Returns:
+            None
+        """
+        i18n.set('locale', lang)
+        i18n.set('fallback', 'de')
+
+        # Get the directory containing this script
+        base_dir = os.path.dirname(__file__)
+
+        # Construct the path to the YAML file
+        yaml_file = os.path.join(base_dir, 'cris.en.yaml')
+        # Load translations from the YAML file
+        with open(yaml_file) as f:
+            translations = yaml.safe_load(f)
+
+        for chair in self.chairs:
+            chair_key = self.chair_keys[chair['chair_name']]
+
+            translation = translations[lang][chair_key]
+            # Print the translation
+            # print(f"Chair name: {chair['chair_name']}, Chair key: {chair_key}")
+            # print(f"Translation for {chair_key}: {translation}")
+
+            chair['chair_name'] = translation
+
+    def get_cris_data(self, lang):
         """Function that returns the desired result."""
         self.update_employees()
         self.employees = self.remove_duplicate_employees()
+        self.get_translation(lang)
         self.update_result()
         self.add_addresses()
-
-        # Translating the chair name
-        lang = request.args.get('lang', default='de', type=str)
-        i18n.set('locale', lang)
-        for chair in self.result:
-            translation_key = 'chairs.' + chair['chair_name']
-            chair['chair_name'] = i18n.t(translation_key)
-
         # self.add_pictures()
         return make_response(
             json.dumps(self.result, ensure_ascii=False), 200,

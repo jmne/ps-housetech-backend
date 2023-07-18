@@ -120,6 +120,36 @@ class Cris(Resource):
         return CrisTracker().get_cris_data()
 
 
+class CrisEnglish(Resource):
+    """
+    Class for English Cris-API of Uni-Muenster.
+
+    Receiving English information about employees of the
+    Department of Information Systems
+
+    method: GET
+    """
+
+    def __repr__(self) -> str:
+        """Repr function used for the cache."""
+        return f'{self.__class__.__name__}({1})'
+
+    @cache.memoize(30)
+    def get(self):
+        """
+        Creates an CrisTracker instance.
+
+        Runs get_cris_data() method with 'en' as the language.
+
+        Args:
+            self
+
+        Returns:
+            English chair names.
+        """
+        return CrisTracker().get_cris_data('en')
+
+
 class EInk(Resource):
     """Return E-Ink data from EInkGenerator API."""
 
@@ -281,6 +311,7 @@ class Weather(Resource):
 # API endpoints
 api.add_resource(Bus, '/api/bus')
 api.add_resource(Cris, '/api/cris')
+api.add_resource(CrisEnglish, '/api/cris/en')
 api.add_resource(Mensa, '/api/mensa')
 api.add_resource(EInk, '/api/eink')
 api.add_resource(Exchange, '/api/calendar')
