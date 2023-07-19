@@ -4,18 +4,22 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    # Assuming specialRoomNumber is 'A101'
+    # Assuming specialRoomNumber is 'B202'
     specialRoomNumber = 'B202'
 
     # Example room data
     backendData = {
         'room': 'B202',
-        'department': 'Lehrstuhl für Elektrotechnik',
+        'department': 'Lehrstuhl für Wirtschaftsinformatik und Informationsmanagement',
         'department_head': 'Prof. Dr. Dr. Dr. Becker',
         'person': [
             {
                 'name': "Prof. Dr. Hans Schmid",
                 'degree': "M.Sc"
+            },
+            {
+                'name': "Prof. Dr. Julia Wagne",
+                'degree': "Ph.D"
             },
             {
                 'name': "Prof. Dr. Julia Wagne",

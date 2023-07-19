@@ -1,0 +1,121 @@
+body {
+    margin: 0;
+    font-family: Inter;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 1fr 200px;
+    height: 100vh;
+}
+
+.header-left {
+    grid-area: 1 / 1 / 2 / 2;
+    font-size: 1rem;
+    margin-top: 25px;
+}
+
+.room_number {
+    background-color: black;
+    color: white;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    display: block;
+    width: 100%;
+    font-size: 2.62rem;
+    font-weight: 700;
+    padding: 7px;
+    box-sizing: border-box;
+}
+
+.department {
+    padding-left: 7px;
+}
+
+.header-right {
+    grid-area: 1 / 2 / 2 / 3;
+    text-align: right;
+    padding: 7px;
+    margin-top: 25px;
+}
+
+svg {
+    width: 75%; /* Adjust the width as needed */
+    height: auto; /* Maintain the aspect ratio */
+}
+
+
+.main-content {
+    grid-area: 2 / 1 / 3 / 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 70px;
+    padding-left: 0;
+    list-style-type: none;
+    max-height: calc(100vh - (header_height + footer_height)); /* Adjust header_height and footer_height accordingly */
+    overflow-y: auto;
+}
+
+li {
+    position: relative; /* Add position: relative */
+    padding-left: 2rem; /* Adjust the padding as needed */
+    margin-bottom: 28px;
+}
+
+li::before {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    top: 15%;
+    width: 20px;
+    height: 20px;
+    background-color: black;
+    border-radius: 2px; /* Adjust the border-radius as needed */
+}
+
+
+/* ONLY NEEDED IF -> list-style-type: square
+
+li::marker {
+    font-size: 3.5rem;
+    position: absolute;
+    top: 10;
+    border-radius: 50%;
+}
+
+*/
+
+
+.name {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.degree {
+    font-size: 14px;
+}
+
+.footer-left {
+    grid-area: 3 / 1 / 4 / 2;
+    padding: 7px;
+}
+
+.footer-right {
+    grid-area: 3 / 2 / 4 / 3;
+    background-color: black;
+    color: white;
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+    text-align: center;
+    padding: 7px;
+    margin-bottom: 25px;
+}
+
+
+
+
+
+

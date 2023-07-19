@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>Doorsign</title>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="grid-container">
+      <div class="header-left">
+        <div class="room_number">RAUM {{ roomData.room }}</div>
+        <div class="department">{{ roomData.department }}<br>
+          {{ roomData.department_head }}</div>
+      </div>
+      <div class="header-right">{{ svg|safe }}</div>
+      <ul class="main-content">
+        {% for name in roomData.person %}
+              <li>
+                <span class="name">{{ name.name }}</span><br>
+                <span class="degree">{{ name.degree }}</span>
+              </li>
+        {% endfor %}
+      </ul>
+      <div class="footer-left">{{ roomData.globalRoomNumber }}</div>
+      <div class="footer-right">www.ercis.org</div>
+  </div>
+</body>
+</html>
