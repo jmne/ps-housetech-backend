@@ -76,19 +76,20 @@ class Mensa(Resource):
         return f'{self.__class__.__name__}({1})'
 
     @cache.memoize(30)
-    def get(self):
+    def get(self, mensa):
         """
         Creates an MensaTracker instance.
 
         Runs get_current_meals() method.
 
         Args:
-            self
+            self,
+            mensa
 
         Returns:
             tbd.
         """
-        return MensaTracker().get_current_meals()
+        return MensaTracker().get_current_meals(mensa)
 
 
 class Cris(Resource):
@@ -284,13 +285,13 @@ class Weather(Resource):
         Returns:
             Future weather.
         """
-        return WeatherTracker().get_future_weather()
+        return WeatherTracker().get_cleaned_weather()
 
 
 # API endpoints
 api.add_resource(Bus, '/api/bus')
 api.add_resource(Cris, '/api/cris')
-api.add_resource(Mensa, '/api/mensa')
+api.add_resource(Mensa, '/api/mensa/<mensa>')
 api.add_resource(EInk, '/api/eink')
 api.add_resource(Exchange, '/api/calendar')
 api.add_resource(Drupal, '/api/drupal/<content_type>')
