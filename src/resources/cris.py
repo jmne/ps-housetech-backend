@@ -24,6 +24,7 @@ class CrisTracker(Tracker):
             self
         """
         super().__init__()
+        self.translations = {}
 
         self.url = 'https://cris-api-staging.uni-muenster.de/'
         self.base_picture_url = '''https://www.uni-muenster.de/converis/
@@ -305,6 +306,7 @@ class CrisTracker(Tracker):
                     'phones': phones,
                     'chair': chair,
                     'image': picture_id,
+
                 })
         return
 
@@ -359,7 +361,7 @@ class CrisTracker(Tracker):
             lang: Language code (e.g., 'en' for English, 'de' for German)
 
         Returns:
-            None
+          None
         """
         i18n.set('locale', lang)
         i18n.set('fallback', 'de')
@@ -376,20 +378,32 @@ class CrisTracker(Tracker):
         for chair in self.chairs:
             chair_key = self.chair_keys[chair['chair_name']]
 
-            translation = translations[lang][chair_key]
+            translation = translations.get(lang, {}).get(
+                chair_key, chair['chair_name'],
+            )
+            chair['chair_name_en'] = translation
             # Print the translation
             # print(f"Chair name: {chair['chair_name']}, Chair key: {chair_key}")
             # print(f"Translation for {chair_key}: {translation}")
 
-            chair['chair_name'] = translation
-
-    def get_cris_data(self, lang):
+    def get_cris_data(self, lang='de'):
         """Function that returns the desired result."""
         self.update_employees()
         self.employees = self.remove_duplicate_employees()
-        self.get_translation(lang)
         self.update_result()
+
+        if lang == 'en':
+            self.get_translation(lang)
+
         self.add_addresses()
+
+        for card in self.result:
+            for chair in self.chairs:
+                if card['chair'] == chair['chair_name']:
+                    if lang == 'en':
+                        card['chair'] = chair['chair_name_en']
+                    break
+
         # self.add_pictures()
         return make_response(
             json.dumps(self.result, ensure_ascii=False), 200,

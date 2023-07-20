@@ -120,7 +120,7 @@ class Cris(Resource):
         return CrisTracker().get_cris_data('de')
 
 
-class CrisEnglish(Resource):
+class CrisEn(Resource):
     """
     Class for English Cris-API of Uni-Muenster.
 
@@ -311,7 +311,7 @@ class Weather(Resource):
 # API endpoints
 api.add_resource(Bus, '/api/bus')
 api.add_resource(Cris, '/api/cris')
-api.add_resource(CrisEnglish, '/api/cris/en')
+api.add_resource(CrisEn, '/api/cris/en')
 api.add_resource(Mensa, '/api/mensa')
 api.add_resource(EInk, '/api/eink')
 api.add_resource(Exchange, '/api/calendar')
