@@ -126,7 +126,7 @@ class EinkImagePNG(Resource):
 
     def get(self):  # dead: disable
         """Return PNG doorsign for the correct room number."""
-        return EinkImage.get_image(EinkImage(), 'test')
+        return EinkImage().get_image('B20120301230')
 
 
 class EInk(Resource):

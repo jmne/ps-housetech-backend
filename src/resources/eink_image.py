@@ -5,6 +5,8 @@ from flask import make_response
 from html2image import Html2Image
 from PIL import Image
 
+from .html_factory import HTMLFactory
+
 
 class EinkImage:
     """Create E-Ink image."""
@@ -30,21 +32,21 @@ class EinkImage:
 
         alternatively with a HTML and CSS file"""
         with open(
-            os.path.dirname(
-                os.path.abspath(
-                    __file__,
-                ),
-            ) + '\\static\\DoorsignSeed.html',
-        ) as file:
-            html = file.read()
-
+                os.path.dirname(
+                    os.path.abspath(
+                        __file__,
+                    ),
+                ) + '/template/index.html',
+        ):
+            html = HTMLFactory().return_html()
             # Replace the target string
             html = html.replace('RAUM XXX', room_number)
         hti.output_path = os.path.dirname(
             os.path.abspath(
                 __file__,
             ),
-        ) + '\\static\\'
+        ) + '/image_cache'
+
         path = hti.screenshot(
             html_str=html,
             save_as='Raum-' + room_number + '.png',
