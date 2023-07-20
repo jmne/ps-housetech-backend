@@ -38,7 +38,7 @@ class EinkImage:
                     ),
                 ) + '/template/index.html',
         ):
-            html = HTMLFactory().return_html()
+            html = HTMLFactory().return_html(room_number)
             # Replace the target string
             html = html.replace('RAUM XXX', room_number)
         hti.output_path = os.path.dirname(

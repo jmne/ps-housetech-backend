@@ -1,6 +1,8 @@
 from flask import Markup
 from flask import render_template
 
+from .cris import CrisTracker
+
 
 class HTMLFactory:
     """Class that generates html string."""
@@ -13,37 +15,38 @@ class HTMLFactory:
             self
         """
 
-    def return_html(self):
-        """Return html which is later on converted to SC."""
-        # Assuming specialRoomNumber is 'B202'
-        specialRoomNumber = 'B202'
-
-        # Example room data
-        backendData = {
-            'room': 'B202',
-            'person': [
-                {
-                    'name': 'Prof. Dr. Hans Schmid',
-                    'degree': 'M.Sc',
-                },
-                {
-                    'name': 'Prof. Dr. Julia Wagne',
-                    'degree': 'Ph.D',
-                },
-                {
-                    'name': 'Prof. Dr. Julia Wagne',
-                    'degree': 'Ph.D',
-                },
-            ],
-            'globalRoomNumber': '120.202',
+    def get_cris_data(self, address, room_number):
+        """Import CRIS module and filter for room."""
+        cris = CrisTracker()
+        cris.get_cris_data()
+        data = {
+            'room': room_number,
+            'person': [],
+            'globalRoomNumber': room_number,
         }
-        # More room data...
+        for person in cris.result:
+            if person['address'] == address and person['roomNumber'] == room_number:
+                data['person'].append(
+                    {
+                        'name': f"{person['cfFirstNames']} {person['cfFamilyNames']}",
+                        'degree': (
+                            person['academicTitle']
+                            if person['academicTitle'] else ''
+                        ),
+                    },
+                )
+
+        return data
+
+    def return_html(self, room_number):
+        """Return html which is later on converted to SC."""
+        # Example room data
+        backend_data = self.get_cris_data('Leonardo-Campus 3', room_number)
 
         svg = open('resources/template/ercis.svg').read()
 
         html_string = render_template(
-            'index.html', roomData=backendData,
-            specialRoomNumber=specialRoomNumber,
+            'index.html', roomData=backend_data,
             svg=Markup(svg),
         )
 

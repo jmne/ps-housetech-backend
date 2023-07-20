@@ -124,9 +124,9 @@ class Cris(Resource):
 class EinkImagePNG(Resource):
     """Return PNG doorsign for the correct room number."""
 
-    def get(self):  # dead: disable
+    def get(self, room_number):  # dead: disable
         """Return PNG doorsign for the correct room number."""
-        return EinkImage().get_image('B20120301230')
+        return EinkImage().get_image(room_number)
 
 
 class EInk(Resource):
@@ -298,4 +298,4 @@ api.add_resource(ApiInfo, '/api/help')
 api.add_resource(Picture, '/api/picture/<image_id>')
 api.add_resource(Instagram, '/api/instagram')
 api.add_resource(Weather, '/api/weather')
-api.add_resource(EinkImagePNG, '/api/einkimage')
+api.add_resource(EinkImagePNG, '/api/einkimage/<room_number>')
