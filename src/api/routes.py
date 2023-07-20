@@ -117,7 +117,7 @@ class Cris(Resource):
         Returns:
             tbd.
         """
-        return CrisTracker().get_cris_data()
+        return CrisTracker().get_cris_data('de')
 
 
 class CrisEnglish(Resource):
