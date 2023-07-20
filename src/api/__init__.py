@@ -11,7 +11,8 @@ def create_app():
 
     Returns: An instance of the Flask app
     """
-    app = Flask(__name__)  # initialize Flask APP
+    app = Flask(__name__, template_folder='../resources/template')  # initialize
+    # Flask APP
     cache.init_app(app)  # initialize cache
     cache.clear()  # clear cache
     app.wsgi_app = ProxyFix(

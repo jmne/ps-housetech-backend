@@ -8,6 +8,7 @@ from flask_restful import Resource
 from src.resources.bustracker import BusTracker
 from src.resources.cris import CrisTracker
 from src.resources.drupal import DrupalTracker
+from src.resources.eink_image import EinkImage
 from src.resources.einkgenerator import EInkGenerator
 from src.resources.exchange import ExchangeCalendar
 from src.resources.instagram import InstagramTracker
@@ -19,11 +20,11 @@ from src.resources.weather import WeatherTracker
 api = Api(
     catch_all_404s=True, errors={
         'NotFound':
-        {
-            'message': 'The requested URL was not found on the server.'
-                       ' Checkout /api/help for available endpoints.',
-            'status': 404,
-        },
+            {
+                'message': 'The requested URL was not found on the server.'
+                           ' Checkout /api/help for available endpoints.',
+                'status': 404,
+            },
     },
 )
 cache = Cache(
@@ -119,6 +120,14 @@ class Cris(Resource):
             tbd.
         """
         return CrisTracker().get_cris_data()
+
+
+class EinkImagePNG(Resource):
+    """Return PNG doorsign for the correct room number."""
+
+    def get(self, room_number):  # dead: disable
+        """Return PNG doorsign for the correct room number."""
+        return EinkImage().get_image(room_number)
 
 
 class EInk(Resource):
@@ -290,3 +299,4 @@ api.add_resource(ApiInfo, '/api/help')
 api.add_resource(Picture, '/api/picture/<image_id>')
 api.add_resource(Instagram, '/api/instagram')
 api.add_resource(Weather, '/api/weather')
+api.add_resource(EinkImagePNG, '/api/einkimage/<room_number>')
