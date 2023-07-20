@@ -78,6 +78,7 @@ class InstagramTracker(Tracker):
                 {
                     'caption': entry['caption'],
                     'media_url': post['media_url'],
+                    'media_type': post['media_type'],
                     'timestamp': post['timestamp'],
                 },
             )
