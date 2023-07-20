@@ -191,5 +191,4 @@ cython_debug/
 
 secrets.env
 
-/src/resources/static
-!/src/resources/static/DoorsignSeed.html
+/src/resources/image_cache/
