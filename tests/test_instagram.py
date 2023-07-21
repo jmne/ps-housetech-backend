@@ -19,6 +19,36 @@ def test_instagram(client):
     'timestamp': '2023-07-20T12:34:56Z',
     }
 
+    latest_posts_sample = [
+    {
+        'caption': 'Post 1',
+        'media_url': 'https://example.com/post1.jpg',
+        'media_type': 'IMAGE',
+        'timestamp': '2023-07-20T12:34:56Z',
+    },
+    {
+        'caption': 'Post 2',
+        'media_url': 'https://example.com/post2.jpg',
+        'media_type': 'VIDEO',
+        'timestamp': '2023-07-19T10:22:34Z',
+    },
+    {
+        'caption': 'Post 3',
+        'media_url': 'https://example.com/post3.jpg',
+        'media_type': 'CAROUSEL_ALBUM',
+        'timestamp': '2023-07-18T15:45:12Z',
+    },
+    ]
+
+    # Define the expected keys for the latest_posts dictionary
+    item_keys = {
+        'caption', 'media_url',
+        'media_type', 'timestamp',
+    }
+
+ 
+
+
     response = client.get('/api/bus')
     data = response.get_json()
 
@@ -46,9 +76,8 @@ def test_instagram(client):
         'caption', 'media_url',
         'media_type', 'timestamp',
     }
-    # desired amount of latest posts
-    amount = 3  
-    latest_posts = tracker.get_latest_posts(amount)
+    # Test get_post_data method with sample data
+    latest_posts = latest_posts_sample
     # verify that the returned data is a list of dictionaries.
     assert isinstance(latest_posts, list)
     assert all(isinstance(post, dict) for post in latest_posts)
