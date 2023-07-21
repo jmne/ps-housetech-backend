@@ -1,5 +1,3 @@
-import InstagramTracker
-
 def test_instagram(client):
     """
     The function checks the following test cases.
@@ -19,7 +17,7 @@ def test_instagram(client):
     'media_url': 'https://example.com/image.jpg',
     'username': 'test_user',
     'timestamp': '2023-07-20T12:34:56Z',
-}
+    }
 
     response = client.get('/api/bus')
     data = response.get_json()
@@ -30,7 +28,6 @@ def test_instagram(client):
 
 
     # Test get_post_data method with sample data
-    media_id_sample = '1234567890'
     post_data = post_data_sample
      # Define the expected keys for the post_data dictionary
     expected_keys = [
