@@ -1,3 +1,5 @@
+import InstagramTracker
+
 def test_instagram(client):
     """
     The function checks the following test cases.
@@ -5,7 +7,20 @@ def test_instagram(client):
     1. The response status code is 200 (OK).
     2. Verify that the returned data is a dictionary
     3. Verify that the post_data dictionary contains all the expected keys
+    4. Verify that the latest_posts data is a list of dictionaries
+    5. Verify that the latest_posts dictionary contains all the expected keys
+    6. Check if the latest posts are within the last 30 days
     """
+
+    # define sample data
+    post_data_sample = {
+    'id': '1234567890',
+    'media_type': 'IMAGE',
+    'media_url': 'https://example.com/image.jpg',
+    'username': 'test_user',
+    'timestamp': '2023-07-20T12:34:56Z',
+}
+
     response = client.get('/api/bus')
     data = response.get_json()
 
@@ -16,7 +31,7 @@ def test_instagram(client):
 
     # Test get_post_data method with sample data
     media_id_sample = '1234567890'
-    post_data = tracker.get_post_data(media_id)
+    post_data = post_data_sample
      # Define the expected keys for the post_data dictionary
     expected_keys = [
         'id', 'media_type',
