@@ -1,10 +1,18 @@
-import numpy as np
+import os
+import shutil
+import tempfile
 
-from .eink_image import EinkImage
+import numpy as np
+from flask import render_template
+from html2image import Html2Image
+from markupsafe import Markup
+from PIL import Image
+
+from .cris import CrisTracker
 
 
 class EInkGenerator:
-    """E-Ink.    proxies are not included yet."""
+    """Generate E-Ink image in HEX Format."""
 
     def __init__(self):
         """
@@ -16,14 +24,11 @@ class EInkGenerator:
         """
 
     def transform_png_to_rgb_array(self, png):
-        """Turn png into numpy ."""
-        # Convert the png to an RGB format
-        img = png.convert('RGB')
+        """Turn png into numpy array."""
         # Convert the image into a NumPy array
-        rgb_array = np.array(img)
-        return rgb_array
+        return np.array(png)
 
-    def transform_rgb_array_to_black_white_red(self, rgb_array):
+    def color_quantization(self, rgb_array):
         """Turn numpy rgb array into black/white/red."""
         result = []
         for row in rgb_array:
@@ -38,24 +43,23 @@ class EInkGenerator:
                     result.append('BLACK')
         return result
 
-    def get_black_white_layer(self, rgb_array):
-        """Turn black/white/red array into black/white."""
+    def get_layer(self, rgb_array, rgb_color):
+        """Turn a black/white/red array into black/white or red/white."""
         # Write the Bit Array
         # rgb_array / 8, to get chunks of 8
         chunk = []
         chunk_count = 0
-        black_white_layer_bits = []
+        layer_bits = []
         bit = False
         for rgb_value in rgb_array:
-            if rgb_value == 'WHITE':
+            if rgb_value == rgb_color:
                 bit = True
 
             # If 8 values are appended
             if chunk_count == 8:
-                black_white_layer_bits.append(chunk)
+                layer_bits.append(chunk)
                 chunk_count = 0
-                chunk = []
-                chunk.append(bit)
+                chunk = [bit]
                 bit = False
 
             else:
@@ -64,81 +68,116 @@ class EInkGenerator:
 
             chunk_count = chunk_count + 1
         # Add last 8 Bits
-        black_white_layer_bits.append(chunk)
+        layer_bits.append(chunk)
         # Turn Bit Array into Hex
-        black_white_layer_hex = []
-        for bool_array in black_white_layer_bits:
+        layer_hex = []
+        for bool_array in layer_bits:
             decimal_value = sum(
                 int(b) << (7 - i)
                 for i, b in enumerate(bool_array)
             )
             hex_value = format(decimal_value, '02X')
-            black_white_layer_hex.append('0X' + hex_value)
+            layer_hex.append('0X' + hex_value)
 
-        return black_white_layer_hex
+        return layer_hex
 
-    def get_red_white_layer(self, rgb_array):
-        """Turn black/white/red array into red/white."""
-        # Write the Bit Array
-        # rgb_array / 8, to get chunks of 8
-        chunk = []
-        chunk_count = 0
-        red_white_layer_bits = []
-        bit = False
-        for rgb_value in rgb_array:
-            if rgb_value == 'RED':
-                bit = True
-
-            # If 8 values are appended
-            if chunk_count == 8:
-                red_white_layer_bits.append(chunk)
-                chunk_count = 0
-                chunk = []
-                chunk.append(bit)
-                bit = False
-
-            else:
-                chunk.append(bit)
-                bit = False
-
-            chunk_count = chunk_count + 1
-
-        # Add last 8 Bits
-        red_white_layer_bits.append(chunk)
-        # Turn Bit Array into Hex
-        red_white_layer_hex = []
-        for bool_array in red_white_layer_hex:
-            decimal_value = sum(
-                int(b) << (7 - i)
-                for i, b in enumerate(bool_array)
-            )
-            hex_value = format(decimal_value, '02X')
-            red_white_layer_hex.append('0X' + hex_value)
-
-        return red_white_layer_hex
-
-    def get_fuzed_layers(self, png):
+    def get_fused_layers(self, png):
         """Fuze the black/white and the red/white layer together."""
-        black_white_layer = self.get_black_white_layer(
-            self.transform_rgb_array_to_black_white_red(
+        black_white_layer = self.get_layer(
+            self.color_quantization(
                 self.transform_png_to_rgb_array(png),
             ),
+            'WHITE',
         )
-        red_white_layer = self.get_red_white_layer(
-            self.transform_rgb_array_to_black_white_red(
+        red_white_layer = self.get_layer(
+            self.color_quantization(
                 self.transform_png_to_rgb_array(png),
             ),
+            'RED',
         )
 
         black_white_layer_string = ','.join(list(black_white_layer))
         red_white_layer_string = ','.join(list(red_white_layer))
 
-        fuzed_layers = black_white_layer_string + ',' + red_white_layer_string
+        fused_layers = black_white_layer_string + ',' + red_white_layer_string
 
-        return fuzed_layers
+        return fused_layers
 
-    def get_data(self, room_number: str):
+    def get_data(self, room_number):
         """Return a hex array with bases on the png of a given room number."""
-        eink_image = EinkImage()
-        png = eink_image.get_image(room_number)
-        return self.get_fuzed_layers(png)
+        img = self.get_image(room_number)
+        return self.get_fused_layers(img)
+
+    def get_cris_data(self, address, room_number):
+        """Import CRIS module and filter for room."""
+        cris = CrisTracker()
+        cris.get_cris_data()
+        data = {
+            'room': room_number,
+            'person': [],
+            'globalRoomNumber': room_number,
+        }
+        for person in cris.result:
+            if person['address'] == address and person['roomNumber'] == room_number:
+                data['person'].append(
+                    {
+                        'name': f"{person['cfFirstNames']} {person['cfFamilyNames']}",
+                        'degree': (
+                            person['academicTitle']
+                            if person['academicTitle'] else ''
+                        ),
+                    },
+                )
+
+        return data
+
+    def return_html(self, room_number):
+        """Return html which is later on converted to SC."""
+        # Example room data
+        backend_data = self.get_cris_data('Leonardo-Campus 3', room_number)
+
+        path = os.path.dirname(os.path.abspath(__file__))
+        svg = open(os.path.join(path, 'template', 'ercis.svg')).read()
+
+        html_string = render_template(
+            'index.html', roomData=backend_data, svg=Markup(svg),
+        )
+
+        return html_string
+
+    def get_image(self, room_number: str):
+        """Return PNG door-sign for the correct room number."""
+        path = os.path.dirname(os.path.abspath(__file__))
+        tempdir = tempfile.TemporaryDirectory(dir=path).name
+
+        hti = Html2Image(
+            size=(648, 480), temp_path=tempdir, custom_flags=[
+                '--default-background-color=ffffff',
+                '--hide-scrollbars',
+                '--headless',
+                '--disable-gpu',
+                '--disable-audio-output',
+                '--run-all-compositor-stages-before-draw',
+                '--virtual-time-budget=10000',
+            ],
+        )
+        """making it the display size of the Eink
+        calling the link for the respective room number to crate a png screenshot from it
+
+        alternatively with a HTML and CSS file"""
+        hti.output_path = os.path.join(path, 'template')
+
+        html = self.return_html(room_number)
+
+        screenshot_path = hti.screenshot(
+            html_str=html,
+            save_as='Raum-' + room_number + '.png',
+        )
+
+        image = Image.open(screenshot_path[0])
+        image = image.convert('RGB')
+        if os.path.exists(screenshot_path[0]):
+            os.remove(screenshot_path[0])
+        if os.path.exists(tempdir):
+            shutil.rmtree(tempdir, ignore_errors=True)
+        return image

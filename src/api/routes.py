@@ -8,7 +8,6 @@ from flask_restful import Resource
 from src.resources.bustracker import BusTracker
 from src.resources.cris import CrisTracker
 from src.resources.drupal import DrupalTracker
-from src.resources.eink_image import EinkImage
 from src.resources.einkgenerator import EInkGenerator
 from src.resources.exchange import ExchangeCalendar
 from src.resources.instagram import InstagramTracker
@@ -78,7 +77,7 @@ class Mensa(Resource):
     @cache.memoize(30)
     def get(self, mensa):
         """
-        Creates an MensaTracker instance.
+        Creates a MensaTracker instance.
 
         Runs get_current_meals() method.
 
@@ -109,7 +108,7 @@ class Cris(Resource):
     @cache.memoize(30)
     def get(self):
         """
-        Creates an CrisTracker instance.
+        Creates a CrisTracker instance.
 
         Runs xyz() method.
 
@@ -122,29 +121,22 @@ class Cris(Resource):
         return CrisTracker().get_cris_data()
 
 
-class EinkImagePNG(Resource):
-    """Return PNG doorsign for the correct room number."""
-
-    def get(self, room_number):  # dead: disable
-        """Return PNG doorsign for the correct room number."""
-        return EinkImage().get_image(room_number)
-
-
 class EInk(Resource):
     """Return E-Ink data from EInkGenerator API."""
 
-    def get(self):  # dead: disable
+    def get(self, room_number):  # dead: disable
         """
         Creates an Exchange instance and runs hello() method.
 
         Args:
             self
+            room_number: room number of the room
 
         Returns:
             "hello"
 
         """
-        return flask.make_response(EInkGenerator().get_data('133'), 200)
+        return flask.make_response(EInkGenerator().get_data(room_number), 200)
 
 
 class Exchange(Resource):
@@ -292,11 +284,10 @@ class Weather(Resource):
 api.add_resource(Bus, '/api/bus')
 api.add_resource(Cris, '/api/cris')
 api.add_resource(Mensa, '/api/mensa/<mensa>')
-api.add_resource(EInk, '/api/eink')
+api.add_resource(EInk, '/api/eink/<room_number>')
 api.add_resource(Exchange, '/api/calendar')
 api.add_resource(Drupal, '/api/drupal/<content_type>')
 api.add_resource(ApiInfo, '/api/help')
 api.add_resource(Picture, '/api/picture/<image_id>')
 api.add_resource(Instagram, '/api/instagram')
 api.add_resource(Weather, '/api/weather')
-api.add_resource(EinkImagePNG, '/api/einkimage/<room_number>')
