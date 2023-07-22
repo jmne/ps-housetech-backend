@@ -144,7 +144,7 @@ class EInk(Resource):
             "hello"
 
         """
-        return flask.make_response(EInkGenerator().get_data(), 200)
+        return flask.make_response(EInkGenerator().get_data('133'), 200)
 
 
 class Exchange(Resource):

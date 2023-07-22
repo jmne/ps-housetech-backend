@@ -1,5 +1,6 @@
 import numpy as np
-from PIL import Image
+
+from .eink_image import EinkImage
 
 
 class EInkGenerator:
@@ -14,16 +15,16 @@ class EInkGenerator:
 
         """
 
-    def transformPNGToRGBArray(self, path):
-        # Open an image file
-        img = Image.open(path)
-        # Convert the image data to an RGB format
-        img = img.convert('RGB')
+    def transform_png_to_rgb_array(self, png):
+        """Turn png into numpy ."""
+        # Convert the png to an RGB format
+        img = png.convert('RGB')
         # Convert the image into a NumPy array
         rgb_array = np.array(img)
         return rgb_array
 
-    def transformRBGArrayToBlackWhiteRed(self, rgb_array):
+    def transform_rgb_array_to_black_white_red(self, rgb_array):
+        """Turn numpy rgb array into black/white/red."""
         result = []
         for row in rgb_array:
             for pixel in row:
@@ -37,21 +38,22 @@ class EInkGenerator:
                     result.append('BLACK')
         return result
 
-    def getBlackWhiteLayer(self, rgb_array):
+    def get_black_white_layer(self, rgb_array):
+        """Turn black/white/red array into black/white."""
         # Write the Bit Array
-        # rgb_array / 8, um 8er Bit Chunks zu erstellen
+        # rgb_array / 8, to get chunks of 8
         chunk = []
-        chunkCount = 0
-        blackWhiteLayerBits = []
+        chunk_count = 0
+        black_white_layer_bits = []
         bit = False
         for rgb_value in rgb_array:
             if rgb_value == 'WHITE':
                 bit = True
 
-            # Wenn 8 Werte geschrieben wurden
-            if chunkCount == 8:
-                blackWhiteLayerBits.append(chunk)
-                chunkCount = 0
+            # If 8 values are appended
+            if chunk_count == 8:
+                black_white_layer_bits.append(chunk)
+                chunk_count = 0
                 chunk = []
                 chunk.append(bit)
                 bit = False
@@ -60,36 +62,37 @@ class EInkGenerator:
                 chunk.append(bit)
                 bit = False
 
-            chunkCount = chunkCount + 1
+            chunk_count = chunk_count + 1
         # Add last 8 Bits
-        blackWhiteLayerBits.append(chunk)
+        black_white_layer_bits.append(chunk)
         # Turn Bit Array into Hex
-        blackWhiteLayerHex = []
-        for bool_array in blackWhiteLayerBits:
+        black_white_layer_hex = []
+        for bool_array in black_white_layer_bits:
             decimal_value = sum(
                 int(b) << (7 - i)
                 for i, b in enumerate(bool_array)
             )
             hex_value = format(decimal_value, '02X')
-            blackWhiteLayerHex.append('0X' + hex_value)
+            black_white_layer_hex.append('0X' + hex_value)
 
-        return blackWhiteLayerHex
+        return black_white_layer_hex
 
-    def getRedWhiteLayer(self, rgb_array):
+    def get_red_white_layer(self, rgb_array):
+        """Turn black/white/red array into red/white."""
         # Write the Bit Array
-        # rgb_array / 8, um 8er Bit Chunks zu erstellen
+        # rgb_array / 8, to get chunks of 8
         chunk = []
-        chunkCount = 0
-        redWhiteLayerBits = []
+        chunk_count = 0
+        red_white_layer_bits = []
         bit = False
         for rgb_value in rgb_array:
             if rgb_value == 'RED':
                 bit = True
 
-            # Wenn 8 Werte geschrieben wurden
-            if chunkCount == 8:
-                redWhiteLayerBits.append(chunk)
-                chunkCount = 0
+            # If 8 values are appended
+            if chunk_count == 8:
+                red_white_layer_bits.append(chunk)
+                chunk_count = 0
                 chunk = []
                 chunk.append(bit)
                 bit = False
@@ -98,42 +101,44 @@ class EInkGenerator:
                 chunk.append(bit)
                 bit = False
 
-            chunkCount = chunkCount + 1
+            chunk_count = chunk_count + 1
 
         # Add last 8 Bits
-        redWhiteLayerBits.append(chunk)
+        red_white_layer_bits.append(chunk)
         # Turn Bit Array into Hex
-        redWhiteLayerHex = []
-        for bool_array in redWhiteLayerBits:
+        red_white_layer_hex = []
+        for bool_array in red_white_layer_hex:
             decimal_value = sum(
                 int(b) << (7 - i)
                 for i, b in enumerate(bool_array)
             )
             hex_value = format(decimal_value, '02X')
-            redWhiteLayerHex.append('0X' + hex_value)
+            red_white_layer_hex.append('0X' + hex_value)
 
-        return redWhiteLayerHex
+        return red_white_layer_hex
 
-    def getFuzedLayers(self, path):
-        blackWhiteLayer = self.getBlackWhiteLayer(
-            self.transformRBGArrayToBlackWhiteRed(
-                self.transformPNGToRGBArray(path),
+    def get_fuzed_layers(self, png):
+        """Fuze the black/white and the red/white layer together."""
+        black_white_layer = self.get_black_white_layer(
+            self.transform_rgb_array_to_black_white_red(
+                self.transform_png_to_rgb_array(png),
             ),
         )
-        redWhiteLayer = self.getRedWhiteLayer(
-            self.transformRBGArrayToBlackWhiteRed(
-                self.transformPNGToRGBArray(path),
+        red_white_layer = self.get_red_white_layer(
+            self.transform_rgb_array_to_black_white_red(
+                self.transform_png_to_rgb_array(png),
             ),
         )
 
-        blackWhiteLayerString = ','.join(
-            [element for element in blackWhiteLayer],
-        )
-        redWhiteLayerString = ','.join([element for element in redWhiteLayer])
-        fuzedLayers = blackWhiteLayerString + ',' + redWhiteLayerString
+        black_white_layer_string = ','.join(list(black_white_layer))
+        red_white_layer_string = ','.join(list(red_white_layer))
 
-        return fuzedLayers
+        fuzed_layers = black_white_layer_string + ',' + red_white_layer_string
 
-    def get_data(self):
-        """Test method returning data."""
-        return self.getFuzedLayers()
+        return fuzed_layers
+
+    def get_data(self, room_number: str):
+        """Return a hex array with bases on the png of a given room number."""
+        eink_image = EinkImage()
+        png = eink_image.get_image(room_number)
+        return self.get_fuzed_layers(png)
