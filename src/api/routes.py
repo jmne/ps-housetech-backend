@@ -9,6 +9,7 @@ from src.resources.bustracker import BusTracker
 from src.resources.cris import CrisTracker
 from src.resources.drupal import DrupalTracker
 from src.resources.einkgenerator import EInkGenerator
+from src.resources.event import EventManager
 from src.resources.exchange import ExchangeCalendar
 from src.resources.instagram import InstagramTracker
 from src.resources.mensa import MensaTracker
@@ -280,6 +281,27 @@ class Weather(Resource):
         return WeatherTracker().get_cleaned_weather()
 
 
+class EventInfo(Resource):
+    """Return Event Info."""
+
+    def __repr__(self) -> str:
+        """Repr function used for the cache."""
+        return f'{self.__class__.__name__}({1})'
+
+    @cache.memoize(1)
+    def get(self):
+        """
+        Return Event Info.
+
+        Args:
+            self
+
+        Returns:
+            Future weather.
+        """
+        return EventManager.determine_event()
+
+
 # API endpoints
 api.add_resource(Bus, '/api/bus')
 api.add_resource(Cris, '/api/cris')
@@ -291,3 +313,4 @@ api.add_resource(ApiInfo, '/api/help')
 api.add_resource(Picture, '/api/picture/<image_id>')
 api.add_resource(Instagram, '/api/instagram')
 api.add_resource(Weather, '/api/weather')
+api.add_resource(EventInfo, '/api/event')
