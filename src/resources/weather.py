@@ -46,8 +46,7 @@ class WeatherTracker(Tracker):
 
         for hour in response_json['list']:
             if (
-                datetime.fromtimestamp(hour['dt']) >= now
-                and datetime.fromtimestamp(hour['dt']) < now + cutoff
+                    now <= datetime.fromtimestamp(hour['dt']) < now + cutoff
             ):
                 hourly_data.append(
                     {
