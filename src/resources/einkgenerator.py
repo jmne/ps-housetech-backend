@@ -165,7 +165,7 @@ class EInkGenerator:
         calling the link for the respective room number to crate a png screenshot from it
 
         alternatively with a HTML and CSS file"""
-        hti.output_path = os.path.join(path, 'template')
+        hti.output_path = tempdir
 
         html = self.return_html(room_number)
 
