@@ -17,7 +17,7 @@ class DrupalTracker(Tracker):
         self.event_url = '''https://www.wi.uni-muenster.de/ws/informationdisplays/events'''  # noqa: E501
         self.overlay_url = '''https://www.wi.uni-muenster.de/ws/informationdisplays/overlays'''  # noqa: E501
 
-    def get_response(self, url):
+    def get_content(self, url):
         """Response method returning data."""
         response = self.session.get(url).text
         return json.loads(response)
