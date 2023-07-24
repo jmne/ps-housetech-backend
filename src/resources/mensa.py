@@ -30,7 +30,7 @@ class MensaTracker(Tracker):
             'ring': 'https://speiseplan.stw-muenster.de/mensa_am_ring.xml',
             'bispinghof': 'https://speiseplan.stw-muenster.de/mensa_bispinghof.xml',
         }
-        self.url_en = ''  # tbd when english version is available
+        self.url_en = ''  # tbd when an english version is available
         self.result = []
 
     def get_meal_info(self, day_of_meals):  # noqa: C901

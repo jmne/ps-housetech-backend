@@ -7,7 +7,7 @@ class Tracker:
     """
     Parent Tracker class.
 
-    All different Tracker shall inherit
+    All different Trackers shall inherit
     from this class, to keep proxies.
     """
 
