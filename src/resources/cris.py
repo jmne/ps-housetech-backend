@@ -1,5 +1,8 @@
 import json
+import os
 
+import i18n
+import yaml
 from flask import make_response
 
 from .tracker import Tracker
@@ -20,6 +23,8 @@ class CrisTracker(Tracker):
             self
         """
         super().__init__()
+        self.translations = {}
+
         self.url = 'https://cris-api-staging.uni-muenster.de/'
         self.base_picture_url = '''https://www.uni-muenster.de/converis/
                                     ws/public/infoobject/get/Picture/'''
@@ -112,8 +117,37 @@ class CrisTracker(Tracker):
                 ),
             },
         ]
+
         self.employees = []  # list of dicts with employee_id and employees chair
         self.result = []  # to return
+
+        self.chair_keys = {
+            'Lehrstuhl für '
+            'Wirtschaftsinformatik und Informationsmanagement (Prof. Becker)': 'chair1',
+            'Institut für '
+            'Wirtschaftsinformatik': 'chair2',
+            'Lehrstuhl für '
+            'Wirtschaftsinformatik und Interorganisationssysteme (Prof. Klein)': 'chair3',
+            'Lehrstuhl für '
+            'Wirtschaftsinformatik und Logistik (Prof. Hellingrath)': 'chair4',
+            'Institut für '
+            'Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler': 'chair5',
+            'Juniorprofessur für'
+            ' Wirtschaftsinformatik, insbesondere Digitale Transformation'
+            ' und Gesellschaft (Prof. Berger)': 'chair6',
+            'Professur für '
+            'Statistik und Optimierung (Prof. Trautmann)': 'chair7',
+            'Professur für '
+            'Maschinelles Lernen und Data Engineering (Prof. Gieseke)': 'chair8',
+            'Lehrstuhl für '
+            'Praktische Informatik in der Wirtschaft (Prof. Kuchen)': 'chair9',
+            'Lehrstuhl für '
+            'Informatik (Prof. Vossen)': 'chair10',
+            'Professur für '
+            'Digitale Innovation und der öffentliche Sektor (Prof. Brandt)': 'chair11',
+            'Juniorprofessur für '
+            'IT-Sicherheit (Prof. Hupperich)': 'chair12',
+        }
 
     def split_list(self, input_list, max_length):
         """Splitting the input list into lists with len(max_length).
@@ -271,6 +305,7 @@ class CrisTracker(Tracker):
                     'phones': phones,
                     'chair': chair,
                     'image': picture_id,
+
                 })
         return
 
@@ -317,12 +352,57 @@ class CrisTracker(Tracker):
                     continue
                 card['image'] = attr['data']'''
 
-    def get_cris_data(self):
+    def get_translation(self, lang):
+        """
+        Translates chair names from German to English using i18n package.
+
+        Args:
+            lang: Language code (e.g., 'en' for English, 'de' for German)
+
+        Returns:
+          None
+        """
+        i18n.set('locale', lang)
+        i18n.set('fallback', 'de')
+
+        # Get the directory containing this script
+        base_dir = os.path.dirname(__file__)
+
+        # Construct the path to the YAML file
+        yaml_file = os.path.join(base_dir, 'cris.en.yaml')
+        # Load translations from the YAML file
+        with open(yaml_file) as f:
+            translations = yaml.safe_load(f)
+
+        for chair in self.chairs:
+            chair_key = self.chair_keys[chair['chair_name']]
+
+            translation = translations.get(lang, {}).get(
+                chair_key, chair['chair_name'],
+            )
+            chair['chair_name_en'] = translation
+            # Print the translation
+            # print(f"Chair name: {chair['chair_name']}, Chair key: {chair_key}")
+            # print(f"Translation for {chair_key}: {translation}")
+
+    def get_cris_data(self, lang='de'):
         """Function that returns the desired result."""
         self.update_employees()
         self.employees = self.remove_duplicate_employees()
         self.update_result()
+
+        if lang == 'en':
+            self.get_translation(lang)
+
         self.add_addresses()
+
+        for card in self.result:
+            for chair in self.chairs:
+                if card['chair'] == chair['chair_name']:
+                    if lang == 'en':
+                        card['chair'] = chair['chair_name_en']
+                    break
+
         # self.add_pictures()
         return make_response(
             json.dumps(self.result, ensure_ascii=False), 200,
