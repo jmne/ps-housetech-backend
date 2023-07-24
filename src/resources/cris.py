@@ -6,7 +6,6 @@ import yaml
 from flask import make_response
 
 from .tracker import Tracker
-# import xmltodict
 
 
 class CrisTracker(Tracker):

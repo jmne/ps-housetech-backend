@@ -1,6 +1,6 @@
 import pytest
 
-from src.api import create_app
+from src.run import create_app
 
 
 @pytest.fixture()

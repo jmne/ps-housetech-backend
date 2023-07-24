@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>Doorsign</title>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            grid-template-columns: 1fr 200px;
+            height: 100vh;
+        }
+
+        .header-left {
+            grid-area: 1 / 1 / 2 / 2;
+            font-size: 1rem;
+            margin-top: 35px;
+        }
+
+        .room_number {
+            background-color: black;
+            color: white;
+            border-bottom-right-radius: 10px;
+            border-top-right-radius: 10px;
+            display: block;
+            width: 100%;
+            font-size: 2.62rem;
+            font-weight: 700;
+            padding: 7px;
+            box-sizing: border-box;
+        }
+
+        .department {
+            padding-left: 7px;
+        }
+
+        .header-right {
+            grid-area: 1 / 2 / 2 / 3;
+            text-align: right;
+            padding: 7px;
+            margin-top: 25px;
+        }
+
+        svg {
+            width: 75%; /* Adjust the width as needed */
+            height: auto; /* Maintain the aspect ratio */
+        }
+
+
+        .main-content {
+            grid-area: 2 / 1 / 3 / 3;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-left: 70px;
+            padding-left: 0;
+            list-style-type: none;
+            max-height: calc(100vh - (header_height + footer_height)); /* Adjust header_height and footer_height accordingly */
+            overflow-y: auto;
+        }
+
+        li {
+            position: relative; /* Add position: relative */
+            padding-left: 2rem; /* Adjust the padding as needed */
+            margin-bottom: 28px;
+        }
+
+        li::before {
+            content: "";
+            display: inline-block;
+            position: absolute;
+            left: 0;
+            top: 15%;
+            width: 20px;
+            height: 20px;
+            background-color: black;
+            border-radius: 2px; /* Adjust the border-radius as needed */
+        }
+
+
+        /* ONLY NEEDED IF -> list-style-type: square
+
+        li::marker {
+            font-size: 3.5rem;
+            position: absolute;
+            top: 10;
+            border-radius: 50%;
+        }
+
+        */
+
+
+        .name {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .degree {
+            font-size: 14px;
+        }
+
+        .footer-left {
+            grid-area: 3 / 1 / 4 / 2;
+            padding: 7px;
+        }
+
+        .footer-right {
+            grid-area: 3 / 2 / 4 / 3;
+            background-color: black;
+            color: white;
+            border-bottom-left-radius: 10px;
+            border-top-left-radius: 10px;
+            text-align: center;
+            padding: 7px;
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-container">
+    <div class="header-left">
+        <div class="room_number">RAUM {{ roomData.room }}</div>
+        <br>
+    </div>
+    <div class="header-right">{{ svg|safe }}</div>
+    <ul class="main-content">
+        {% for name in roomData.person %}
+        <li>
+            <span class="name">{{ name.name }}</span><br>
+            <span class="degree">{{ name.degree }}</span>
+        </li>
+        {% endfor %}
+    </ul>
+    <div class="footer-left">{{ roomData.globalRoomNumber }}</div>
+    <div class="footer-right">www.ercis.org</div>
+</div>
+</body>
+</html>
