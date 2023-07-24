@@ -36,7 +36,7 @@ class BusTracker:
         """
         translations = {
             'Kriegerw. ü.MS Hbf': 'Kriegerw. via MS Central Station',
-            'Alex.Camp ü.MS Hbf': 'Alex.Camp via MS Central Station',
+            'Alex.Camp. ü.MS Hbf': 'Alex.Camp via MS Central Station',
             'Münster(Westf) Hbf': 'Münster(West) Central Station',
             'Burgsteinfurt Bf': 'Burgsteinfurt Train Station',
             'Altenberge Bahnhof': 'Altenberge Train Station',
