@@ -31,4 +31,4 @@ class EventManager:
         elif today.month == 1 and today.day < 14:
             return Event.NEWYEAR.value
         else:
-            return None  # in case it's not a special day
+            return 0  # in case it's not a special day

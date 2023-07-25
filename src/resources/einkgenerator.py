@@ -136,7 +136,7 @@ class EInkGenerator:
         backend_data = self.get_cris_data('Leonardo-Campus 3', room_number)
 
         path = os.path.dirname(os.path.abspath(__file__))
-        svg = open(os.path.join(path, 'template', 'ercis.svg')).read()
+        svg = open(os.path.join(path, '../templates', 'ercis.svg')).read()
 
         html_string = render_template(
             'index.html', roomData=backend_data, svg=Markup(svg),
