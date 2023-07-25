@@ -10,6 +10,11 @@ from PIL import Image
 from .cris import CrisTracker
 
 
+tempfile.tempdir = tempfile.TemporaryDirectory(
+    dir=os.path.dirname(os.path.abspath(__file__)),
+).name
+
+
 class EInkGenerator:
     """Generate E-Ink image in HEX Format."""
 
@@ -177,4 +182,6 @@ class EInkGenerator:
         image = image.convert('RGB')
         if os.path.exists(screenshot_path[0]):
             os.remove(screenshot_path[0])
+        if os.path.exists(screenshot_path[0].replace('.png', '.html')):
+            os.remove(screenshot_path[0].replace('.png', '.html'))
         return image
