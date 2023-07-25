@@ -43,6 +43,7 @@ xmltodict= "^0.13.0"
 pyinstrument = "^4.5.1"
 Flask-Caching="^2.0.2"
 Pillow = "^10.0.0"
+python-i18n = "^0.3.9"
 html2image = "^2.0.3"
 numpy = "^1.25.1"
 

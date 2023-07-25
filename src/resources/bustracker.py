@@ -1,10 +1,10 @@
 import json
 from datetime import datetime
 
-from .tracker import Tracker
+import requests
 
 
-class BusTracker(Tracker):
+class BusTracker:
     """
     BusTracker class using the API of Stadtwerke Muenster.
 
@@ -17,18 +17,45 @@ class BusTracker(Tracker):
         Initialization of BusTracker class.
 
         Args:
-            self,
-            stations: List of station numbers to monitor
+            self
         """
-        super().__init__()
         self.stations = [4552102, 4552101]
+        self.session = requests.session()
+        self.start_time = ''
 
-    def get_future_rides(self):
+    def translate_to_english(self, direction):
+        """
+        Method to translate German directions to English.
+
+        Args:
+            self
+            direction: str, direction in German
+
+        Returns: str, direction in English
+        """
+        translations = {
+            'ü.': 'via',
+            'über': 'via',
+            'üb.': 'via',
+            'Hbf': 'Central Station',
+            'Hauptbahnhof': 'Central Station',
+            'ü.MS Hbf': 'via MS Central Station',
+            'Bf': 'Train Station',
+            'Bahnhof': 'Train Station',
+        }
+        words = direction.split()
+        for i in range(len(words)):
+            if words[i] in translations:
+                words[i] = translations[words[i]]
+        return ' '.join(words)
+
+    def get_future_rides(self, language='de'):
         """
         Method that calls the API and transforms the data in the desired format.
 
         Args:
             self
+            language (str): Language code ('de' for German, 'en' for English)
         Returns: List of dictionaries.
         Dictionaries contain data for the specific bus stations
 
@@ -50,11 +77,14 @@ class BusTracker(Tracker):
             )
             response = json.loads(response.text)
             for entry in response:
+                going_to = entry['richtungstext']
+                if language == 'en':
+                    going_to = self.translate_to_english(going_to)
                 result.append({
                     'station': entry['lbez'],
                     'direction': 'Einwärts' if station == 4552102 else 'Auswärts',
                     'line': entry['linientext'],
-                    'going_to': entry['richtungstext'],
+                    'going_to': going_to,
                     'planned_departure_time': datetime
                     .fromtimestamp(entry['abfahrtszeit'])
                     .strftime('%H:%M'),

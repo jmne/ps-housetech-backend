@@ -40,7 +40,23 @@ def bus():  # dead: disable
         per direction -> six in total) as List of dicts.
 
     """
-    return make_response(BusTracker().get_future_rides(), 200)
+    return make_response(BusTracker().get_future_rides('de'), 200)
+
+
+@api.get('/bus/en')  # type: ignore[attr-defined]
+@cache.cached(15)
+def bus_en():  # dead: disable
+    """
+    Creates an BusTracker instance.
+
+    Runs get_future_rides() method for an English version.
+
+    Returns:
+        Future Rides in the next 30 Minutes (max three
+        per direction -> six in total) as List of dicts.
+
+    """
+    return make_response(BusTracker().get_future_rides('en'), 200)
 
 
 @api.get('/cris')  # type: ignore[attr-defined]
@@ -55,7 +71,22 @@ def cris():
         Events of the current day as List of dicts.
 
     """
-    return make_response(CrisTracker().get_cris_data(), 200)
+    return make_response(CrisTracker().get_cris_data('de'), 200)
+
+
+@api.get('/cris/en')  # type: ignore[attr-defined]
+@cache.cached(3600)
+def cris_en():  # dead: disable
+    """
+    Creates a CrisTracker instance.
+
+    Runs get_cris_data() method for an English version.
+
+    Returns:
+        Events of the current day as List of dicts.
+
+    """
+    return make_response(CrisTracker().get_cris_data('en'), 200)
 
 
 @api.get('/mensa/<mensa_name>')  # type: ignore[attr-defined]
@@ -73,7 +104,25 @@ def mensa(mensa_name):
         Menu of the current day as List of dicts.
 
     """
-    return make_response(MensaTracker().get_current_meals(mensa_name), 200)
+    return make_response(MensaTracker().get_current_meals(mensa_name, 'de'), 200)
+
+
+@api.get('/mensa/<mensa_name>/en')  # type: ignore[attr-defined]
+@cache.cached(86400)
+def mensa_en(mensa_name):  # dead: disable
+    """
+    Creates a MensaTracker instance.
+
+    Runs get_current_meals() method for English Version.
+
+    Args:
+        mensa_name: Name of the mensa.
+
+    Returns:
+        Menu of the current day as List of dicts in English.
+
+    """
+    return make_response(MensaTracker().get_current_meals(mensa_name, 'en'), 200)
 
 
 @api.get('/eink/<room_number>')  # type: ignore[attr-defined]
