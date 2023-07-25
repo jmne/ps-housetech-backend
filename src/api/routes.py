@@ -209,7 +209,7 @@ def redirect_to_docs():  # dead: disable
 
 
 @api.app_errorhandler(404)  # type: ignore[attr-defined]
-def page_not_found():  # dead: disable
+def page_not_found(e):  # dead: disable
     """Redirect to API documentation."""
     return redirect(
         '/api/help',  # noqa: E501
