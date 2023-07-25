@@ -17,8 +17,7 @@ class BusTracker:
         Initialization of BusTracker class.
 
         Args:
-            self,
-            stations: List of station numbers to monitor
+            self
         """
         self.stations = [4552102, 4552101]
         self.session = requests.session()

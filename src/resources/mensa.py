@@ -108,8 +108,8 @@ class MensaTracker(Tracker):
             language (str): Language code ('de' for German, 'en' for English)
 
         Returns:
-            List of dicts with key "weekday",
-            "date" and "item".
+            List of dicts with key "weekday,"
+            "date" and "item."
         """
         weekdays = {
             '0': 'Monday',

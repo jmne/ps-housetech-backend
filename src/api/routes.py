@@ -49,7 +49,7 @@ def bus_en():  # dead: disable
     """
     Creates an BusTracker instance.
 
-    Runs get_future_rides() method for English version.
+    Runs get_future_rides() method for an English version.
 
     Returns:
         Future Rides in the next 30 Minutes (max three
@@ -80,7 +80,7 @@ def cris_en():  # dead: disable
     """
     Creates a CrisTracker instance.
 
-    Runs get_cris_data() method for English version.
+    Runs get_cris_data() method for an English version.
 
     Returns:
         Events of the current day as List of dicts.

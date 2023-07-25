@@ -118,7 +118,7 @@ class CrisTracker(Tracker):
             },
         ]
 
-        self.employees = []  # list of dicts with employee_id and employees chair
+        self.employees = []  # list of dicts with an employee_id and employees chair
         self.result = []  # to return
 
         self.chair_keys = {
@@ -152,7 +152,7 @@ class CrisTracker(Tracker):
     def split_list(self, input_list, max_length):
         """Splitting the input list into lists with len(max_length).
 
-        returns the list a list of lists with max_length.
+        Returns the list a list of lists with max_length.
         """
         return [input_list[i:i+max_length] for i in range(0, len(input_list), max_length)]
 
@@ -281,7 +281,7 @@ class CrisTracker(Tracker):
             for chair, person in zip(response['chairs'], persons):
                 emails = []
                 phones = []
-                roomNumber = None
+                room_number = None
                 for edge in person['connections']['cards']['edges']:
                     email = edge['node']['email']
                     phone = edge['node']['phone']
@@ -289,8 +289,8 @@ class CrisTracker(Tracker):
                         emails.append(email)
                     if phone not in phones and phone is not None:
                         phones.append(phone)
-                    if roomNumber is None and edge['node']['roomNumber'] is not None:
-                        roomNumber = edge['node']['roomNumber']
+                    if room_number is None and edge['node']['roomNumber'] is not None:
+                        room_number = edge['node']['roomNumber']
 
                 picture_id = None
                 if person['connections']['pictures']['edges']:  # noqa: 501
@@ -300,7 +300,7 @@ class CrisTracker(Tracker):
                     'academicTitle': person['node']['academicTitle'],
                     'cfFirstNames': person['node']['cfFirstNames'],
                     'cfFamilyNames': person['node']['cfFamilyNames'],
-                    'roomNumber': roomNumber,
+                    'roomNumber': room_number,
                     'emails': emails,
                     'phones': phones,
                     'chair': chair,
@@ -310,7 +310,7 @@ class CrisTracker(Tracker):
         return
 
     def remove_duplicate_employees(self):
-        """Function that removes duplicates from employee list.
+        """Function that removes duplicates from an employee list.
 
         Keeps the first entry and removes all subsequent entries.
         """
