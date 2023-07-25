@@ -5,8 +5,7 @@ from dotenv import load_dotenv
 
 from .tracker import Tracker
 
-load_dotenv('../../../.env')
-
+load_dotenv()
 INSTAGRAM_KEY = os.getenv('INSTAGRAM_KEY')
 
 
