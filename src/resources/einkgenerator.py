@@ -176,6 +176,6 @@ class EInkGenerator:
 
         image = Image.open(screenshot_path[0])
         image = image.convert('RGB')
-        # if os.path.exists(screenshot_path[0]):
-        #     os.remove(screenshot_path[0])
+        if os.path.exists(screenshot_path[0]):
+            os.remove(screenshot_path[0])
         return image
