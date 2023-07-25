@@ -5,8 +5,8 @@ description = "Backend for modernizing displays at Leonardo Campus."
 readme = "README.md"
 license = "MIT"
 authors = [
-    "Jingyi Zhang <j_zhan12@uni-muenster.de>",
     "Jan Menne <jmenne@uni-muenster.de>",
+    "Jingyi Zhang <j_zhan12@uni-muenster.de>",
 ]
 include = ["CHANGELOG.md"]
 homepage = "https://ml-de.zivgitlabpages.uni-muenster.de/teaching/ps-housetech/ps-housetech-backend/"
@@ -40,9 +40,11 @@ regex = "^2023.5.5"
 python-dotenv = "^1.0.0"
 exchangelib = "^5.0.3"
 xmltodict= "^0.13.0"
-pyinstrument = "^4.5.0"
+pyinstrument = "^4.5.1"
 Flask-Caching="^2.0.2"
 Pillow = "^10.0.0"
+html2image = "^2.0.3"
+numpy = "^1.25.1"
 
 [pytest]
 addopts = [
