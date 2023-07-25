@@ -35,18 +35,20 @@ class BusTracker:
         Returns: str, direction in English
         """
         translations = {
-            'Kriegerw. ü.MS Hbf': 'Kriegerw. via MS Central Station',
-            'Alex.Camp ü.MS Hbf': 'Alex.Camp via MS Central Station',
-            'Münster(Westf) Hbf': 'Münster(West) Central Station',
-            'Burgsteinfurt Bf': 'Burgsteinfurt Train Station',
-            'Altenberge Bahnhof': 'Altenberge Train Station',
-            'Altenb. Bahnhof': 'Altenb. Train Station',
-            'Burgsteinfurt üb. Altenberge': 'Burgsteinfurt via Altenberge',
+            'ü.': 'via',
+            'über': 'via',
+            'üb.': 'via',
+            'Hbf': 'Central Station',
+            'Hauptbahnhof': 'Central Station',
+            'ü.MS Hbf': 'via MS Central Station',
+            'Bf': 'Train Station',
+            'Bahnhof': 'Train Station',
         }
-        for german, english in translations.items():
-            if german in direction:
-                return direction.replace(german, english)
-        return direction
+        words = direction.split()
+        for i in range(len(words)):
+            if words[i] in translations:
+                words[i] = translations[words[i]]
+        return ' '.join(words)
 
     def get_future_rides(self, language='de'):
         """

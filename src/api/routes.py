@@ -104,7 +104,25 @@ def mensa(mensa_name):
         Menu of the current day as List of dicts.
 
     """
-    return make_response(MensaTracker().get_current_meals(mensa_name), 200)
+    return make_response(MensaTracker().get_current_meals(mensa_name, 'de'), 200)
+
+
+@api.get('/mensa/<mensa_name>/en')  # type: ignore[attr-defined]
+@cache.cached(86400)
+def mensa_en(mensa_name):  # dead: disable
+    """
+    Creates a MensaTracker instance.
+
+    Runs get_current_meals() method for English Version.
+
+    Args:
+        mensa_name: Name of the mensa.
+
+    Returns:
+        Menu of the current day as List of dicts in English.
+
+    """
+    return make_response(MensaTracker().get_current_meals(mensa_name, 'en'), 200)
 
 
 @api.get('/eink/<room_number>')  # type: ignore[attr-defined]
