@@ -1,5 +1,4 @@
 import os
-import shutil
 import tempfile
 
 import numpy as np
@@ -35,7 +34,7 @@ class EInkGenerator:
             for pixel in row:
                 red, green, blue = pixel  # Access individual RGB values
                 # Check the color value and convert it to black, red, or white
-                if red > 240 and green < 50 and blue < 50:
+                if 130 < red < 140 and green < 40 and blue < 60:
                     result.append('RED')
                 elif red > 180 and green > 180 and blue > 180:
                     result.append('WHITE')
@@ -178,6 +177,4 @@ class EInkGenerator:
         image = image.convert('RGB')
         if os.path.exists(screenshot_path[0]):
             os.remove(screenshot_path[0])
-        if os.path.exists(tempdir):
-            shutil.rmtree(tempdir, ignore_errors=True)
         return image
