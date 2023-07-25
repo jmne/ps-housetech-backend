@@ -1,5 +1,4 @@
 import os
-import shutil
 import tempfile
 
 import numpy as np
@@ -178,6 +177,4 @@ class EInkGenerator:
         image = image.convert('RGB')
         if os.path.exists(screenshot_path[0]):
             os.remove(screenshot_path[0])
-        if os.path.exists(tempdir):
-            shutil.rmtree(tempdir, ignore_errors=True)
         return image
