@@ -147,8 +147,7 @@ class EInkGenerator:
 
     def get_image(self, room_number: str):
         """Return PNG door-sign for the correct room number."""
-        path = os.path.dirname(os.path.abspath(__file__))
-        tempdir = tempfile.TemporaryDirectory(dir=path).name
+        tempdir = tempfile.gettempdir()
 
         hti = Html2Image(
             size=(648, 480), temp_path=tempdir, custom_flags=[
