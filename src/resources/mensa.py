@@ -70,7 +70,7 @@ class MensaTracker(Tracker):
                 allergens = re.findall(r'\((.*?)\)', entry['meal'])
                 meal_data['allergens'] = allergens[0].split(
                     ',',
-                ) if allergens else None
+                ) if allergens else []
             except Exception as e:
                 print('There is no allergens key', e)
             try:
@@ -96,7 +96,7 @@ class MensaTracker(Tracker):
 
         return result
 
-    def get_current_meals(self, mensa, language='de'):
+    def get_current_meals(self, mensa, language):
         """
         Method that requests XML file for the Mensa meals.
 
