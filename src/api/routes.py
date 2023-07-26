@@ -27,9 +27,9 @@ cache = Cache(
 )
 
 
-@api.get('/bus')  # type: ignore[attr-defined]
+@api.get('/bus/<language>')  # type: ignore[attr-defined]
 @cache.cached(15)
-def bus():  # dead: disable
+def bus(language):  # dead: disable
     """
     Creates an BusTracker instance.
 
@@ -40,23 +40,11 @@ def bus():  # dead: disable
         per direction -> six in total) as List of dicts.
 
     """
-    return make_response(BusTracker().get_future_rides('de'), 200)
-
-
-@api.get('/bus/en')  # type: ignore[attr-defined]
-@cache.cached(15)
-def bus_en():  # dead: disable
-    """
-    Creates an BusTracker instance.
-
-    Runs get_future_rides() method for an English version.
-
-    Returns:
-        Future Rides in the next 30 Minutes (max three
-        per direction -> six in total) as List of dicts.
-
-    """
-    return make_response(BusTracker().get_future_rides('en'), 200)
+    match language:
+        case 'de':
+            return make_response(BusTracker().get_future_rides('de'), 200)
+        case 'en':
+            return make_response(BusTracker().get_future_rides('en'), 200)
 
 
 @api.get('/cris/<language>')  # type: ignore[attr-defined]
