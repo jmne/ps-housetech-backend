@@ -6,6 +6,7 @@ from flask import render_template
 from html2image import Html2Image
 from markupsafe import Markup
 from PIL import Image
+from PIL import ImageFile
 
 from .cris import CrisTracker
 
@@ -177,6 +178,8 @@ class EInkGenerator:
             html_str=html,
             save_as='Raum-' + room_number + '.png',
         )
+
+        ImageFile.LOAD_TRUNCATED_IMAGES = True
 
         image = Image.open(screenshot_path[0])
         image = image.convert('RGB')
