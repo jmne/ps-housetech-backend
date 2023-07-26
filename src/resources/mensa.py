@@ -67,13 +67,6 @@ class MensaTracker(Tracker):
                 meal_data['foodicons'] = None
                 print('There is no foodicons key', e)
             try:
-                allergens = re.findall(r'\((.*?)\)', entry['meal'])
-                meal_data['allergens'] = allergens[0].split(
-                    ',',
-                ) if allergens else []
-            except Exception as e:
-                print('There is no allergens key', e)
-            try:
                 meal_data['meal'] = re.sub(
                     r'\([^)]*\)', '',
                     entry['meal'],

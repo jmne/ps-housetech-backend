@@ -29,7 +29,7 @@ def test_mensa(client):
             # Test each item in the "item" list contains the expected keys
             item_keys = {
                 'meal', 'foodicons',
-                'price1', 'price3', 'allergens',
+                'price1', 'price3',
             }
             for day in data:
                 for meal in day['item']:
