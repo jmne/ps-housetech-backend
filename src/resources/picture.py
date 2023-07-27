@@ -4,8 +4,11 @@ from io import BytesIO
 import xmltodict
 from flask import make_response
 from PIL import Image
+from PIL import ImageFile
 
 from .tracker import Tracker
+
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
 class PictureTracker(Tracker):
