@@ -39,13 +39,12 @@ class EInkGenerator:
             for pixel in row:
                 red, green, blue = pixel  # Access individual RGB values
                 # Check the color value and convert it to black, red, or white
-                if (130 < red < 140 and green < 40 and blue < 60) \
-                        | (red > 190 and green < 150 and blue < 160):
-                    result.append('RED')
-                elif red > 180 and green > 180 and blue > 180:
+                if red < 10 and green < 10 and blue < 10:
+                    result.append('BLACK')
+                elif red > 240 and green > 240 and blue > 240:
                     result.append('WHITE')
                 else:
-                    result.append('BLACK')
+                    result.append('RED')
         return result
 
     def get_layer(self, rgb_array, rgb_color):
