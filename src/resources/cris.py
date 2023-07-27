@@ -117,6 +117,7 @@ class CrisTracker(Tracker):
                 ),
             },
         ]
+        self.chairs.reverse()
 
         self.employees = []  # list of dicts with an employee_id and employees chair
         self.result = []  # to return
@@ -157,12 +158,7 @@ class CrisTracker(Tracker):
         return [input_list[i:i+max_length] for i in range(0, len(input_list), max_length)]
 
     def update_employees(self):
-        """Append all employee_ids of the chairs to cris instance.
-
-        TODO: if len(response) > 100:
-        --> query again for the chair beginning with
-        the endcursor of the last query.
-        """
+        """Append all employee_ids of the chairs to cris instance."""
         for chair in self.chairs:
             request_is_necessary = True
             paginator = ''
@@ -318,39 +314,19 @@ class CrisTracker(Tracker):
         result = list(temp_dict.values())[::-1]
         return result
 
-    def add_addresses(self):
+    def add_addresses_and_name(self):
         """Function that adds addresses for every employee.
 
         Address depends on the chair the person is working in.
         TODO: Outsource the chair address matching to config file
         """
         for card in self.result:
+            card['cfFullName'] = f'{card["cfFirstNames"]} {card["cfFamilyNames"]}'
             if 'Prof. Klein' in card['chair'] or 'Prof. Berger' in card['chair']:
                 card['address'] = 'Leonardo-Campus 11'
             else:
                 card['address'] = 'Leonardo-Campus 3'
         return
-
-    '''
-    def add_pictures(self):
-        """Function that adds picture base 64 blob for every employee.
-
-        The function overwrites the image value with the base 64 blob.
-        """
-        for card in self.result:
-            if card['image'] is None:
-                continue
-            response = self.session.get(
-                f'{self.base_picture_url}{str(card["image"])}',
-            )
-            if response.status_code != 200:
-                card['image'] = None
-                continue
-            response_list = xmltodict.parse(response.text)
-            for attr in response_list['infoObject']['attribute']:
-                if attr['@name'] != 'File data':
-                    continue
-                card['image'] = attr['data']'''
 
     def get_translation(self, lang):
         """
@@ -385,7 +361,7 @@ class CrisTracker(Tracker):
             # print(f"Chair name: {chair['chair_name']}, Chair key: {chair_key}")
             # print(f"Translation for {chair_key}: {translation}")
 
-    def get_cris_data(self, lang='de'):
+    def get_cris_data(self, lang):
         """Function that returns the desired result."""
         self.update_employees()
         self.employees = self.remove_duplicate_employees()
@@ -394,7 +370,7 @@ class CrisTracker(Tracker):
         if lang == 'en':
             self.get_translation(lang)
 
-        self.add_addresses()
+        self.add_addresses_and_name()
 
         for card in self.result:
             for chair in self.chairs:
