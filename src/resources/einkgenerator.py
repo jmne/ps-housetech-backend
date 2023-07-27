@@ -39,9 +39,9 @@ class EInkGenerator:
             for pixel in row:
                 red, green, blue = pixel  # Access individual RGB values
                 # Check the color value and convert it to black, red, or white
-                if red < 10 and green < 10 and blue < 10:
+                if red < 20 and green < 20 and blue < 20:
                     result.append('BLACK')
-                elif red > 240 and green > 240 and blue > 240:
+                elif red > 230 and green > 230 and blue > 230:
                     result.append('WHITE')
                 else:
                     result.append('RED')
