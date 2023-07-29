@@ -195,6 +195,23 @@ def weather():  # dead: disable
     return make_response(WeatherTracker().get_cleaned_weather(), 200)
 
 
+@api.get('/precipitation/<z>/<x>/<y>')  # type: ignore[attr-defined]
+def precipitation(z, x, y):  # dead: disable
+    """
+    Creates a WeatherTracker instance.
+
+    Runs get_precipitation(z, x, y) method.
+
+    Returns:
+        Weather forecast for the next 24 hours / days as List of dicts.
+
+    """
+    return make_response(
+        WeatherTracker().get_precipitation(z, x, y), 200,
+        {'Content-Type': 'image/png'},
+    )
+
+
 @api.get('/event')  # type: ignore[attr-defined]
 @cache.cached(3600)
 def event():  # dead: disable
