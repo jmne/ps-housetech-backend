@@ -246,6 +246,7 @@ class CrisTracker(Tracker):
                                               roomNumber
                                               email
                                               phone
+                                              status
                                             }}
                                           }}
                                         }}
@@ -279,6 +280,9 @@ class CrisTracker(Tracker):
                 phones = []
                 room_number = None
                 for edge in person['connections']['cards']['edges']:
+                    # only active cards
+                    if int(edge['node']['status']) != 3:
+                        continue
                     email = edge['node']['email']
                     phone = edge['node']['phone']
                     if email not in emails and email is not None:
@@ -357,9 +361,6 @@ class CrisTracker(Tracker):
                 chair_key, chair['chair_name'],
             )
             chair['chair_name_en'] = translation
-            # Print the translation
-            # print(f"Chair name: {chair['chair_name']}, Chair key: {chair_key}")
-            # print(f"Translation for {chair_key}: {translation}")
 
     def get_cris_data(self, lang):
         """Function that returns the desired result."""
@@ -379,7 +380,6 @@ class CrisTracker(Tracker):
                         card['chair'] = chair['chair_name_en']
                     break
 
-        # self.add_pictures()
         return make_response(
             json.dumps(self.result, ensure_ascii=False), 200,
             {'Content-Type': 'application/json', 'charset': 'utf-8'},
