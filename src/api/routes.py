@@ -206,7 +206,10 @@ def precipitation(z, x, y):  # dead: disable
         Weather forecast for the next 24 hours / days as List of dicts.
 
     """
-    return make_response(WeatherTracker().get_precipitation(z, x, y), 200)
+    return make_response(
+        WeatherTracker().get_precipitation(z, x, y), 200,
+        {'Content-Type': 'image/png'},
+    )
 
 
 @api.get('/event')  # type: ignore[attr-defined]
