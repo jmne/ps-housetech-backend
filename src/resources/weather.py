@@ -99,7 +99,7 @@ class WeatherTracker(Tracker):
         """Get precipitation data (map) from OpenWeather api."""
         response = self.session.get(
             'https://tile.openweathermap.org/map/'
-            f'precipitation_new/{z}/{x}/{y}.png&appid={self.appid}',
+            f'precipitation_new/{z}/{x}/{y}.png?appid={self.appid}',
         )
 
         return response.content
