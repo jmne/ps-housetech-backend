@@ -8,6 +8,7 @@ deploy-container-dev:
 
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
+    - ssh house-admin@10.2.22.12 -p2222
 
     - ssh-keyscan -p 2222 10.2.22.12
     - chmod 644 ~/.ssh/known_hosts
