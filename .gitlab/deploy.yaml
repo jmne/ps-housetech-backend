@@ -1,5 +1,10 @@
 deploy-container-dev:
   image: ubuntu
+  tags:
+    - pshousetech
+  variables:
+    https_proxy: http://wwwproxy.uni-muenster.de:3128
+    http_proxy: http://wwwproxy.uni-muenster.de:3128
   stage: deploy
   before_script:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git curl -y )'
@@ -8,10 +13,8 @@ deploy-container-dev:
 
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - curl ifconfig.me
-    - ssh -T house-admin@10.2.22.12 -p2222
 
-    - ssh-keyscan -p 2222 10.2.22.12
+    - ssh-keyscan -p 2222 10.2.22.12 >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
   script:
     - echo "Deploy to development server"
@@ -30,6 +33,11 @@ deploy-container-dev:
 
 deploy-container-main:
   image: ubuntu
+  tags:
+    - pshousetech
+  variables:
+    https_proxy: http://wwwproxy.uni-muenster.de:3128
+    http_proxy: http://wwwproxy.uni-muenster.de:3128
   stage: deploy
   before_script:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
