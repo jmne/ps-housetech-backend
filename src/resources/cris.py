@@ -116,6 +116,12 @@ class CrisTracker(Tracker):
                     ' IT-Sicherheit (Prof. Hupperich)'
                 ),
             },
+            {
+                'chair_id': '84240358', 'chair_name': (
+                    'Professur für Wirtschaftsinformatik,'
+                    ' insbesondere Geschäftsprozessmanagement (Prof. vom Brocke)'
+                ),
+            },
         ]
         self.chairs.reverse()
 
@@ -148,6 +154,8 @@ class CrisTracker(Tracker):
             'Digitale Innovation und der öffentliche Sektor (Prof. Brandt)': 'chair11',
             'Juniorprofessur für '
             'IT-Sicherheit (Prof. Hupperich)': 'chair12',
+            'Professur für Wirtschaftsinformatik,'
+            ' insbesondere Geschäftsprozessmanagement (Prof. vom Brocke)': 'chair13',
         }
 
     def split_list(self, input_list, max_length):
