@@ -1,9 +1,7 @@
-import json
 import re
 from datetime import datetime
 
 import xmltodict
-from flask import make_response
 
 from .tracker import Tracker
 
@@ -134,7 +132,4 @@ class MensaTracker(Tracker):
             data['item'] = meal_data
             self.result.append(data)
 
-        return make_response(
-            json.dumps(self.result, ensure_ascii=False), 200,
-            {'Content-Type': 'application/json', 'charset': 'utf-8'},
-        )
+        return self.result
