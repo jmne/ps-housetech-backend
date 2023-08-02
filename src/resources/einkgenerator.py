@@ -10,6 +10,11 @@ from PIL import Image
 from .cris import CrisTracker
 
 
+tempfile.tempdir = tempfile.TemporaryDirectory(
+    dir=os.path.dirname(os.path.abspath(__file__)),
+).name
+
+
 class EInkGenerator:
     """Generate E-Ink image in HEX Format."""
 
@@ -34,13 +39,12 @@ class EInkGenerator:
             for pixel in row:
                 red, green, blue = pixel  # Access individual RGB values
                 # Check the color value and convert it to black, red, or white
-                if (130 < red < 140 and green < 40 and blue < 60) \
-                        | (red > 190 and green < 150 and blue < 160):
-                    result.append('RED')
-                elif red > 180 and green > 180 and blue > 180:
+                if red < 20 and green < 20 and blue < 20:
+                    result.append('BLACK')
+                elif red > 230 and green > 230 and blue > 230:
                     result.append('WHITE')
                 else:
-                    result.append('BLACK')
+                    result.append('RED')
         return result
 
     def get_layer(self, rgb_array, rgb_color):
@@ -147,8 +151,7 @@ class EInkGenerator:
 
     def get_image(self, room_number: str):
         """Return PNG door-sign for the correct room number."""
-        path = os.path.dirname(os.path.abspath(__file__))
-        tempdir = tempfile.TemporaryDirectory(dir=path).name
+        tempdir = tempfile.gettempdir()
 
         hti = Html2Image(
             size=(648, 480), temp_path=tempdir, custom_flags=[
@@ -178,4 +181,6 @@ class EInkGenerator:
         image = image.convert('RGB')
         if os.path.exists(screenshot_path[0]):
             os.remove(screenshot_path[0])
+        if os.path.exists(screenshot_path[0].replace('.png', '.html')):
+            os.remove(screenshot_path[0].replace('.png', '.html'))
         return image

@@ -27,9 +27,9 @@ cache = Cache(
 )
 
 
-@api.get('/bus')  # type: ignore[attr-defined]
+@api.get('/bus/<language>')  # type: ignore[attr-defined]
 @cache.cached(15)
-def bus():  # dead: disable
+def bus(language):  # dead: disable
     """
     Creates an BusTracker instance.
 
@@ -40,12 +40,16 @@ def bus():  # dead: disable
         per direction -> six in total) as List of dicts.
 
     """
-    return make_response(BusTracker().get_future_rides(), 200)
+    match language:
+        case 'de':
+            return make_response(BusTracker().get_future_rides('de'), 200)
+        case 'en':
+            return make_response(BusTracker().get_future_rides('en'), 200)
 
 
-@api.get('/cris')  # type: ignore[attr-defined]
+@api.get('/cris/<language>')  # type: ignore[attr-defined]
 @cache.cached(3600)
-def cris():
+def cris(language):
     """
     Creates a CrisTracker instance.
 
@@ -55,12 +59,16 @@ def cris():
         Events of the current day as List of dicts.
 
     """
-    return make_response(CrisTracker().get_cris_data(), 200)
+    match language:
+        case 'de':
+            return make_response(CrisTracker().get_cris_data('de'), 200)
+        case 'en':
+            return make_response(CrisTracker().get_cris_data('en'), 200)
 
 
-@api.get('/mensa/<mensa_name>')  # type: ignore[attr-defined]
+@api.get('/mensa/<mensa_name>/<language>')  # type: ignore[attr-defined]
 @cache.cached(86400)
-def mensa(mensa_name):
+def mensa(mensa_name, language):
     """
     Creates a MensaTracker instance.
 
@@ -73,7 +81,11 @@ def mensa(mensa_name):
         Menu of the current day as List of dicts.
 
     """
-    return make_response(MensaTracker().get_current_meals(mensa_name), 200)
+    match language:
+        case 'de':
+            return make_response(MensaTracker().get_current_meals(mensa_name, 'de'), 200)
+        case 'en':
+            return make_response(MensaTracker().get_current_meals(mensa_name, 'en'), 200)
 
 
 @api.get('/eink/<room_number>')  # type: ignore[attr-defined]
@@ -181,6 +193,23 @@ def weather():  # dead: disable
 
     """
     return make_response(WeatherTracker().get_cleaned_weather(), 200)
+
+
+@api.get('/precipitation/<z>/<x>/<y>')  # type: ignore[attr-defined]
+def precipitation(z, x, y):  # dead: disable
+    """
+    Creates a WeatherTracker instance.
+
+    Runs get_precipitation(z, x, y) method.
+
+    Returns:
+        Weather forecast for the next 24 hours / days as List of dicts.
+
+    """
+    return make_response(
+        WeatherTracker().get_precipitation(z, x, y), 200,
+        {'Content-Type': 'image/png'},
+    )
 
 
 @api.get('/event')  # type: ignore[attr-defined]

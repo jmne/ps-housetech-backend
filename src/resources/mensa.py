@@ -22,13 +22,20 @@ class MensaTracker(Tracker):
             self
         """
         super().__init__()
+        # Plans in German
         self.url_de = {
             'davinci': 'https://speiseplan.stw-muenster.de/mensa_da_vinci.xml',
             'aasee': 'https://speiseplan.stw-muenster.de/mensa_aasee.xml',
             'ring': 'https://speiseplan.stw-muenster.de/mensa_am_ring.xml',
             'bispinghof': 'https://speiseplan.stw-muenster.de/mensa_bispinghof.xml',
         }
-        self.url_en = ''  # tbd when an english version is available
+        # Plans in English
+        self.url_en = {
+            'davinci': 'https://speiseplan.stw-muenster.de/mensa_da_vinci_en.xml',
+            'aasee': 'https://speiseplan.stw-muenster.de/mensa_aasee_en.xml',
+            'ring': 'https://speiseplan.stw-muenster.de/mensa_am_ring_en.xml',
+            'bispinghof': 'https://speiseplan.stw-muenster.de/mensa_bispinghof_en.xml',
+        }
         self.result = []
 
     def get_meal_info(self, day_of_meals):  # noqa: C901
@@ -58,13 +65,6 @@ class MensaTracker(Tracker):
                 meal_data['foodicons'] = None
                 print('There is no foodicons key', e)
             try:
-                allergens = re.findall(r'\((.*?)\)', entry['meal'])
-                meal_data['allergens'] = allergens[0].split(
-                    ',',
-                ) if allergens else None
-            except Exception as e:
-                print('There is no allergens key', e)
-            try:
                 meal_data['meal'] = re.sub(
                     r'\([^)]*\)', '',
                     entry['meal'],
@@ -87,7 +87,7 @@ class MensaTracker(Tracker):
 
         return result
 
-    def get_current_meals(self, mensa):
+    def get_current_meals(self, mensa, language):
         """
         Method that requests XML file for the Mensa meals.
 
@@ -96,10 +96,11 @@ class MensaTracker(Tracker):
         Args:
             self,
             mensa (str): Name of the mensa.
+            language (str): Language code ('de' for German, 'en' for English)
 
         Returns:
-            List of dicts with key "weekday",
-            "date" and "item".
+            List of dicts with key "weekday,"
+            "date" and "item."
         """
         weekdays = {
             '0': 'Monday',
@@ -111,7 +112,11 @@ class MensaTracker(Tracker):
             '6': 'Sunday',
         }
 
-        response = self.session.get(self.url_de[mensa]).text
+        if language == 'de':
+            response = self.session.get(self.url_de[mensa]).text
+        elif language == 'en':
+            response = self.session.get(self.url_en[mensa]).text
+
         response_list = xmltodict.parse(response)
         response_list = response_list['menue']['date']
         for day in response_list:

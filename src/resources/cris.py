@@ -1,5 +1,8 @@
 import json
+import os
 
+import i18n
+import yaml
 from flask import make_response
 
 from .tracker import Tracker
@@ -20,6 +23,8 @@ class CrisTracker(Tracker):
             self
         """
         super().__init__()
+        self.translations = {}
+
         self.url = 'https://cris-api-staging.uni-muenster.de/'
         self.base_picture_url = '''https://www.uni-muenster.de/converis/
                                     ws/public/infoobject/get/Picture/'''
@@ -112,23 +117,48 @@ class CrisTracker(Tracker):
                 ),
             },
         ]
-        self.employees = []  # list of dicts with employee_id and employees chair
+        self.chairs.reverse()
+
+        self.employees = []  # list of dicts with an employee_id and employees chair
         self.result = []  # to return
+
+        self.chair_keys = {
+            'Lehrstuhl für '
+            'Wirtschaftsinformatik und Informationsmanagement (Prof. Becker)': 'chair1',
+            'Institut für '
+            'Wirtschaftsinformatik': 'chair2',
+            'Lehrstuhl für '
+            'Wirtschaftsinformatik und Interorganisationssysteme (Prof. Klein)': 'chair3',
+            'Lehrstuhl für '
+            'Wirtschaftsinformatik und Logistik (Prof. Hellingrath)': 'chair4',
+            'Institut für '
+            'Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler': 'chair5',
+            'Juniorprofessur für'
+            ' Wirtschaftsinformatik, insbesondere Digitale Transformation'
+            ' und Gesellschaft (Prof. Berger)': 'chair6',
+            'Professur für '
+            'Statistik und Optimierung (Prof. Trautmann)': 'chair7',
+            'Professur für '
+            'Maschinelles Lernen und Data Engineering (Prof. Gieseke)': 'chair8',
+            'Lehrstuhl für '
+            'Praktische Informatik in der Wirtschaft (Prof. Kuchen)': 'chair9',
+            'Lehrstuhl für '
+            'Informatik (Prof. Vossen)': 'chair10',
+            'Professur für '
+            'Digitale Innovation und der öffentliche Sektor (Prof. Brandt)': 'chair11',
+            'Juniorprofessur für '
+            'IT-Sicherheit (Prof. Hupperich)': 'chair12',
+        }
 
     def split_list(self, input_list, max_length):
         """Splitting the input list into lists with len(max_length).
 
-        returns the list a list of lists with max_length.
+        Returns the list a list of lists with max_length.
         """
         return [input_list[i:i+max_length] for i in range(0, len(input_list), max_length)]
 
     def update_employees(self):
-        """Append all employee_ids of the chairs to cris instance.
-
-        TODO: if len(response) > 100:
-        --> query again for the chair beginning with
-        the endcursor of the last query.
-        """
+        """Append all employee_ids of the chairs to cris instance."""
         for chair in self.chairs:
             request_is_necessary = True
             paginator = ''
@@ -216,6 +246,7 @@ class CrisTracker(Tracker):
                                               roomNumber
                                               email
                                               phone
+                                              status
                                             }}
                                           }}
                                         }}
@@ -247,16 +278,19 @@ class CrisTracker(Tracker):
             for chair, person in zip(response['chairs'], persons):
                 emails = []
                 phones = []
-                roomNumber = None
+                room_number = None
                 for edge in person['connections']['cards']['edges']:
+                    # only active cards
+                    if int(edge['node']['status']) != 3:
+                        continue
                     email = edge['node']['email']
                     phone = edge['node']['phone']
                     if email not in emails and email is not None:
                         emails.append(email)
                     if phone not in phones and phone is not None:
                         phones.append(phone)
-                    if roomNumber is None and edge['node']['roomNumber'] is not None:
-                        roomNumber = edge['node']['roomNumber']
+                    if room_number is None and edge['node']['roomNumber'] is not None:
+                        room_number = edge['node']['roomNumber']
 
                 picture_id = None
                 if person['connections']['pictures']['edges']:  # noqa: 501
@@ -266,16 +300,17 @@ class CrisTracker(Tracker):
                     'academicTitle': person['node']['academicTitle'],
                     'cfFirstNames': person['node']['cfFirstNames'],
                     'cfFamilyNames': person['node']['cfFamilyNames'],
-                    'roomNumber': roomNumber,
+                    'roomNumber': room_number,
                     'emails': emails,
                     'phones': phones,
                     'chair': chair,
                     'image': picture_id,
+
                 })
         return
 
     def remove_duplicate_employees(self):
-        """Function that removes duplicates from employee list.
+        """Function that removes duplicates from an employee list.
 
         Keeps the first entry and removes all subsequent entries.
         """
@@ -283,47 +318,68 @@ class CrisTracker(Tracker):
         result = list(temp_dict.values())[::-1]
         return result
 
-    def add_addresses(self):
+    def add_addresses_and_name(self):
         """Function that adds addresses for every employee.
 
         Address depends on the chair the person is working in.
         TODO: Outsource the chair address matching to config file
         """
         for card in self.result:
+            card['cfFullName'] = f'{card["cfFirstNames"]} {card["cfFamilyNames"]}'
             if 'Prof. Klein' in card['chair'] or 'Prof. Berger' in card['chair']:
                 card['address'] = 'Leonardo-Campus 11'
             else:
                 card['address'] = 'Leonardo-Campus 3'
         return
 
-    '''
-    def add_pictures(self):
-        """Function that adds picture base 64 blob for every employee.
-
-        The function overwrites the image value with the base 64 blob.
+    def get_translation(self, lang):
         """
-        for card in self.result:
-            if card['image'] is None:
-                continue
-            response = self.session.get(
-                f'{self.base_picture_url}{str(card["image"])}',
-            )
-            if response.status_code != 200:
-                card['image'] = None
-                continue
-            response_list = xmltodict.parse(response.text)
-            for attr in response_list['infoObject']['attribute']:
-                if attr['@name'] != 'File data':
-                    continue
-                card['image'] = attr['data']'''
+        Translates chair names from German to English using i18n package.
 
-    def get_cris_data(self):
+        Args:
+            lang: Language code (e.g., 'en' for English, 'de' for German)
+
+        Returns:
+          None
+        """
+        i18n.set('locale', lang)
+        i18n.set('fallback', 'de')
+
+        # Get the directory containing this script
+        base_dir = os.path.dirname(__file__)
+
+        # Construct the path to the YAML file
+        yaml_file = os.path.join(base_dir, 'cris.en.yaml')
+        # Load translations from the YAML file
+        with open(yaml_file) as f:
+            translations = yaml.safe_load(f)
+
+        for chair in self.chairs:
+            chair_key = self.chair_keys[chair['chair_name']]
+
+            translation = translations.get(lang, {}).get(
+                chair_key, chair['chair_name'],
+            )
+            chair['chair_name_en'] = translation
+
+    def get_cris_data(self, lang):
         """Function that returns the desired result."""
         self.update_employees()
         self.employees = self.remove_duplicate_employees()
         self.update_result()
-        self.add_addresses()
-        # self.add_pictures()
+
+        if lang == 'en':
+            self.get_translation(lang)
+
+        self.add_addresses_and_name()
+
+        for card in self.result:
+            for chair in self.chairs:
+                if card['chair'] == chair['chair_name']:
+                    if lang == 'en':
+                        card['chair'] = chair['chair_name_en']
+                    break
+
         return make_response(
             json.dumps(self.result, ensure_ascii=False), 200,
             {'Content-Type': 'application/json', 'charset': 'utf-8'},
