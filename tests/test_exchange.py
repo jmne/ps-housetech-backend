@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 import pytest
@@ -8,15 +9,28 @@ from src.resources.exchange import ExchangeCalendar
 # Load the .env file
 load_dotenv('secrets.env')
 
+# Fetch the credentials from environment variables
+username = os.getenv('USERNAME')
+password = os.getenv('PASSWORD')
+email = os.getenv('EMAIL')
 
-def test_response_is_list_of_dictionaries():
+# Use pytest's fixture feature to set up and tear down a calendar for each test
+
+
+@pytest.fixture
+def calendar():
+    calendar = ExchangeCalendar()
+    calendar.update_credentials(username, password, email)
+    return calendar
+
+
+def test_response_is_list_of_dictionaries(calendar):
     """
     The function checks the following test cases.
 
     1. The response is a list of dictionaries.
     """
 
-    calendar = ExchangeCalendar()
     data = calendar.get_calendar_items()
 
     # Test the response contains a list of dictionaries
@@ -24,10 +38,9 @@ def test_response_is_list_of_dictionaries():
     assert all(isinstance(item, dict) for item in data)
 
 
-def test_each_dictionary_contains_expected_keys():
+def test_each_dictionary_contains_expected_keys(calendar):
     """Test each dictionary contains the expected keys"""
 
-    calendar = ExchangeCalendar()
     data = calendar.get_calendar_items()
     expected_keys = {
         'title', 'start', 'end', 'duration',
@@ -37,9 +50,9 @@ def test_each_dictionary_contains_expected_keys():
         assert set(item.keys()) == expected_keys
 
 
-def test_start_and_end_are_in_ISO_format():
+def test_start_and_end_are_in_ISO_format(calendar):
     """Test 'start' and 'end' are in ISO format"""
-    calendar = ExchangeCalendar()
+
     data = calendar.get_calendar_items()
     for item in data:
         try:
@@ -49,10 +62,9 @@ def test_start_and_end_are_in_ISO_format():
             pytest.fail(f'Invalid ISO format: {item}')
 
 
-def test_duration_is_valid_time_duration():
+def test_duration_is_valid_time_duration(calendar):
     """Test 'duration' is a valid time duration"""
 
-    calendar = ExchangeCalendar()
     data = calendar.get_calendar_items()
     for item in data:
         try:
@@ -84,13 +96,12 @@ def test_duration_is_valid_time_duration():
             pytest.fail(f'Invalid duration format: {item}')
 
 
-def test_string_fields_are_strings():
+def test_string_fields_are_strings(calendar):
     """
     Test 'title',  'location',
     'organizer_name', and 'organizer_email' are strings
 
     """
-    calendar = ExchangeCalendar()
     data = calendar.get_calendar_items()
     for item in data:
         assert isinstance(item['title'], str)
