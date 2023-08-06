@@ -1,3 +1,6 @@
+import os
+
+from dotenv import load_dotenv
 from flask import Blueprint
 from flask import current_app as app
 from flask import jsonify
@@ -17,7 +20,7 @@ from src.resources.picture import PictureTracker
 from src.resources.weather import WeatherTracker
 
 api = Blueprint('api', __name__)
-
+load_dotenv('../secrets.env')
 # initializing Flask API
 cache = Cache(
     config={
@@ -116,9 +119,24 @@ def calendar():
 
     Returns:
         Calendar of the current day as List of dicts.
-
     """
-    return make_response(ExchangeCalendar().get_calendar_items(), 200)
+    rooms = os.getenv('ROOMS').split(',')
+    results = []
+
+    ex = ExchangeCalendar()
+    for room in rooms:
+        username = os.getenv('USERNAME')
+        password = os.getenv('PASSWORD')
+        email = os.getenv('EMAIL')
+
+        if username and password and email:
+            ex.update_credentials(username, password, email)
+            results.append({
+                'room': room,
+                'items': ex.get_calendar_items(),
+            })
+
+    return jsonify(results)
 
 
 @api.get('/drupal/<content_type>')  # type: ignore[attr-defined]

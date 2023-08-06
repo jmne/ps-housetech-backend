@@ -1,4 +1,3 @@
-import os
 from datetime import datetime
 from datetime import timedelta
 
@@ -14,31 +13,26 @@ load_dotenv('../secrets.env')
 
 
 class ExchangeCalendar:
-    """CalendarTracker class using the exchangelib library.
-
-    proxies are not included yet.
-    """
+    """ExchangeCalendar class using the exchangelib library."""
 
     def __init__(self):
         """Get access to exchange server."""
-        # connect to server
-        username = os.getenv('R022_USERNAME')
-        password = os.getenv('R022_PASSWORD')
-        email = os.getenv('R022_EMAIL')
-        server = 'mail.wiwi.uni-muenster.de/ews/exchange.asmx'
+        self.server = 'mail.wiwi.uni-muenster.de/ews/exchange.asmx'
+        self.utc = pytz.utc
+        self.a = None
 
+    def update_credentials(self, username, password, email):
+        """Update credential."""
         credentials = Credentials(
             username=username, password=password,
         )
         config = Configuration(
-            server=server, credentials=credentials,
+            server=self.server, credentials=credentials,
         )
-
         self.a = Account(
             primary_smtp_address=email, config=config, autodiscover=False,
             access_type=DELEGATE,
         )
-        self.utc = pytz.utc
 
     def get_calendar_items(self):
         """
