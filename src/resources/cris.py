@@ -38,15 +38,21 @@ class CrisTracker(Tracker):
         }
         self.chairs = [
             {
-                'chair_id': '31914156', 'chair_name': (
-                    'Lehrstuhl für'
-                    ' Wirtschaftsinformatik und Informationsmanagement (Prof. Becker)'
-                ),
-            },
-            {
                 'chair_id': '31923392', 'chair_name': (
                     'Institut für'
                     ' Wirtschaftsinformatik'
+                ),
+            },
+            {
+                'chair_id': '40279415', 'chair_name': (
+                    'Institut für'
+                    ' Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler'
+                ),
+            },
+            {
+                'chair_id': '31914156', 'chair_name': (
+                    'Lehrstuhl für'
+                    ' Wirtschaftsinformatik und Informationsmanagement (Prof. Becker)'
                 ),
             },
             {
@@ -59,12 +65,6 @@ class CrisTracker(Tracker):
                 'chair_id': '40279346', 'chair_name': (
                     'Lehrstuhl für'
                     ' Wirtschaftsinformatik und Logistik (Prof. Hellingrath)'
-                ),
-            },
-            {
-                'chair_id': '40279415', 'chair_name': (
-                    'Institut für'
-                    ' Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler'
                 ),
             },
             {
@@ -116,6 +116,12 @@ class CrisTracker(Tracker):
                     ' IT-Sicherheit (Prof. Hupperich)'
                 ),
             },
+            {
+                'chair_id': '84240358', 'chair_name': (
+                    'Professur für Wirtschaftsinformatik,'
+                    ' insbesondere Geschäftsprozessmanagement (Prof. vom Brocke)'
+                ),
+            },
         ]
         self.chairs.reverse()
 
@@ -123,16 +129,16 @@ class CrisTracker(Tracker):
         self.result = []  # to return
 
         self.chair_keys = {
-            'Lehrstuhl für '
-            'Wirtschaftsinformatik und Informationsmanagement (Prof. Becker)': 'chair1',
             'Institut für '
-            'Wirtschaftsinformatik': 'chair2',
-            'Lehrstuhl für '
-            'Wirtschaftsinformatik und Interorganisationssysteme (Prof. Klein)': 'chair3',
-            'Lehrstuhl für '
-            'Wirtschaftsinformatik und Logistik (Prof. Hellingrath)': 'chair4',
+            'Wirtschaftsinformatik': 'chair1',
             'Institut für '
-            'Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler': 'chair5',
+            'Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler': 'chair2',
+            'Lehrstuhl für '
+            'Wirtschaftsinformatik und Informationsmanagement (Prof. Becker)': 'chair3',
+            'Lehrstuhl für '
+            'Wirtschaftsinformatik und Interorganisationssysteme (Prof. Klein)': 'chair4',
+            'Lehrstuhl für '
+            'Wirtschaftsinformatik und Logistik (Prof. Hellingrath)': 'chair5',
             'Juniorprofessur für'
             ' Wirtschaftsinformatik, insbesondere Digitale Transformation'
             ' und Gesellschaft (Prof. Berger)': 'chair6',
@@ -148,6 +154,8 @@ class CrisTracker(Tracker):
             'Digitale Innovation und der öffentliche Sektor (Prof. Brandt)': 'chair11',
             'Juniorprofessur für '
             'IT-Sicherheit (Prof. Hupperich)': 'chair12',
+            'Professur für Wirtschaftsinformatik,'
+            ' insbesondere Geschäftsprozessmanagement (Prof. vom Brocke)': 'chair13',
         }
 
     def split_list(self, input_list, max_length):
