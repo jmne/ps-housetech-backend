@@ -1,5 +1,3 @@
-import os
-
 from dotenv import load_dotenv
 from flask import Blueprint
 from flask import current_app as app
@@ -120,23 +118,7 @@ def calendar():
     Returns:
         Calendar of the current day as List of dicts.
     """
-    rooms = os.getenv('ROOMS').split(',')
-    results = []
-
-    ex = ExchangeCalendar()
-    for room in rooms:
-        username = os.getenv('USERNAME')
-        password = os.getenv('PASSWORD')
-        email = os.getenv('EMAIL')
-
-        if username and password and email:
-            ex.update_credentials(username, password, email)
-            results.append({
-                'room': room,
-                'items': ex.get_calendar_items(),
-            })
-
-    return jsonify(results)
+    return make_response(ExchangeCalendar().get_calendar_results(), 200)
 
 
 @api.get('/drupal/<content_type>')  # type: ignore[attr-defined]

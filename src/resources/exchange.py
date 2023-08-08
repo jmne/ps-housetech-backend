@@ -2,6 +2,7 @@ from datetime import datetime
 from datetime import timedelta
 
 import pytz
+from coverage.annotate import os
 from dotenv import load_dotenv
 from exchangelib import Account
 from exchangelib import Configuration
@@ -57,3 +58,28 @@ class ExchangeCalendar:
                 'organizer_email': item.organizer.email_address,
             })
         return items
+
+    def get_calendar_results(self):
+        """
+        Fetch and return calendar results from an Exchange Server.
+
+        Returns:
+        items (list): A list of calendar items. Classified with rooms
+        """
+        room_emails = os.getenv('ROOM_EMAILS', '').split(',')
+        rooms = os.getenv('ROOMS').split(',')
+        results = []
+
+        ex = ExchangeCalendar()
+        for room_email, room_name in zip(room_emails, rooms):
+            username = os.getenv('USERNAME')
+            password = os.getenv('PASSWORD')
+
+            if username and password and room_email:
+                ex.update_credentials(username, password, room_email)
+                results.append({
+                    'room': room_name,
+                    'items': ex.get_calendar_items(),
+                })
+
+        return results
