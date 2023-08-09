@@ -16,6 +16,15 @@ load_dotenv('../secrets.env')
 class ExchangeCalendar:
     """ExchangeCalendar class using the exchangelib library."""
 
+    # Define the rooms and email addresses directly in the class
+    ROOMS = [
+        {'name': 'R022', 'email': 'WI.R022@wi.uni-muenster.de'},
+        {'name': 'R115', 'email': 'WI.R115@wi.uni-muenster.de'},
+        {'name': 'Leo2', 'email': 'WI.LEO2@wi.uni-muenster.de'},
+        {'name': 'Leo18', 'email': 'WI.LEO18@wi.uni-muenster.de'},
+        {'name': 'WI-Pool', 'email': 'wi.pool@wi.uni-muenster.de'},
+    ]
+
     def __init__(self):
         """Get access to exchange server."""
         self.server = 'mail.wiwi.uni-muenster.de/ews/exchange.asmx'
@@ -66,20 +75,20 @@ class ExchangeCalendar:
         Returns:
         items (list): A list of calendar items. Classified with rooms
         """
-        room_emails = os.getenv('ROOM_EMAILS', '').split(',')
-        rooms = os.getenv('ROOMS').split(',')
         results = []
 
-        ex = ExchangeCalendar()
-        for room_email, room_name in zip(room_emails, rooms):
+        for room in self.ROOMS:
+            room_name = room['name']
+            room_email = room['email']
+
             username = os.getenv('USERNAME')
             password = os.getenv('PASSWORD')
 
             if username and password and room_email:
-                ex.update_credentials(username, password, room_email)
+                self.update_credentials(username, password, room_email)
                 results.append({
                     'room': room_name,
-                    'items': ex.get_calendar_items(),
+                    'items': self.get_calendar_items(),
                 })
 
         return results
