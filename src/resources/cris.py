@@ -44,6 +44,18 @@ class CrisTracker(Tracker):
                 ),
             },
             {
+                'chair_id': '31921637', 'chair_name': (
+                    'Lehrstuhl für'
+                    ' Informatik (Prof. Vossen)'
+                ),
+            },
+            {
+                'chair_id': '40279157', 'chair_name': (
+                    'Lehrstuhl für'
+                    ' Praktische Informatik in der Wirtschaft (Prof. Kuchen)'
+                ),
+            },
+            {
                 'chair_id': '40279415', 'chair_name': (
                     'Institut für'
                     ' Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler'
@@ -87,18 +99,6 @@ class CrisTracker(Tracker):
                 ),
             },
             {
-                'chair_id': '40279157', 'chair_name': (
-                    'Lehrstuhl für'
-                    ' Praktische Informatik in der Wirtschaft (Prof. Kuchen)'
-                ),
-            },
-            {
-                'chair_id': '31921637', 'chair_name': (
-                    'Lehrstuhl für'
-                    ' Informatik (Prof. Vossen)'
-                ),
-            },
-            {
                 'chair_id': '77369668', 'chair_name': (
                     'Professur für'
                     ' Digitale Innovation und der öffentliche Sektor (Prof. Brandt)'
@@ -131,25 +131,25 @@ class CrisTracker(Tracker):
         self.chair_keys = {
             'Institut für '
             'Wirtschaftsinformatik': 'chair1',
+            'Lehrstuhl für '
+            'Informatik (Prof. Vossen)': 'chair2',
+            'Lehrstuhl für '
+            'Praktische Informatik in der Wirtschaft (Prof. Kuchen)': 'chair3',
             'Institut für '
-            'Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler': 'chair2',
+            'Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler': 'chair4',
             'Lehrstuhl für '
-            'Wirtschaftsinformatik und Informationsmanagement (Prof. Becker)': 'chair3',
+            'Wirtschaftsinformatik und Informationsmanagement (Prof. Becker)': 'chair5',
             'Lehrstuhl für '
-            'Wirtschaftsinformatik und Interorganisationssysteme (Prof. Klein)': 'chair4',
+            'Wirtschaftsinformatik und Interorganisationssysteme (Prof. Klein)': 'chair6',
             'Lehrstuhl für '
-            'Wirtschaftsinformatik und Logistik (Prof. Hellingrath)': 'chair5',
+            'Wirtschaftsinformatik und Logistik (Prof. Hellingrath)': 'chair7',
             'Juniorprofessur für'
             ' Wirtschaftsinformatik, insbesondere Digitale Transformation'
-            ' und Gesellschaft (Prof. Berger)': 'chair6',
+            ' und Gesellschaft (Prof. Berger)': 'chair8',
             'Professur für '
-            'Statistik und Optimierung (Prof. Trautmann)': 'chair7',
+            'Statistik und Optimierung (Prof. Trautmann)': 'chair9',
             'Professur für '
-            'Maschinelles Lernen und Data Engineering (Prof. Gieseke)': 'chair8',
-            'Lehrstuhl für '
-            'Praktische Informatik in der Wirtschaft (Prof. Kuchen)': 'chair9',
-            'Lehrstuhl für '
-            'Informatik (Prof. Vossen)': 'chair10',
+            'Maschinelles Lernen und Data Engineering (Prof. Gieseke)': 'chair10',
             'Professur für '
             'Digitale Innovation und der öffentliche Sektor (Prof. Brandt)': 'chair11',
             'Juniorprofessur für '
