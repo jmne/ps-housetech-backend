@@ -38,27 +38,34 @@ class CrisTracker(Tracker):
         }
         self.chairs = [
             {
-                'chair_id': '31923392', 'chair_name': (
-                    'Institut für'
-                    ' Wirtschaftsinformatik'
+                'chair_id': '84240358', 'chair_name': (
+                    'Professur für Wirtschaftsinformatik,'
+                    ' insbesondere Geschäftsprozessmanagement (Prof. vom Brocke)'
                 ),
             },
             {
-                'chair_id': '31921637', 'chair_name': (
-                    'Lehrstuhl für'
-                    ' Informatik (Prof. Vossen)'
+                'chair_id': '55472869', 'chair_name': (
+                    'Juniorprofessur für'
+                    ' IT-Sicherheit (Prof. Hupperich)'
                 ),
             },
             {
-                'chair_id': '40279157', 'chair_name': (
-                    'Lehrstuhl für'
-                    ' Praktische Informatik in der Wirtschaft (Prof. Kuchen)'
+                'chair_id': '77369668', 'chair_name': (
+                    'Professur für'
+                    ' Digitale Innovation und der öffentliche Sektor (Prof. Brandt)'
                 ),
             },
             {
-                'chair_id': '40279415', 'chair_name': (
-                    'Institut für'
-                    ' Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler'
+                'chair_id': '59575309', 'chair_name': (
+                    'Professur für'
+                    ' Maschinelles Lernen und Data Engineering (Prof. Gieseke)'
+                ),
+            },
+            {
+                'chair_id': '79139069', 'chair_name': (
+                    'Juniorprofessur für'
+                    ' Wirtschaftsinformatik, insbesondere Digitale Transformation'
+                    ' und Gesellschaft (Prof. Berger)'
                 ),
             },
             {
@@ -74,16 +81,15 @@ class CrisTracker(Tracker):
                 ),
             },
             {
-                'chair_id': '40279346', 'chair_name': (
-                    'Lehrstuhl für'
-                    ' Wirtschaftsinformatik und Logistik (Prof. Hellingrath)'
+                'chair_id': '40279415', 'chair_name': (
+                    'Institut für'
+                    ' Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler'
                 ),
             },
             {
-                'chair_id': '79139069', 'chair_name': (
-                    'Juniorprofessur für'
-                    ' Wirtschaftsinformatik, insbesondere Digitale Transformation'
-                    ' und Gesellschaft (Prof. Berger)'
+                'chair_id': '40279346', 'chair_name': (
+                    'Lehrstuhl für'
+                    ' Wirtschaftsinformatik und Logistik (Prof. Hellingrath)'
                 ),
             },
             {
@@ -93,70 +99,31 @@ class CrisTracker(Tracker):
                 ),
             },
             {
-                'chair_id': '59575309', 'chair_name': (
-                    'Professur für'
-                    ' Maschinelles Lernen und Data Engineering (Prof. Gieseke)'
-                ),
-            },
-            {
-                'chair_id': '77369668', 'chair_name': (
-                    'Professur für'
-                    ' Digitale Innovation und der öffentliche Sektor (Prof. Brandt)'
-                ),
-            },
-            {
-                'chair_id': '40279346', 'chair_name': (
+                'chair_id': '40279157', 'chair_name': (
                     'Lehrstuhl für'
-                    ' Wirtschaftsinformatik und Logistik (Prof. Hellingrath)'
+                    ' Praktische Informatik in der Wirtschaft (Prof. Kuchen)'
                 ),
             },
             {
-                'chair_id': '55472869', 'chair_name': (
-                    'Juniorprofessur für'
-                    ' IT-Sicherheit (Prof. Hupperich)'
+                'chair_id': '31921637', 'chair_name': (
+                    'Lehrstuhl für'
+                    ' Informatik (Prof. Vossen)'
                 ),
             },
             {
-                'chair_id': '84240358', 'chair_name': (
-                    'Professur für Wirtschaftsinformatik,'
-                    ' insbesondere Geschäftsprozessmanagement (Prof. vom Brocke)'
+                'chair_id': '31923392', 'chair_name': (
+                    'Institut für'
+                    ' Wirtschaftsinformatik'
                 ),
             },
         ]
-        self.chairs.reverse()
-
         self.employees = []  # list of dicts with an employee_id and employees chair
         self.result = []  # to return
-
         self.chair_keys = {
-            'Institut für '
-            'Wirtschaftsinformatik': 'chair1',
-            'Lehrstuhl für '
-            'Informatik (Prof. Vossen)': 'chair2',
-            'Lehrstuhl für '
-            'Praktische Informatik in der Wirtschaft (Prof. Kuchen)': 'chair3',
-            'Institut für '
-            'Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler': 'chair4',
-            'Lehrstuhl für '
-            'Wirtschaftsinformatik und Informationsmanagement (Prof. Becker)': 'chair5',
-            'Lehrstuhl für '
-            'Wirtschaftsinformatik und Interorganisationssysteme (Prof. Klein)': 'chair6',
-            'Lehrstuhl für '
-            'Wirtschaftsinformatik und Logistik (Prof. Hellingrath)': 'chair7',
-            'Juniorprofessur für'
-            ' Wirtschaftsinformatik, insbesondere Digitale Transformation'
-            ' und Gesellschaft (Prof. Berger)': 'chair8',
-            'Professur für '
-            'Statistik und Optimierung (Prof. Trautmann)': 'chair9',
-            'Professur für '
-            'Maschinelles Lernen und Data Engineering (Prof. Gieseke)': 'chair10',
-            'Professur für '
-            'Digitale Innovation und der öffentliche Sektor (Prof. Brandt)': 'chair11',
-            'Juniorprofessur für '
-            'IT-Sicherheit (Prof. Hupperich)': 'chair12',
-            'Professur für Wirtschaftsinformatik,'
-            ' insbesondere Geschäftsprozessmanagement (Prof. vom Brocke)': 'chair13',
+            chair['chair_name']: 'chair' +
+            str(index + 1) for index, chair in enumerate(self.chairs)
         }
+        print(self.chair_keys)
 
     def split_list(self, input_list, max_length):
         """Splitting the input list into lists with len(max_length).
@@ -224,6 +191,44 @@ class CrisTracker(Tracker):
 
         return
 
+    def get_chair_by_card(self, cards):
+        """Method that returns the chair name for given card id."""
+        if len(cards) == 0:
+            return None
+        chairs = []
+        for card in cards:
+            payload = {
+                'query':
+                f"""
+                        query{{
+                          card(id: {card}) {{
+                            connections {{
+                              organisations {{
+                                edges {{
+                                  node {{
+                                    cfName
+                                  }}
+                                }}
+                              }}
+                            }}
+                          }}
+                        }}
+                """,
+            }
+            response = json.loads(
+                self.session.post(
+                    self.url, headers=self.header, json=payload,
+                ).text,
+            )
+            chair_name = (
+                response['data']['card']['connections']
+                ['organisations']['edges'][0]['node']['cfName']
+            )
+            if chair_name in chairs:
+                continue
+            chairs.append(chair_name)
+        return chairs
+
     def update_result(self):
         """Appends dicts with infos about employees to result list."""
         employee_ids = [item['id'] for item in self.employees]
@@ -255,6 +260,7 @@ class CrisTracker(Tracker):
                                               email
                                               phone
                                               status
+                                              id
                                             }}
                                           }}
                                         }}
@@ -286,6 +292,7 @@ class CrisTracker(Tracker):
             for chair, person in zip(response['chairs'], persons):
                 emails = []
                 phones = []
+                cards = []
                 room_number = None
                 for edge in person['connections']['cards']['edges']:
                     # only active cards
@@ -293,17 +300,20 @@ class CrisTracker(Tracker):
                         continue
                     email = edge['node']['email']
                     phone = edge['node']['phone']
+                    card = edge['node']['id']
                     if email not in emails and email is not None:
                         emails.append(email)
                     if phone not in phones and phone is not None:
                         phones.append(phone)
+                    # only add first active card id
+                    if card not in cards and card is not None:
+                        cards.append(card)
                     if room_number is None and edge['node']['roomNumber'] is not None:
                         room_number = edge['node']['roomNumber']
-
                 picture_id = None
                 if person['connections']['pictures']['edges']:  # noqa: 501
                     picture_id = person['connections']['pictures']['edges'][0]['node']['id']  # noqa: 501
-
+                chair_by_card = self.get_chair_by_card(cards)
                 self.result.append({
                     'academicTitle': person['node']['academicTitle'],
                     'cfFirstNames': person['node']['cfFirstNames'],
@@ -311,7 +321,10 @@ class CrisTracker(Tracker):
                     'roomNumber': room_number,
                     'emails': emails,
                     'phones': phones,
-                    'chair': chair,
+                    'chair': (
+                        chair_by_card if chair_by_card is not None
+                        and len(chair_by_card) > 0 else [chair]
+                    ),
                     'image': picture_id,
 
                 })
