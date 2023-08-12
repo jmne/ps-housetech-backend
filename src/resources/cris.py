@@ -6,6 +6,18 @@ import yaml
 from flask import make_response
 
 from .tracker import Tracker
+# PROBLEM: Es gibt noch viel mehr JobTitle
+# Bei einigen Leuten hat nur die inaktive(n) Karte(n) einen JobTitle, nicht die aktive(n)
+# Die Dauer der Query verlängert sich drastisch durch das neue Verfahren
+valid_job_titles = [
+    'Professoren', 'Außerplanmäßige Professoren', 'Vertretungsprofessoren',
+    'Honorarprofessoren', 'Gastprofessoren', 'Juniorprofessoren',
+    'Seniorprofessoren', 'Privatdozenten', 'Sekretariat', 'PostDoc',
+    'Akademische Direktoren', 'Akademische Oberräte', 'Akademische Räte',
+    'Wissenschaftliche Mitarbeiter', 'Mitarbeiter', 'Systemadministration',
+    'Bibliothek', 'Geschäftsführer', 'Professor', 'Apl. Professor', 'Dekan',
+    'TM_Professor_Supervisor',
+]
 
 
 class CrisTracker(Tracker):
@@ -26,8 +38,6 @@ class CrisTracker(Tracker):
         self.translations = {}
 
         self.url = 'https://cris-api-staging.uni-muenster.de/'
-        self.base_picture_url = '''https://www.uni-muenster.de/converis/
-                                    ws/public/infoobject/get/Picture/'''
         self.header = {
             'Accept-Encoding': 'gzip, deflate, br',
             'Content-Type': 'application/json',
@@ -123,7 +133,6 @@ class CrisTracker(Tracker):
             chair['chair_name']: 'chair' +
             str(index + 1) for index, chair in enumerate(self.chairs)
         }
-        print(self.chair_keys)
 
     def split_list(self, input_list, max_length):
         """Splitting the input list into lists with len(max_length).
@@ -229,7 +238,7 @@ class CrisTracker(Tracker):
             chairs.append(chair_name)
         return chairs
 
-    def update_result(self):
+    def update_result(self):  # noqa: 901
         """Appends dicts with infos about employees to result list."""
         employee_ids = [item['id'] for item in self.employees]
         # split employee ids up in list of 100 entries
@@ -261,6 +270,7 @@ class CrisTracker(Tracker):
                                               phone
                                               status
                                               id
+                                              jobTitle
                                             }}
                                           }}
                                         }}
@@ -293,8 +303,14 @@ class CrisTracker(Tracker):
                 emails = []
                 phones = []
                 cards = []
+                job_titles = []
                 room_number = None
                 for edge in person['connections']['cards']['edges']:
+                    # JOB TITLES OF INACTIVE CARDS ALSO GET ADDED
+                    # DUE TO SOME PEOPLE HAVING JOBTITLE=NULL IN THEIR ACTIVE CARD
+                    job_title = edge['node']['jobTitle']
+                    if job_title not in job_titles and job_title is not None:
+                        job_titles.append(job_title)
                     # only active cards
                     if int(edge['node']['status']) != 3:
                         continue
@@ -305,7 +321,6 @@ class CrisTracker(Tracker):
                         emails.append(email)
                     if phone not in phones and phone is not None:
                         phones.append(phone)
-                    # only add first active card id
                     if card not in cards and card is not None:
                         cards.append(card)
                     if room_number is None and edge['node']['roomNumber'] is not None:
@@ -325,8 +340,8 @@ class CrisTracker(Tracker):
                         chair_by_card if chair_by_card is not None
                         and len(chair_by_card) > 0 else [chair]
                     ),
+                    'jobTitle': job_titles,
                     'image': picture_id,
-
                 })
         return
 
@@ -345,12 +360,23 @@ class CrisTracker(Tracker):
         Address depends on the chair the person is working in.
         TODO: Outsource the chair address matching to config file
         """
+        new_result = []
         for card in self.result:
+            if not any(job_title in valid_job_titles for job_title in card['jobTitle']):
+                continue
+            # if not any(chair['chair_name'] in
+            #    '\t'.join(card['chair']) for chair in self.chairs):
+            #    continue
             card['cfFullName'] = f'{card["cfFirstNames"]} {card["cfFamilyNames"]}'
-            if 'Prof. Klein' in card['chair'] or 'Prof. Berger' in card['chair']:
+            if (
+                'Prof. Klein' in '\t'.join(card['chair']) or
+                'Prof. Berger' in '\t'.join(card['chair'])
+            ):
                 card['address'] = 'Leonardo-Campus 11'
             else:
                 card['address'] = 'Leonardo-Campus 3'
+            new_result.append(card)
+        self.result = new_result
         return
 
     def get_translation(self, lang):
