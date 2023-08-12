@@ -1,4 +1,3 @@
-from dotenv import load_dotenv
 from flask import Blueprint
 from flask import current_app as app
 from flask import jsonify
@@ -18,7 +17,6 @@ from src.resources.picture import PictureTracker
 from src.resources.weather import WeatherTracker
 
 api = Blueprint('api', __name__)
-load_dotenv('../secrets.env')
 # initializing Flask API
 cache = Cache(
     config={

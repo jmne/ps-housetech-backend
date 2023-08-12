@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 from flask import Flask
 from flask_cors import CORS
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -8,6 +9,7 @@ from src.api.routes import cache
 
 def create_app():
     """Initialize the core Flask application."""
+    load_dotenv()
     app = Flask(__name__)  # initialize
     app.config['JSON_AS_ASCII'] = False  # enable UTF-8
     app.register_blueprint(api, url_prefix='/api')  # register cache blueprint

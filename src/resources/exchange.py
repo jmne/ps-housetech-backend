@@ -3,14 +3,10 @@ from datetime import timedelta
 
 import pytz
 from coverage.annotate import os
-from dotenv import load_dotenv
 from exchangelib import Account
 from exchangelib import Configuration
 from exchangelib import Credentials
 from exchangelib import DELEGATE
-
-# Load the .env file
-load_dotenv('../secrets.env')
 
 
 class ExchangeCalendar:
@@ -81,8 +77,8 @@ class ExchangeCalendar:
             room_name = room['name']
             room_email = room['email']
 
-            username = os.getenv('USERNAME')
-            password = os.getenv('PASSWORD')
+            username = os.getenv('CAL_USERNAME')
+            password = os.getenv('CAL_PASSWORD')
 
             if username and password and room_email:
                 self.update_credentials(username, password, room_email)

@@ -2,12 +2,8 @@ import os
 from datetime import datetime
 
 import pytest
-from dotenv import load_dotenv
 
 from src.resources.exchange import ExchangeCalendar
-
-# Load the .env file
-load_dotenv('secrets.env')
 
 # Fetch the credentials from environment variables
 username = os.getenv('USERNAME')
