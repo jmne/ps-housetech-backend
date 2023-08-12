@@ -200,44 +200,6 @@ class CrisTracker(Tracker):
 
         return
 
-    def get_chair_by_card(self, cards):
-        """Method that returns the chair name for given card id."""
-        if len(cards) == 0:
-            return None
-        chairs = []
-        for card in cards:
-            payload = {
-                'query':
-                f"""
-                        query{{
-                          card(id: {card}) {{
-                            connections {{
-                              organisations {{
-                                edges {{
-                                  node {{
-                                    cfName
-                                  }}
-                                }}
-                              }}
-                            }}
-                          }}
-                        }}
-                """,
-            }
-            response = json.loads(
-                self.session.post(
-                    self.url, headers=self.header, json=payload,
-                ).text,
-            )
-            chair_name = (
-                response['data']['card']['connections']
-                ['organisations']['edges'][0]['node']['cfName']
-            )
-            if chair_name in chairs:
-                continue
-            chairs.append(chair_name)
-        return chairs
-
     def update_result(self):  # noqa: 901
         """Appends dicts with infos about employees to result list."""
         employee_ids = [item['id'] for item in self.employees]
@@ -299,7 +261,7 @@ class CrisTracker(Tracker):
             }
 
             persons = response['persons']['data']['nodes']
-            for chair, person in zip(response['chairs'], persons):
+            for person in persons:
                 emails = []
                 phones = []
                 cards = []
@@ -328,7 +290,7 @@ class CrisTracker(Tracker):
                 picture_id = None
                 if person['connections']['pictures']['edges']:  # noqa: 501
                     picture_id = person['connections']['pictures']['edges'][0]['node']['id']  # noqa: 501
-                chair_by_card = self.get_chair_by_card(cards)
+
                 self.result.append({
                     'academicTitle': person['node']['academicTitle'],
                     'cfFirstNames': person['node']['cfFirstNames'],
@@ -336,12 +298,10 @@ class CrisTracker(Tracker):
                     'roomNumber': room_number,
                     'emails': emails,
                     'phones': phones,
-                    'chair': (
-                        chair_by_card if chair_by_card is not None
-                        and len(chair_by_card) > 0 else [chair]
-                    ),
+                    'card_ids': cards,
                     'jobTitle': job_titles,
                     'image': picture_id,
+                    'chairs': [],
                 })
         return
 
@@ -354,23 +314,79 @@ class CrisTracker(Tracker):
         result = list(temp_dict.values())[::-1]
         return result
 
-    def add_addresses_and_name(self):
-        """Function that adds addresses for every employee.
+    def add_chairs(self):
+        """Function that bulk queries the cards and adds chair info."""
+        all_card_ids = [
+            {'index': index, 'card_id': card_id} for index, result in enumerate(
+                self.result,
+            ) for card_id in result['card_ids']
+        ]
+        print(len(all_card_ids))
+        all_ids = [
+            card_id for result in self.result for card_id in result['card_ids']
+        ]
+        list_of_lists = self.split_list(all_ids, 100)
+
+        card_index = 0  # Counter to keep track of the current card in all_card_ids
+        for loc in list_of_lists:
+            payload = {
+                'query':
+                f"""query{{
+                      nodes(ids: {list(map(int,loc))}) {{
+                        ... on Card {{
+                          connections {{
+                            organisations {{
+                              edges {{
+                                node {{
+                                  cfName
+                                }}
+                              }}
+                            }}
+                          }}
+                        }}
+                      }}
+                    }}""",
+            }
+            response = json.loads(
+                self.session.post(
+                    self.url, headers=self.header, json=payload,
+                ).text,
+            )
+
+            for result in response['data']['nodes']:
+                # Get the corresponding card from all_card_ids
+                card = all_card_ids[card_index]
+                chair_name = (
+                    result['connections']['organisations']
+                    ['edges'][0]['node']['cfName']
+                )
+                self.result[card['index']]['chairs'].append(
+                    chair_name,
+                )  # index from current card["index"]
+                card_index += 1  # Increment the card_index for the next iteration
+
+    def filter_and_add_keys(self):
+        """Function that filters and adds keys.
 
         Address depends on the chair the person is working in.
-        TODO: Outsource the chair address matching to config file
         """
         new_result = []
         for card in self.result:
+            # filter out all people that do not have at
+            # least one valid jobTitle
             if not any(job_title in valid_job_titles for job_title in card['jobTitle']):
                 continue
-            # if not any(chair['chair_name'] in
-            #    '\t'.join(card['chair']) for chair in self.chairs):
-            #    continue
+            # filter out all people that do not have at
+            # least one of the pre-defined chairs
+            if not any(
+                chair['chair_name'] in
+                '\t'.join(card['chairs']) for chair in self.chairs
+            ):
+                continue
             card['cfFullName'] = f'{card["cfFirstNames"]} {card["cfFamilyNames"]}'
             if (
-                'Prof. Klein' in '\t'.join(card['chair']) or
-                'Prof. Berger' in '\t'.join(card['chair'])
+                'Prof. Klein' in '\t'.join(card['chairs']) or
+                'Prof. Berger' in '\t'.join(card['chairs'])
             ):
                 card['address'] = 'Leonardo-Campus 11'
             else:
@@ -414,17 +430,17 @@ class CrisTracker(Tracker):
         self.update_employees()
         self.employees = self.remove_duplicate_employees()
         self.update_result()
-
+        self.add_chairs()
         if lang == 'en':
             self.get_translation(lang)
 
-        self.add_addresses_and_name()
+        self.filter_and_add_keys()
 
         for card in self.result:
             for chair in self.chairs:
-                if card['chair'] == chair['chair_name']:
+                if card['chairs'] == chair['chair_name']:
                     if lang == 'en':
-                        card['chair'] = chair['chair_name_en']
+                        card['chairs'] = chair['chair_name_en']
                     break
 
         return make_response(
