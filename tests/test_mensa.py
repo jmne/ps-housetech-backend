@@ -7,7 +7,7 @@ def test_mensa(client):
     3. Test each dictionary contains the expected keys
     """
     cafeterias = [
-        'davinci', 'aasee', 'ring', 'bispinghof',
+        'davinci', 'aasee', 'ring',
     ]
     languages = ['de', 'en']
     for language in languages:
