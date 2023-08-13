@@ -9,7 +9,7 @@ from exchangelib import Credentials
 from exchangelib import DELEGATE
 
 
-class ExchangeCalendar:
+class ExchangeCalendar():
     """ExchangeCalendar class using the exchangelib library."""
 
     # Define the rooms and email addresses directly in the class
@@ -55,6 +55,9 @@ class ExchangeCalendar:
 
         username = os.getenv('CAL_USERNAME')
         password = os.getenv('CAL_PASSWORD')
+
+        print(username)
+        print(password)
 
         if username and password:
             self.update_credentials(username, password, room_email)
