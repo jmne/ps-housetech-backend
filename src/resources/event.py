@@ -4,12 +4,12 @@ from enum import Enum
 
 class Event(Enum):
     """Enum class for events."""
-    PIDAY = 1
-    APRILFOOLS = 2
-    EMOJIDAY = 3
-    STARWARS = 4
-    HALLOWEEN = 5
-    NEWYEAR = 6
+    PIDAY = '1'
+    APRILFOOLS = '2'
+    EMOJIDAY = '3'
+    STARWARS = '4'
+    HALLOWEEN = '5'
+    NEWYEAR = '6'
 
 
 class EventManager:
@@ -31,4 +31,4 @@ class EventManager:
         elif today.month == 1 and today.day < 14:
             return Event.NEWYEAR.value
         else:
-            return 0  # in case it's not a special day
+            return '0'  # in case it's not a special day
