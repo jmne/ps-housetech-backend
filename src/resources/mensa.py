@@ -128,7 +128,7 @@ class MensaTracker(Tracker):
                 'date': datetime.fromtimestamp(
                     int(day['@timestamp']),
                 ).strftime('%Y-%m-%d'),
-                'weekday':  weekdays[
+                'weekday': weekdays[
                     str(
                         datetime.fromtimestamp(
                             int(day['@timestamp']),
