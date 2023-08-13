@@ -4,6 +4,8 @@ run-tests:
   allow_failure: false
   script:
     - echo "Running unit tests..."
+    - echo $CAL_USERNAME
+    - echo $CAL_PASSWORD
     - poetry run pytest -v --junitxml=report.xml
   artifacts:
     when: always
