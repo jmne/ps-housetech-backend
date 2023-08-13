@@ -51,12 +51,14 @@ class MensaTracker(Tracker):
         """
         result = []
         for entry in day_of_meals:
-            if (
-                    entry['category'] == 'Info' or
-                    entry['category'] == 'info'
-            ):
-                continue
-
+            try:
+                if type(day_of_meals) is list:
+                    if (
+                            entry['category'] == 'Info'
+                    ):
+                        continue
+            except Exception as e:
+                print('Could not filter out Info entries', e)
             meal_data = {}
             try:
                 if entry['foodicons'] is not None:

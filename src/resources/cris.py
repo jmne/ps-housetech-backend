@@ -6,9 +6,8 @@ import yaml
 from flask import make_response
 
 from .tracker import Tracker
-# PROBLEM: Es gibt noch viel mehr JobTitle
-# Bei einigen Leuten hat nur die inaktive(n) Karte(n) einen JobTitle, nicht die aktive(n)
-# Die Dauer der Query verlängert sich drastisch durch das neue Verfahren
+
+
 valid_job_titles = [
     'Professoren', 'Außerplanmäßige Professoren', 'Vertretungsprofessoren',
     'Honorarprofessoren', 'Gastprofessoren', 'Juniorprofessoren',
