@@ -56,9 +56,6 @@ class ExchangeCalendar():
         username = os.getenv('CAL_USERNAME')
         password = os.getenv('CAL_PASSWORD')
 
-        print(username)
-        print(password)
-
         if username and password:
             self.update_credentials(username, password, room_email)
 
