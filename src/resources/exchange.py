@@ -40,15 +40,25 @@ class ExchangeCalendar:
             access_type=DELEGATE,
         )
 
-    def get_calendar_items(self):
+    def get_calendar_items(self, room_email):
         """
         Fetch and return calendar items from an Exchange Server.
+
+        Args:
+            room_email (str): The email of the room.
 
         Returns:
             items (list): A list of dictionaries, each representing a calendar event.
         """
         start = datetime(2023, 1, 1, 0, 0, tzinfo=self.utc)
         end = datetime.now(tz=self.utc) + timedelta(days=365)
+
+        username = os.getenv('CAL_USERNAME')
+        password = os.getenv('CAL_PASSWORD')
+
+        if username and password:
+            self.update_credentials(username, password, room_email)
+
         calendar_items = self.a.calendar.view(start=start, end=end)
         items = []
 
@@ -64,9 +74,12 @@ class ExchangeCalendar:
             })
         return items
 
-    def get_calendar_results(self):
+    def get_calendar_results(self, room_name):
         """
         Fetch and return calendar results from an Exchange Server.
+
+        Args:
+            room_name (str): The name of the room.
 
         Returns:
         items (list): A list of calendar items. Classified with rooms
@@ -74,17 +87,15 @@ class ExchangeCalendar:
         results = []
 
         for room in self.ROOMS:
-            room_name = room['name']
-            room_email = room['email']
+            if room['name'] == room_name:
+                room_email = room['email']
 
-            username = os.getenv('CAL_USERNAME')
-            password = os.getenv('CAL_PASSWORD')
+                username = os.getenv('CAL_USERNAME')
+                password = os.getenv('CAL_PASSWORD')
 
-            if username and password and room_email:
-                self.update_credentials(username, password, room_email)
-                results.append({
-                    'room': room_name,
-                    'items': self.get_calendar_items(),
-                })
+                if username and password and room_email:
+                    self.update_credentials(username, password, room_email)
+                    return self.get_calendar_items(room['email'])
 
         return results
+        # return an empty list if room not found or no calendar items in the room

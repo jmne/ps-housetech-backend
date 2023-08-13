@@ -1,14 +1,14 @@
-import os
 from datetime import datetime
 
 import pytest
+from coverage.annotate import os
 
 from src.resources.exchange import ExchangeCalendar
 
 # Fetch the credentials from environment variables
-username = os.getenv('USERNAME')
-password = os.getenv('PASSWORD')
-email = os.getenv('ROOM_EMAILS', '').split(',')
+username = os.getenv('CAL_USERNAME')
+password = os.getenv('CAL_PASSWORD')
+email = [room['email'] for room in ExchangeCalendar.ROOMS]
 
 # Use pytest's fixture feature to set up and tear down a calendar for each test
 
@@ -29,7 +29,7 @@ def test_response_is_list_of_dictionaries(calendar):
     1. The response is a list of dictionaries.
     """
 
-    data = calendar.get_calendar_items()
+    data = calendar.get_calendar_items(email)
 
     # Test the response contains a list of dictionaries
     assert isinstance(data, list)
@@ -40,7 +40,7 @@ def test_response_is_list_of_dictionaries(calendar):
 def test_each_dictionary_contains_expected_keys(calendar):
     """Test each dictionary contains the expected keys"""
 
-    data = calendar.get_calendar_items()
+    data = calendar.get_calendar_items(email)
     expected_keys = {
         'title', 'start', 'end', 'duration',
         'location', 'organizer_name', 'organizer_email',
@@ -53,7 +53,7 @@ def test_each_dictionary_contains_expected_keys(calendar):
 def test_start_and_end_are_in_ISO_format(calendar):
     """Test 'start' and 'end' are in ISO format"""
 
-    data = calendar.get_calendar_items()
+    data = calendar.get_calendar_items(email)
     for item in data:
         try:
             datetime.fromisoformat(item['start'])
@@ -66,7 +66,7 @@ def test_start_and_end_are_in_ISO_format(calendar):
 def test_duration_is_valid_time_duration(calendar):
     """Test 'duration' is a valid time duration"""
 
-    data = calendar.get_calendar_items()
+    data = calendar.get_calendar_items(email)
     for item in data:
         try:
             duration = item['duration']
@@ -104,9 +104,33 @@ def test_string_fields_are_strings(calendar):
     'organizer_name', and 'organizer_email' are strings
 
     """
-    data = calendar.get_calendar_items()
+
+    data = calendar.get_calendar_items(email)
     for item in data:
         assert isinstance(item['title'], str)
         assert isinstance(item['location'], str)
         assert isinstance(item['organizer_name'], str)
         assert isinstance(item['organizer_email'], str)
+
+# test for get_calendar_results method
+
+
+def test_get_calendar_results():
+    """
+        Test 'title',  'location',
+        'organizer_name', and 'organizer_email' are strings
+
+    """
+
+    calendar = ExchangeCalendar()
+    for room in ExchangeCalendar.ROOMS:
+        results = calendar.get_calendar_results(room['name'])
+        assert isinstance(results, list)
+        for item in results:
+            assert item['title']
+            assert item['start']
+            assert item['end']
+            assert item['duration']
+            assert item['location']
+            assert item['organizer_name']
+            assert item['organizer_email']
