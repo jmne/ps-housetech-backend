@@ -320,7 +320,6 @@ class CrisTracker(Tracker):
                 self.result,
             ) for card_id in result['card_ids']
         ]
-        print(len(all_card_ids))
         all_ids = [
             card_id for result in self.result for card_id in result['card_ids']
         ]
