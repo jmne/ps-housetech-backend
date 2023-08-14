@@ -370,6 +370,10 @@ class CrisTracker(Tracker):
         Address depends on the chair the person is working in.
         """
         new_result = []
+        chair_ordering = {
+            chair['chair_name']: idx for idx, chair in enumerate(self.chairs)
+        }
+        max_index = len(chair_ordering)
         for card in self.result:
             # filter out all people that do not have at
             # least one valid jobTitle
@@ -382,6 +386,12 @@ class CrisTracker(Tracker):
                 '\t'.join(card['chairs']) for chair in self.chairs
             ):
                 continue
+            # sorting the chairs according to the order defined in the config
+            card['chairs'].sort(
+                key=lambda chair_name: chair_ordering.get(
+                    chair_name, max_index,
+                ),
+            )
             card['cfFullName'] = f'{card["cfFirstNames"]} {card["cfFamilyNames"]}'
             if (
                 'Prof. Klein' in '\t'.join(card['chairs']) or
