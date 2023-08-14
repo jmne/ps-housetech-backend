@@ -115,12 +115,32 @@ class MensaTracker(Tracker):
             '5': 'Saturday',
             '6': 'Sunday',
         }
+        try:
+            match language:
+                case 'de':
+                    response = self.session.get(self.url_de[mensa])
+                case 'en':
+                    response = self.session.get(self.url_en[mensa])
 
-        if language == 'de':
-            response = self.session.get(self.url_de[mensa]).text
-        elif language == 'en':
-            response = self.session.get(self.url_en[mensa]).text
+            if response.status_code != 200:
+                return make_response(
+                    json.dumps(
+                        {'message': 'Could not get meals.'},
+                        ensure_ascii=False,
+                    ), 500,
+                    {'Content-Type': 'application/json', 'charset': 'utf-8'},
+                )
+        except Exception as e:
+            print('Could not get meals', e)
+            return make_response(
+                json.dumps(
+                    {'message': 'Could not get meals.'},
+                    ensure_ascii=False,
+                ), 500,
+                {'Content-Type': 'application/json', 'charset': 'utf-8'},
+            )
 
+        response = response.text
         response_list = xmltodict.parse(response)
         response_list = response_list['menue']['date']
         for day in response_list:
