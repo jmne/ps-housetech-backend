@@ -120,6 +120,12 @@ class CrisTracker(Tracker):
                 ),
             },
             {
+                'chair_id': '83579589', 'chair_name': (
+                    'Forschungsgruppe Computational Social'
+                    ' Science and Systems Analysis'
+                ),
+            },
+            {
                 'chair_id': '31923392', 'chair_name': (
                     'Institut für'
                     ' Wirtschaftsinformatik'
@@ -363,7 +369,7 @@ class CrisTracker(Tracker):
                 )  # index from current card["index"]
                 card_index += 1  # Increment the card_index for the next iteration
 
-    def filter_and_add_keys(self):
+    def filter_add_keys_and_order(self):
         """Function that filters and adds keys.
 
         Address depends on the chair the person is working in.
@@ -403,7 +409,7 @@ class CrisTracker(Tracker):
         self.result = new_result
         return
 
-    def get_translation(self, lang):
+    def translate(self, lang):
         """
         Translates chair names from German to English using i18n package.
 
@@ -411,8 +417,10 @@ class CrisTracker(Tracker):
             lang: Language code (e.g., 'en' for English, 'de' for German)
 
         Returns:
-          None
+          None if lang is 'de', otherwise translates chair names
         """
+        if lang == 'de':
+            return
         i18n.set('locale', lang)
         i18n.set('fallback', 'de')
 
@@ -425,13 +433,17 @@ class CrisTracker(Tracker):
         with open(yaml_file) as f:
             translations = yaml.safe_load(f)
 
-        for chair in self.chairs:
-            chair_key = self.chair_keys[chair['chair_name']]
+        translation_mapping = {
+            chair['chair_name']: translations.get(lang, {}).get(
+                self.chair_keys[chair['chair_name']], chair['chair_name'],
+            ) for chair in self.chairs
+        }
 
-            translation = translations.get(lang, {}).get(
-                chair_key, chair['chair_name'],
-            )
-            chair['chair_name_en'] = translation
+        for index, card in enumerate(self.result):
+            for chair_index, chair_name in enumerate(card['chairs']):
+                translated_name = translation_mapping.get(chair_name)
+                if translated_name:
+                    self.result[index]['chairs'][chair_index] = translated_name
 
     def get_cris_data(self, lang):
         """Function that returns the desired result."""
@@ -439,17 +451,8 @@ class CrisTracker(Tracker):
         self.employees = self.remove_duplicate_employees()
         self.update_result()
         self.add_chairs()
-        if lang == 'en':
-            self.get_translation(lang)
-
-        self.filter_and_add_keys()
-
-        for card in self.result:
-            for chair in self.chairs:
-                if card['chairs'] == chair['chair_name']:
-                    if lang == 'en':
-                        card['chairs'] = chair['chair_name_en']
-                    break
+        self.filter_add_keys_and_order()
+        self.translate(lang)
 
         return make_response(
             json.dumps(self.result, ensure_ascii=False), 200,
