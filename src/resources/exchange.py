@@ -7,6 +7,7 @@ from exchangelib import Account
 from exchangelib import Configuration
 from exchangelib import Credentials
 from exchangelib import DELEGATE
+from flask import abort
 
 
 class ExchangeCalendar():
@@ -29,16 +30,19 @@ class ExchangeCalendar():
 
     def update_credentials(self, username, password, email):
         """Update credential."""
-        credentials = Credentials(
-            username=username, password=password,
-        )
-        config = Configuration(
-            server=self.server, credentials=credentials,
-        )
-        self.a = Account(
-            primary_smtp_address=email, config=config, autodiscover=False,
-            access_type=DELEGATE,
-        )
+        try:
+            credentials = Credentials(
+                username=username, password=password,
+            )
+            config = Configuration(
+                server=self.server, credentials=credentials,
+            )
+            self.a = Account(
+                primary_smtp_address=email, config=config, autodiscover=False,
+                access_type=DELEGATE,
+            )
+        except Exception as e:
+            abort(404, description=e)
 
     def get_calendar_items(self, room_email):
         """

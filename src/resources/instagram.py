@@ -1,6 +1,8 @@
 import json
 import os
 
+from flask import abort
+
 from .tracker import Tracker
 
 INSTAGRAM_KEY = os.getenv('INSTAGRAM_KEY')
@@ -36,6 +38,8 @@ class InstagramTracker(Tracker):
                     {media_id}?fields=id,media_type,media_url,username,timestamp
                     &access_token={INSTAGRAM_KEY}''')
         response = self.session.get(url)
+        if response.status_code != 200:
+            abort(404, description='Could not request data from Instagram.')
         return json.loads(response.text)
 
     def get_user_posts(self):
@@ -51,6 +55,8 @@ class InstagramTracker(Tracker):
                     me/media?fields=id,caption
                     &access_token={INSTAGRAM_KEY}'''
         response = self.session.get(url)
+        if response.status_code != 200:
+            abort(404, description='Could not request data from Instagram.')
         return json.loads(response.text)
 
     def get_latest_posts(self, amount):
