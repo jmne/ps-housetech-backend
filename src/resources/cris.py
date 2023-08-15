@@ -175,7 +175,7 @@ class CrisTracker(Tracker):
                 }
                 response = json.loads(
                     self.session.post(
-                        self.url, headers=self.header, json=payload,
+                        self.url, headers=self.header, json=payload, timeout=7,
                     ).text,
                 )
 
@@ -259,7 +259,7 @@ class CrisTracker(Tracker):
             response = {
                 'persons': json.loads(
                     self.session.post(
-                        self.url, headers=self.header, json=payload,
+                        self.url, headers=self.header, json=payload, timeout=7,
                     ).text,
                 ),
                 'chairs': lochairs,
@@ -353,7 +353,7 @@ class CrisTracker(Tracker):
             }
             response = json.loads(
                 self.session.post(
-                    self.url, headers=self.header, json=payload,
+                    self.url, headers=self.header, json=payload, timeout=7,
                 ).text,
             )
 

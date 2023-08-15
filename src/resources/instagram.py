@@ -37,7 +37,7 @@ class InstagramTracker(Tracker):
         url = (f''' https://graph.instagram.com/
                     {media_id}?fields=id,media_type,media_url,username,timestamp
                     &access_token={INSTAGRAM_KEY}''')
-        response = self.session.get(url)
+        response = self.session.get(url, timeout=5)
         if response.status_code != 200:
             abort(404, description='Could not request data from Instagram.')
         return json.loads(response.text)
@@ -54,7 +54,7 @@ class InstagramTracker(Tracker):
         url = f'''  https://graph.instagram.com/
                     me/media?fields=id,caption
                     &access_token={INSTAGRAM_KEY}'''
-        response = self.session.get(url)
+        response = self.session.get(url, timeout=5)
         if response.status_code != 200:
             abort(404, description='Could not request data from Instagram.')
         return json.loads(response.text)
