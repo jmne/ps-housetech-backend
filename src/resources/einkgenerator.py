@@ -115,7 +115,7 @@ class EInkGenerator:
     def get_cris_data(self, address, room_number):
         """Import CRIS module and filter for room."""
         cris = CrisTracker()
-        cris.get_cris_data()
+        cris.get_cris_data('de')
         data = {
             'room': room_number,
             'person': [],

@@ -3,6 +3,7 @@ import re
 from datetime import datetime
 
 import xmltodict
+from flask import abort
 from flask import make_response
 
 from .tracker import Tracker
@@ -123,43 +124,35 @@ class MensaTracker(Tracker):
                     response = self.session.get(self.url_en[mensa])
 
             if response.status_code != 200:
-                return make_response(
-                    json.dumps(
-                        {'message': 'Could not get meals.'},
-                        ensure_ascii=False,
-                    ), 500,
-                    {'Content-Type': 'application/json', 'charset': 'utf-8'},
-                )
+
+                abort(404, description='Could not fetch data from stw-muenster.')
         except Exception as e:
-            print('Could not get meals', e)
-            return make_response(
-                json.dumps(
-                    {'message': 'Could not get meals.'},
-                    ensure_ascii=False,
-                ), 500,
-                {'Content-Type': 'application/json', 'charset': 'utf-8'},
-            )
+            print('hi', e)
+            abort(404, description=e)
 
         response = response.text
         response_list = xmltodict.parse(response)
-        response_list = response_list['menue']['date']
-        for day in response_list:
-            data = {
-                'date': datetime.fromtimestamp(
-                    int(day['@timestamp']),
-                ).strftime('%Y-%m-%d'),
-                'weekday': weekdays[
-                    str(
-                        datetime.fromtimestamp(
-                            int(day['@timestamp']),
-                        ).weekday(),
-                    )
-                ],
-                'item': None,
-            }
-            meal_data = self.get_meal_info(day['item'])
-            data['item'] = meal_data
-            self.result.append(data)
+        try:
+            response_list = response_list['menue']['date']
+            for day in response_list:
+                data = {
+                    'date': datetime.fromtimestamp(
+                        int(day['@timestamp']),
+                    ).strftime('%Y-%m-%d'),
+                    'weekday': weekdays[
+                        str(
+                            datetime.fromtimestamp(
+                                int(day['@timestamp']),
+                            ).weekday(),
+                        )
+                    ],
+                    'item': None,
+                }
+                meal_data = self.get_meal_info(day['item'])
+                data['item'] = meal_data
+                self.result.append(data)
+        except Exception as e:
+            abort(404, description=e)
 
         return make_response(
             json.dumps(self.result, ensure_ascii=False), 200,
