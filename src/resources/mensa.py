@@ -119,15 +119,13 @@ class MensaTracker(Tracker):
         try:
             match language:
                 case 'de':
-                    response = self.session.get(self.url_de[mensa])
+                    response = self.session.get(self.url_de[mensa], timeout=5)
                 case 'en':
-                    response = self.session.get(self.url_en[mensa])
+                    response = self.session.get(self.url_en[mensa], timeout=5)
 
             if response.status_code != 200:
-
                 abort(404, description='Could not fetch data from stw-muenster.')
         except Exception as e:
-            print('hi', e)
             abort(404, description=e)
 
         response = response.text
