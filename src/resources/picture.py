@@ -28,6 +28,7 @@ class PictureTracker(Tracker):
             return None
         response = self.session.get(
             f'''https://www.uni-muenster.de/converis/ws/public/infoobject/get/Picture/{str(image_id)}''',  # noqa: E501
+            timeout=5,
         )
         if response.status_code != 200:
             abort(404, description='Could not request data for picture.')
