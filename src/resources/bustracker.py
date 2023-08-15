@@ -74,7 +74,7 @@ class BusTracker:
         for station in self.stations:
             response = self.session.get(
                 f'https://rest.busradar.conterra.de/prod/haltestellen/{station}'
-                '/abfahrten?sekunden=5400&maxanzahl=3',
+                '/abfahrten?sekunden=5400&maxanzahl=3', timeout=7,
             )
             if response.status_code != 200:
                 abort(404, description='Could not fetch data from BusAPI.')

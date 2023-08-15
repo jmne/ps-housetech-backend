@@ -21,7 +21,7 @@ class DrupalTracker(Tracker):
 
     def get_content(self, url):
         """Response method returning data."""
-        response = self.session.get(url)
+        response = self.session.get(url, timeout=5)
         if response.status_code != 200:
             abort(404, description='Could not request data from Drupal.')
         response = response.text

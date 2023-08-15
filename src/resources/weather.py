@@ -41,7 +41,7 @@ class WeatherTracker(Tracker):
         response = self.session.get(
             'https://pro.openweathermap.org/data/2.5/forecast/hourly'
             '?lat=51.97&lon=7.60&units=metric&lang=de'
-            f'&appid={self.appid}',
+            f'&appid={self.appid}', timeout=5,
         )
         if response.status_code != 200:
             abort(404, description='Could not request data from OpenWeatherMap.')
@@ -64,7 +64,7 @@ class WeatherTracker(Tracker):
         response = self.session.get(
             'https://pro.openweathermap.org/data/2.5/forecast/daily'
             '?lat=51.97&lon=7.60&units=metric&lang=de'
-            f'&appid={self.appid}',
+            f'&appid={self.appid}', timeout=5,
         )
         if response.status_code != 200:
             abort(404, description='Could not request data from OpenWeatherMap.')
@@ -85,7 +85,7 @@ class WeatherTracker(Tracker):
         response = self.session.get(
             'https://api.openweathermap.org/data/2.5/'
             'weather?lat=51.97&lon=7.60&units=metric&lang=de'
-            f'&appid={self.appid}',
+            f'&appid={self.appid}', timeout=5,
         )
         if response.status_code != 200:
             abort(404, description='Could not request data from OpenWeatherMap.')
@@ -108,7 +108,7 @@ class WeatherTracker(Tracker):
         response = self.session.get(
             'https://maps.openweathermap.org/maps/2.0/weather/PA0/'
             f'{z}/{x}/{y}?appid={self.appid}'
-            '&opacity=1',
+            '&opacity=1', timeout=5,
         )
         if response.status_code != 200:
             abort(404, description='Could not request data from OpenWeatherMap.')
