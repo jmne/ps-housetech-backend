@@ -2,14 +2,13 @@ import json
 import re
 from datetime import datetime
 
+import requests
 import xmltodict
 from flask import abort
 from flask import make_response
 
-from .tracker import Tracker
 
-
-class MensaTracker(Tracker):
+class MensaTracker:
     """
     MensaTracker class using the website of stw-muenster.
 
@@ -24,7 +23,7 @@ class MensaTracker(Tracker):
         Args:
             self
         """
-        super().__init__()
+        self.session = requests.Session()
         # Plans in German
         self.url_de = {
             'davinci': 'https://speiseplan.stw-muenster.de/mensa_da_vinci.xml',
