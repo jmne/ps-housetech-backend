@@ -50,8 +50,7 @@ class InstagramTracker(Tracker):
         Returns:
             dict: all user post ids + captions.
         """
-        url = f'''https://graph.instagram.com/me/
-        media?fields=id,caption&access_token={INSTAGRAM_KEY}'''
+        url = f'https://graph.instagram.com/me/media?fields=id,caption&access_token={INSTAGRAM_KEY}'  # noqa: 501
         response = self.session.get(url)
         return json.loads(response.text)
 

@@ -362,7 +362,7 @@ class CrisTracker(Tracker):
             )
             chair['chair_name_en'] = translation
 
-    def get_cris_data(self, lang):
+    def get_cris_data(self, lang='de'):
         """Function that returns the desired result."""
         self.update_employees()
         self.employees = self.remove_duplicate_employees()

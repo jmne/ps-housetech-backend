@@ -30,6 +30,8 @@ class EInkGenerator:
     def transform_png_to_rgb_array(self, png):
         """Turn png into numpy array."""
         # Convert the image into a NumPy array
+        with open('C:/Users/kevin/GitLab/ps-housetech-backend/src/picture1.npy', 'wb') as f:
+            np.save(f, np.array(png))
         return np.array(png)
 
     def color_quantization(self, rgb_array):
@@ -48,6 +50,8 @@ class EInkGenerator:
         return result
 
     def get_layer(self, rgb_array, rgb_color):
+        with open('C:/Users/kevin/GitLab/ps-housetech-backend/src/get_layer_input.npy', 'wb') as f:
+            np.save(f, rgb_array)
         """Turn a black/white/red array into black/white or red/white."""
         # Write the Bit Array
         # rgb_array / 8, to get chunks of 8
@@ -83,6 +87,8 @@ class EInkGenerator:
             hex_value = format(decimal_value, '02X')
             layer_hex.append('0X' + hex_value)
 
+        with open('C:/Users/kevin/GitLab/ps-housetech-backend/src/get_layer_output_'+rgb_color+'.txt', 'w') as f:
+            f.write('\n'.join(layer_hex))
         return layer_hex
 
     def get_fused_layers(self, png):
@@ -183,4 +189,7 @@ class EInkGenerator:
             os.remove(screenshot_path[0])
         if os.path.exists(screenshot_path[0].replace('.png', '.html')):
             os.remove(screenshot_path[0].replace('.png', '.html'))
+        image.save(
+            'C:/Users/kevin/GitLab/ps-housetech-backend/src/get_fused_layers_input_png.png',
+        )
         return image
