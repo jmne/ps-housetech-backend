@@ -34,7 +34,7 @@ class InstagramTracker(Tracker):
         Returns:
             dict: Post data.
         """
-        url = (f''' https://graph.instagram.com/
+        url = (f'''https://graph.instagram.com/
                     {media_id}?fields=id,media_type,media_url,username,timestamp
                     &access_token={INSTAGRAM_KEY}''')
         response = self.session.get(url, timeout=5)

@@ -447,7 +447,7 @@ class CrisTracker(Tracker):
                 if translated_name:
                     self.result[index]['chairs'][chair_index] = translated_name
 
-    def get_cris_data(self, lang):
+    def get_cris_data(self, lang='de'):
         """Function that returns the desired result."""
         self.update_employees()
         self.employees = self.remove_duplicate_employees()
