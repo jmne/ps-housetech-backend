@@ -41,8 +41,12 @@ class EInkGenerator:
                 # Check the color value and convert it to black, red, or white
                 if red == 133 and green == 35 and blue == 57:
                     result.append('RED')
-                elif red > 130 and green > 130 and blue > 130:
-                    result.append('WHITE')
+                elif red < 5 and green < 5 and blue < 5:
+                    result.append('BLACK')
+                elif red == 135 and green == 151 and blue == 163:
+                    result.append('BLACK')
+                elif red == 145 and green == 160 and blue == 170:
+                    result.append('BLACK')
                 else:
                     result.append('BLACK')
         return result
