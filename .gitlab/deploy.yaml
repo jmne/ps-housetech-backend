@@ -1,0 +1,65 @@
+deploy-container-dev:
+  image: ubuntu
+  tags:
+    - pshousetech
+  variables:
+    https_proxy: http://wwwproxy.uni-muenster.de:3128
+    http_proxy: http://wwwproxy.uni-muenster.de:3128
+  stage: deploy
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git curl -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+
+    - ssh-keyscan -p 2222 10.2.22.12 >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - echo "Deploy to development server"
+    - |
+      ssh house-admin@10.2.22.12 -p2222 "
+      cd ps-housetech-backend-dev/ &&
+      sudo git fetch --all &&
+      sudo git reset --hard origin/development &&
+      sudo /etc/poetry/bin/poetry install &&
+      sudo service backend-dev restart"
+  only:
+    - development
+  environment:
+    name: development
+    url: https://ps-housetech.uni-muenster.de:444/api/help
+
+deploy-container-main:
+  image: ubuntu
+  tags:
+    - pshousetech
+  variables:
+    https_proxy: http://wwwproxy.uni-muenster.de:3128
+    http_proxy: http://wwwproxy.uni-muenster.de:3128
+  stage: deploy
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+
+    - ssh-keyscan -p 2222 10.2.22.12 >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - echo "Deploy to production server"
+    - |
+      ssh house-admin@10.2.22.12 -p2222 "
+      cd ps-housetech-backend-main/ &&
+      sudo git fetch --all &&
+      sudo git reset --hard origin/main &&
+      sudo /etc/poetry/bin/poetry install &&
+      sudo service backend-main restart"
+  only:
+    - main
+  environment:
+    name: production
+    url: https://ps-housetech.uni-muenster.de/api/help
