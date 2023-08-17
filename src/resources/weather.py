@@ -3,6 +3,8 @@ import os
 from datetime import datetime
 from datetime import timedelta
 
+from flask import abort
+
 from .tracker import Tracker
 
 
@@ -39,9 +41,11 @@ class WeatherTracker(Tracker):
         response = self.session.get(
             'https://pro.openweathermap.org/data/2.5/forecast/hourly'
             '?lat=51.97&lon=7.60&units=metric&lang=de'
-            f'&appid={self.appid}',
-        ).text
-        response_json = json.loads(response)
+            f'&appid={self.appid}', timeout=5,
+        )
+        if response.status_code != 200:
+            abort(404, description='Could not request data from OpenWeatherMap.')
+        response_json = json.loads(response.text)
         hourly_data = []
 
         for hour in response_json['list']:
@@ -60,9 +64,11 @@ class WeatherTracker(Tracker):
         response = self.session.get(
             'https://pro.openweathermap.org/data/2.5/forecast/daily'
             '?lat=51.97&lon=7.60&units=metric&lang=de'
-            f'&appid={self.appid}',
-        ).text
-        response_json = json.loads(response)
+            f'&appid={self.appid}', timeout=5,
+        )
+        if response.status_code != 200:
+            abort(404, description='Could not request data from OpenWeatherMap.')
+        response_json = json.loads(response.text)
         daily_data = []
 
         for day in response_json['list']:
@@ -79,9 +85,11 @@ class WeatherTracker(Tracker):
         response = self.session.get(
             'https://api.openweathermap.org/data/2.5/'
             'weather?lat=51.97&lon=7.60&units=metric&lang=de'
-            f'&appid={self.appid}',
-        ).text
-        response_json = json.loads(response)
+            f'&appid={self.appid}', timeout=5,
+        )
+        if response.status_code != 200:
+            abort(404, description='Could not request data from OpenWeatherMap.')
+        response_json = json.loads(response.text)
         current_data = [{
             'temp': response_json['main']['temp'],
             'icon': response_json['weather'][0]['icon'],
@@ -94,3 +102,14 @@ class WeatherTracker(Tracker):
         }
 
         return result
+
+    def get_precipitation(self, z, x, y):
+        """Get precipitation data (map) from OpenWeather api."""
+        response = self.session.get(
+            'https://maps.openweathermap.org/maps/2.0/weather/PA0/'
+            f'{z}/{x}/{y}?appid={self.appid}'
+            '&opacity=1', timeout=5,
+        )
+        if response.status_code != 200:
+            abort(404, description='Could not request data from OpenWeatherMap.')
+        return response.content

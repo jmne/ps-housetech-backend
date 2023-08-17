@@ -2,13 +2,13 @@ import json
 import re
 from datetime import datetime
 
+import requests
 import xmltodict
+from flask import abort
 from flask import make_response
 
-from .tracker import Tracker
 
-
-class MensaTracker(Tracker):
+class MensaTracker:
     """
     MensaTracker class using the website of stw-muenster.
 
@@ -23,7 +23,7 @@ class MensaTracker(Tracker):
         Args:
             self
         """
-        super().__init__()
+        self.session = requests.Session()
         # Plans in German
         self.url_de = {
             'davinci': 'https://speiseplan.stw-muenster.de/mensa_da_vinci.xml',
@@ -51,12 +51,14 @@ class MensaTracker(Tracker):
         """
         result = []
         for entry in day_of_meals:
-            if (
-                    entry['category'] == 'Info' or
-                    entry['category'] == 'info'
-            ):
-                continue
-
+            try:
+                if type(day_of_meals) is list:
+                    if (
+                            entry['category'] == 'Info'
+                    ):
+                        continue
+            except Exception as e:
+                print('Could not filter out Info entries', e)
             meal_data = {}
             try:
                 if entry['foodicons'] is not None:
@@ -113,31 +115,41 @@ class MensaTracker(Tracker):
             '5': 'Saturday',
             '6': 'Sunday',
         }
+        try:
+            match language:
+                case 'de':
+                    response = self.session.get(self.url_de[mensa], timeout=5)
+                case 'en':
+                    response = self.session.get(self.url_en[mensa], timeout=5)
 
-        if language == 'de':
-            response = self.session.get(self.url_de[mensa]).text
-        elif language == 'en':
-            response = self.session.get(self.url_en[mensa]).text
+            if response.status_code != 200:
+                abort(404, description='Could not fetch data from stw-muenster.')
+        except Exception as e:
+            abort(404, description=e)
 
+        response = response.text
         response_list = xmltodict.parse(response)
-        response_list = response_list['menue']['date']
-        for day in response_list:
-            data = {
-                'date': datetime.fromtimestamp(
-                    int(day['@timestamp']),
-                ).strftime('%Y-%m-%d'),
-                'weekday':  weekdays[
-                    str(
-                        datetime.fromtimestamp(
-                            int(day['@timestamp']),
-                        ).weekday(),
-                    )
-                ],
-                'item': None,
-            }
-            meal_data = self.get_meal_info(day['item'])
-            data['item'] = meal_data
-            self.result.append(data)
+        try:
+            response_list = response_list['menue']['date']
+            for day in response_list:
+                data = {
+                    'date': datetime.fromtimestamp(
+                        int(day['@timestamp']),
+                    ).strftime('%Y-%m-%d'),
+                    'weekday': weekdays[
+                        str(
+                            datetime.fromtimestamp(
+                                int(day['@timestamp']),
+                            ).weekday(),
+                        )
+                    ],
+                    'item': None,
+                }
+                meal_data = self.get_meal_info(day['item'])
+                data['item'] = meal_data
+                self.result.append(data)
+        except Exception as e:
+            abort(404, description=e)
 
         return make_response(
             json.dumps(self.result, ensure_ascii=False), 200,

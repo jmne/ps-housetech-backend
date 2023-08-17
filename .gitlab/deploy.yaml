@@ -1,8 +1,13 @@
 deploy-container-dev:
   image: ubuntu
+  tags:
+    - pshousetech
+  variables:
+    https_proxy: http://wwwproxy.uni-muenster.de:3128
+    http_proxy: http://wwwproxy.uni-muenster.de:3128
   stage: deploy
   before_script:
-    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git curl -y )'
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
 
@@ -28,6 +33,11 @@ deploy-container-dev:
 
 deploy-container-main:
   image: ubuntu
+  tags:
+    - pshousetech
+  variables:
+    https_proxy: http://wwwproxy.uni-muenster.de:3128
+    http_proxy: http://wwwproxy.uni-muenster.de:3128
   stage: deploy
   before_script:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'

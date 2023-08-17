@@ -17,7 +17,6 @@ from src.resources.picture import PictureTracker
 from src.resources.weather import WeatherTracker
 
 api = Blueprint('api', __name__)
-
 # initializing Flask API
 cache = Cache(
     config={
@@ -106,19 +105,21 @@ def eink(room_number):  # dead: disable
     return make_response(EInkGenerator().get_data(room_number), 200)
 
 
-@api.get('/calendar')  # type: ignore[attr-defined]
+@api.get('/calendar/<room_name>')  # type: ignore[attr-defined]
 @cache.cached(300)
-def calendar():
+def calendar(room_name):
     """
     Creates an ExchangeCalendar instance.
 
-    Runs get_calendar_items() method.
+    Runs get_calendar_results(room_name) method.
+
+    Args:
+        room_name: Name of the room.
 
     Returns:
-        Calendar of the current day as List of dicts.
-
+        Calendar of each room as List of dicts.
     """
-    return make_response(ExchangeCalendar().get_calendar_items(), 200)
+    return make_response(ExchangeCalendar().get_calendar_results(room_name), 200)
 
 
 @api.get('/drupal/<content_type>')  # type: ignore[attr-defined]
@@ -193,6 +194,23 @@ def weather():  # dead: disable
 
     """
     return make_response(WeatherTracker().get_cleaned_weather(), 200)
+
+
+@api.get('/precipitation/<z>/<x>/<y>')  # type: ignore[attr-defined]
+def precipitation(z, x, y):  # dead: disable
+    """
+    Creates a WeatherTracker instance.
+
+    Runs get_precipitation(z, x, y) method.
+
+    Returns:
+        Weather forecast for the next 24 hours / days as List of dicts.
+
+    """
+    return make_response(
+        WeatherTracker().get_precipitation(z, x, y), 200,
+        {'Content-Type': 'image/png'},
+    )
 
 
 @api.get('/event')  # type: ignore[attr-defined]

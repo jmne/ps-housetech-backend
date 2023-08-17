@@ -2,6 +2,7 @@ import base64
 from io import BytesIO
 
 import xmltodict
+from flask import abort
 from flask import make_response
 from PIL import Image
 from PIL import ImageFile
@@ -27,7 +28,10 @@ class PictureTracker(Tracker):
             return None
         response = self.session.get(
             f'''https://www.uni-muenster.de/converis/ws/public/infoobject/get/Picture/{str(image_id)}''',  # noqa: E501
+            timeout=5,
         )
+        if response.status_code != 200:
+            abort(404, description='Could not request data for picture.')
         response_list = xmltodict.parse(response.text)
         for attr in response_list['infoObject']['attribute']:
             if attr['@name'] != 'File data':

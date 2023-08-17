@@ -1,54 +1,68 @@
-import os
 from datetime import datetime
 from datetime import timedelta
 
 import pytz
-from dotenv import load_dotenv
+from coverage.annotate import os
 from exchangelib import Account
 from exchangelib import Configuration
 from exchangelib import Credentials
 from exchangelib import DELEGATE
-
-# Load the .env file
-load_dotenv('../secrets.env')
+from flask import abort
 
 
-class ExchangeCalendar:
-    """CalendarTracker class using the exchangelib library.
+class ExchangeCalendar():
+    """ExchangeCalendar class using the exchangelib library."""
 
-    proxies are not included yet.
-    """
+    # Define the rooms and email addresses directly in the class
+    ROOMS = [
+        {'name': 'R022', 'email': 'WI.R022@wi.uni-muenster.de'},
+        {'name': 'R115', 'email': 'WI.R115@wi.uni-muenster.de'},
+        {'name': 'Leo2', 'email': 'WI.LEO2@wi.uni-muenster.de'},
+        {'name': 'Leo18', 'email': 'WI.LEO18@wi.uni-muenster.de'},
+        {'name': 'WI-Pool', 'email': 'wi.pool@wi.uni-muenster.de'},
+    ]
 
     def __init__(self):
         """Get access to exchange server."""
-        # connect to server
-        username = os.getenv('R022_USERNAME')
-        password = os.getenv('R022_PASSWORD')
-        email = os.getenv('R022_EMAIL')
-        server = 'mail.wiwi.uni-muenster.de/ews/exchange.asmx'
-
-        credentials = Credentials(
-            username=username, password=password,
-        )
-        config = Configuration(
-            server=server, credentials=credentials,
-        )
-
-        self.a = Account(
-            primary_smtp_address=email, config=config, autodiscover=False,
-            access_type=DELEGATE,
-        )
+        self.server = 'mail.wiwi.uni-muenster.de/ews/exchange.asmx'
         self.utc = pytz.utc
+        self.a = None
 
-    def get_calendar_items(self):
+    def update_credentials(self, username, password, email):
+        """Update credential."""
+        try:
+            credentials = Credentials(
+                username=username, password=password,
+            )
+            config = Configuration(
+                server=self.server, credentials=credentials,
+            )
+            self.a = Account(
+                primary_smtp_address=email, config=config, autodiscover=False,
+                access_type=DELEGATE,
+            )
+        except Exception as e:
+            abort(404, description=e)
+
+    def get_calendar_items(self, room_email):
         """
         Fetch and return calendar items from an Exchange Server.
+
+        Args:
+            room_email (str): The email of the room.
 
         Returns:
             items (list): A list of dictionaries, each representing a calendar event.
         """
         start = datetime(2023, 1, 1, 0, 0, tzinfo=self.utc)
         end = datetime.now(tz=self.utc) + timedelta(days=365)
+
+        username = os.getenv('CAL_USERNAME')
+        password = os.getenv('CAL_PASSWORD')
+
+        if username and password:
+            self.update_credentials(username, password, room_email)
+
         calendar_items = self.a.calendar.view(start=start, end=end)
         items = []
 
@@ -63,3 +77,29 @@ class ExchangeCalendar:
                 'organizer_email': item.organizer.email_address,
             })
         return items
+
+    def get_calendar_results(self, room_name):
+        """
+        Fetch and return calendar results from an Exchange Server.
+
+        Args:
+            room_name (str): The name of the room.
+
+        Returns:
+        items (list): A list of calendar items. Classified with rooms
+        """
+        results = []
+
+        for room in self.ROOMS:
+            if room['name'] == room_name:
+                room_email = room['email']
+
+                username = os.getenv('CAL_USERNAME')
+                password = os.getenv('CAL_PASSWORD')
+
+                if username and password and room_email:
+                    self.update_credentials(username, password, room_email)
+                    return self.get_calendar_items(room['email'])
+
+        return results
+        # return an empty list if room not found or no calendar items in the room
