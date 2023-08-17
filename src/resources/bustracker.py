@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 
 import requests
+from flask import abort
 
 
 class BusTracker:
@@ -73,32 +74,37 @@ class BusTracker:
         for station in self.stations:
             response = self.session.get(
                 f'https://rest.busradar.conterra.de/prod/haltestellen/{station}'
-                '/abfahrten?sekunden=5400&maxanzahl=3',
+                '/abfahrten?sekunden=5400&maxanzahl=3', timeout=7,
             )
+            if response.status_code != 200:
+                abort(404, description='Could not fetch data from BusAPI.')
             response = json.loads(response.text)
-            for entry in response:
-                going_to = entry['richtungstext']
-                if language == 'en':
-                    going_to = self.translate_to_english(going_to)
-                result.append({
-                    'station': entry['lbez'],
-                    'direction': 'Einwärts' if station == 4552102 else 'Auswärts',
-                    'line': entry['linientext'],
-                    'going_to': going_to,
-                    'planned_departure_time': datetime
-                    .fromtimestamp(entry['abfahrtszeit'])
-                    .strftime('%H:%M'),
-                    'actual_departure_time': datetime
-                    .fromtimestamp(entry['tatsaechliche_abfahrtszeit'])
-                    .strftime('%H:%M'),
-                    'minutes_delay': int(entry['delay'] / 60),
-                    'minutes_until_departure': int(
-                        ((
-                            datetime
-                            .fromtimestamp(entry['tatsaechliche_abfahrtszeit']) -
-                            datetime.now()
-                        )
-                            .total_seconds()) / 60,
-                    ),
-                })
+            try:
+                for entry in response:
+                    going_to = entry['richtungstext']
+                    if language == 'en':
+                        going_to = self.translate_to_english(going_to)
+                    result.append({
+                        'station': entry['lbez'],
+                        'direction': 'Einwärts' if station == 4552102 else 'Auswärts',
+                        'line': entry['linientext'],
+                        'going_to': going_to,
+                        'planned_departure_time': datetime
+                        .fromtimestamp(entry['abfahrtszeit'])
+                        .strftime('%H:%M'),
+                        'actual_departure_time': datetime
+                        .fromtimestamp(entry['tatsaechliche_abfahrtszeit'])
+                        .strftime('%H:%M'),
+                        'minutes_delay': int(entry['delay'] / 60),
+                        'minutes_until_departure': int(
+                            ((
+                                datetime
+                                .fromtimestamp(entry['tatsaechliche_abfahrtszeit']) -
+                                datetime.now()
+                            )
+                                .total_seconds()) / 60,
+                        ),
+                    })
+            except Exception as e:
+                abort(404, description=e)
         return result

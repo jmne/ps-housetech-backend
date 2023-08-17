@@ -8,6 +8,17 @@ from flask import make_response
 from .tracker import Tracker
 
 
+valid_job_titles = [
+    'Professoren', 'Außerplanmäßige Professoren', 'Vertretungsprofessoren',
+    'Honorarprofessoren', 'Gastprofessoren', 'Juniorprofessoren',
+    'Seniorprofessoren', 'Privatdozenten', 'Sekretariat', 'PostDoc',
+    'Akademische Direktoren', 'Akademische Oberräte', 'Akademische Räte',
+    'Wissenschaftliche Mitarbeiter', 'Mitarbeiter', 'Systemadministration',
+    'Bibliothek', 'Geschäftsführer', 'Professor', 'Apl. Professor', 'Dekan',
+    'TM_Professor_Supervisor',
+]
+
+
 class CrisTracker(Tracker):
     """
     CRIS class using the API of Uni-Muenster.
@@ -26,8 +37,6 @@ class CrisTracker(Tracker):
         self.translations = {}
 
         self.url = 'https://cris-api-staging.uni-muenster.de/'
-        self.base_picture_url = '''https://www.uni-muenster.de/converis/
-                                    ws/public/infoobject/get/Picture/'''
         self.header = {
             'Accept-Encoding': 'gzip, deflate, br',
             'Content-Type': 'application/json',
@@ -36,35 +45,31 @@ class CrisTracker(Tracker):
             'DNT': '1',
             'Origin': 'https://cris-api-staging.uni-muenster.de',
         }
+        # THESE CHAIR NAMES MUST EXACTLY MATCH THE NAMES IN THE CRIS-API
+        # CHANGE HERE IN THIS DICT IF NECESSARY
         self.chairs = [
             {
-                'chair_id': '31914156', 'chair_name': (
+                'chair_id': '84240358', 'chair_name': (
+                    'Professur für Wirtschaftsinformatik,'
+                    ' insbesondere Geschäftsprozessmanagement (Prof. vom Brocke)'
+                ),
+            },
+            {
+                'chair_id': '55472869', 'chair_name': (
+                    'Juniorprofessur für'
+                    ' IT-Sicherheit (Prof. Hupperich)'
+                ),
+            },
+            {
+                'chair_id': '77369668', 'chair_name': (
+                    'Professur für'
+                    ' Digitale Innovation und der öffentliche Sektor (Prof. Brandt)'
+                ),
+            },
+            {
+                'chair_id': '59575309', 'chair_name': (
                     'Lehrstuhl für'
-                    ' Wirtschaftsinformatik und Informationsmanagement (Prof. Becker)'
-                ),
-            },
-            {
-                'chair_id': '31923392', 'chair_name': (
-                    'Institut für'
-                    ' Wirtschaftsinformatik'
-                ),
-            },
-            {
-                'chair_id': '40279283', 'chair_name': (
-                    'Lehrstuhl für'
-                    ' Wirtschaftsinformatik und Interorganisationssysteme (Prof. Klein)'
-                ),
-            },
-            {
-                'chair_id': '40279346', 'chair_name': (
-                    'Lehrstuhl für'
-                    ' Wirtschaftsinformatik und Logistik (Prof. Hellingrath)'
-                ),
-            },
-            {
-                'chair_id': '40279415', 'chair_name': (
-                    'Institut für'
-                    ' Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler'
+                    ' Maschinelles Lernen und Data Engineering (Prof. Gieseke)'
                 ),
             },
             {
@@ -75,15 +80,33 @@ class CrisTracker(Tracker):
                 ),
             },
             {
-                'chair_id': '40279220', 'chair_name': (
-                    'Professur für'
-                    ' Statistik und Optimierung (Prof. Trautmann)'
+                'chair_id': '31914156', 'chair_name': (
+                    'Lehrstuhl für'
+                    ' Wirtschaftsinformatik und Informationsmanagement (Prof. Becker)'
                 ),
             },
             {
-                'chair_id': '59575309', 'chair_name': (
+                'chair_id': '40279283', 'chair_name': (
+                    'Lehrstuhl für'
+                    ' Wirtschaftsinformatik und Interorganisationssysteme (Prof. Klein)'
+                ),
+            },
+            {
+                'chair_id': '40279415', 'chair_name': (
+                    'Institut für'
+                    ' Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler'
+                ),
+            },
+            {
+                'chair_id': '40279346', 'chair_name': (
+                    'Lehrstuhl für'
+                    ' Wirtschaftsinformatik und Logistik (Prof. Hellingrath)'
+                ),
+            },
+            {
+                'chair_id': '40279220', 'chair_name': (
                     'Professur für'
-                    ' Maschinelles Lernen und Data Engineering (Prof. Gieseke)'
+                    ' Statistik und Optimierung (Prof. Trautmann)'
                 ),
             },
             {
@@ -99,55 +122,23 @@ class CrisTracker(Tracker):
                 ),
             },
             {
-                'chair_id': '77369668', 'chair_name': (
-                    'Professur für'
-                    ' Digitale Innovation und der öffentliche Sektor (Prof. Brandt)'
+                'chair_id': '83579589', 'chair_name': (
+                    'Forschungsgruppe Computational Social'
+                    ' Science and Systems Analysis'
                 ),
             },
             {
-                'chair_id': '40279346', 'chair_name': (
-                    'Lehrstuhl für'
-                    ' Wirtschaftsinformatik und Logistik (Prof. Hellingrath)'
-                ),
-            },
-            {
-                'chair_id': '55472869', 'chair_name': (
-                    'Juniorprofessur für'
-                    ' IT-Sicherheit (Prof. Hupperich)'
+                'chair_id': '31923392', 'chair_name': (
+                    'Institut für'
+                    ' Wirtschaftsinformatik'
                 ),
             },
         ]
-        self.chairs.reverse()
-
         self.employees = []  # list of dicts with an employee_id and employees chair
         self.result = []  # to return
-
         self.chair_keys = {
-            'Lehrstuhl für '
-            'Wirtschaftsinformatik und Informationsmanagement (Prof. Becker)': 'chair1',
-            'Institut für '
-            'Wirtschaftsinformatik': 'chair2',
-            'Lehrstuhl für '
-            'Wirtschaftsinformatik und Interorganisationssysteme (Prof. Klein)': 'chair3',
-            'Lehrstuhl für '
-            'Wirtschaftsinformatik und Logistik (Prof. Hellingrath)': 'chair4',
-            'Institut für '
-            'Wirtschaftsinformatik - Mathematik für Wirtschaftswissenschaftler': 'chair5',
-            'Juniorprofessur für'
-            ' Wirtschaftsinformatik, insbesondere Digitale Transformation'
-            ' und Gesellschaft (Prof. Berger)': 'chair6',
-            'Professur für '
-            'Statistik und Optimierung (Prof. Trautmann)': 'chair7',
-            'Professur für '
-            'Maschinelles Lernen und Data Engineering (Prof. Gieseke)': 'chair8',
-            'Lehrstuhl für '
-            'Praktische Informatik in der Wirtschaft (Prof. Kuchen)': 'chair9',
-            'Lehrstuhl für '
-            'Informatik (Prof. Vossen)': 'chair10',
-            'Professur für '
-            'Digitale Innovation und der öffentliche Sektor (Prof. Brandt)': 'chair11',
-            'Juniorprofessur für '
-            'IT-Sicherheit (Prof. Hupperich)': 'chair12',
+            chair['chair_name']: 'chair' +
+            str(index + 1) for index, chair in enumerate(self.chairs)
         }
 
     def split_list(self, input_list, max_length):
@@ -186,7 +177,7 @@ class CrisTracker(Tracker):
                 }
                 response = json.loads(
                     self.session.post(
-                        self.url, headers=self.header, json=payload,
+                        self.url, headers=self.header, json=payload, timeout=7,
                     ).text,
                 )
 
@@ -216,7 +207,7 @@ class CrisTracker(Tracker):
 
         return
 
-    def update_result(self):
+    def update_result(self):  # noqa: 901
         """Appends dicts with infos about employees to result list."""
         employee_ids = [item['id'] for item in self.employees]
         # split employee ids up in list of 100 entries
@@ -247,6 +238,8 @@ class CrisTracker(Tracker):
                                               email
                                               phone
                                               status
+                                              id
+                                              jobTitle
                                             }}
                                           }}
                                         }}
@@ -268,30 +261,39 @@ class CrisTracker(Tracker):
             response = {
                 'persons': json.loads(
                     self.session.post(
-                        self.url, headers=self.header, json=payload,
+                        self.url, headers=self.header, json=payload, timeout=7,
                     ).text,
                 ),
                 'chairs': lochairs,
             }
 
             persons = response['persons']['data']['nodes']
-            for chair, person in zip(response['chairs'], persons):
+            for person in persons:
                 emails = []
                 phones = []
+                cards = []
+                job_titles = []
                 room_number = None
                 for edge in person['connections']['cards']['edges']:
+                    # JOB TITLES OF INACTIVE CARDS ALSO GET ADDED
+                    # DUE TO SOME PEOPLE HAVING JOBTITLE=NULL IN THEIR ACTIVE CARD
+                    job_title = edge['node']['jobTitle']
+                    if job_title not in job_titles and job_title is not None:
+                        job_titles.append(job_title)
                     # only active cards
                     if int(edge['node']['status']) != 3:
                         continue
                     email = edge['node']['email']
                     phone = edge['node']['phone']
+                    card = edge['node']['id']
                     if email not in emails and email is not None:
                         emails.append(email)
                     if phone not in phones and phone is not None:
                         phones.append(phone)
+                    if card not in cards and card is not None:
+                        cards.append(card)
                     if room_number is None and edge['node']['roomNumber'] is not None:
                         room_number = edge['node']['roomNumber']
-
                 picture_id = None
                 if person['connections']['pictures']['edges']:  # noqa: 501
                     picture_id = person['connections']['pictures']['edges'][0]['node']['id']  # noqa: 501
@@ -303,9 +305,10 @@ class CrisTracker(Tracker):
                     'roomNumber': room_number,
                     'emails': emails,
                     'phones': phones,
-                    'chair': chair,
+                    'card_ids': cards,
+                    'jobTitle': job_titles,
                     'image': picture_id,
-
+                    'chairs': [],
                 })
         return
 
@@ -318,21 +321,97 @@ class CrisTracker(Tracker):
         result = list(temp_dict.values())[::-1]
         return result
 
-    def add_addresses_and_name(self):
-        """Function that adds addresses for every employee.
+    def add_chairs(self):
+        """Function that bulk queries the cards and adds chair info."""
+        all_card_ids = [
+            {'index': index, 'card_id': card_id} for index, result in enumerate(
+                self.result,
+            ) for card_id in result['card_ids']
+        ]
+        all_ids = [
+            card_id for result in self.result for card_id in result['card_ids']
+        ]
+        list_of_lists = self.split_list(all_ids, 100)
+
+        card_index = 0  # Counter to keep track of the current card in all_card_ids
+        for loc in list_of_lists:
+            payload = {
+                'query':
+                f"""query{{
+                      nodes(ids: {list(map(int,loc))}) {{
+                        ... on Card {{
+                          connections {{
+                            organisations {{
+                              edges {{
+                                node {{
+                                  cfName
+                                }}
+                              }}
+                            }}
+                          }}
+                        }}
+                      }}
+                    }}""",
+            }
+            response = json.loads(
+                self.session.post(
+                    self.url, headers=self.header, json=payload, timeout=7,
+                ).text,
+            )
+
+            for result in response['data']['nodes']:
+                # Get the corresponding card from all_card_ids
+                card = all_card_ids[card_index]
+                chair_name = (
+                    result['connections']['organisations']
+                    ['edges'][0]['node']['cfName']
+                )
+                self.result[card['index']]['chairs'].append(
+                    chair_name,
+                )  # index from current card["index"]
+                card_index += 1  # Increment the card_index for the next iteration
+
+    def filter_add_keys_and_order(self):
+        """Function that filters and adds keys.
 
         Address depends on the chair the person is working in.
-        TODO: Outsource the chair address matching to config file
         """
+        new_result = []
+        chair_ordering = {
+            chair['chair_name']: idx for idx, chair in enumerate(self.chairs)
+        }
+        max_index = len(chair_ordering)
         for card in self.result:
+            # filter out all people that do not have at
+            # least one valid jobTitle
+            if not any(job_title in valid_job_titles for job_title in card['jobTitle']):
+                continue
+            # filter out all people that do not have at
+            # least one of the pre-defined chairs
+            if not any(
+                chair['chair_name'] in
+                '\t'.join(card['chairs']) for chair in self.chairs
+            ):
+                continue
+            # sorting the chairs according to the order defined in the config
+            card['chairs'].sort(
+                key=lambda chair_name: chair_ordering.get(
+                    chair_name, max_index,
+                ),
+            )
             card['cfFullName'] = f'{card["cfFirstNames"]} {card["cfFamilyNames"]}'
-            if 'Prof. Klein' in card['chair'] or 'Prof. Berger' in card['chair']:
+            if (
+                'Prof. Klein' in '\t'.join(card['chairs']) or
+                'Prof. Berger' in '\t'.join(card['chairs'])
+            ):
                 card['address'] = 'Leonardo-Campus 11'
             else:
                 card['address'] = 'Leonardo-Campus 3'
+            new_result.append(card)
+        self.result = new_result
         return
 
-    def get_translation(self, lang):
+    def translate(self, lang):
         """
         Translates chair names from German to English using i18n package.
 
@@ -340,8 +419,10 @@ class CrisTracker(Tracker):
             lang: Language code (e.g., 'en' for English, 'de' for German)
 
         Returns:
-          None
+          None if lang is 'de', otherwise translates chair names
         """
+        if lang == 'de':
+            return
         i18n.set('locale', lang)
         i18n.set('fallback', 'de')
 
@@ -354,31 +435,26 @@ class CrisTracker(Tracker):
         with open(yaml_file) as f:
             translations = yaml.safe_load(f)
 
-        for chair in self.chairs:
-            chair_key = self.chair_keys[chair['chair_name']]
+        translation_mapping = {
+            chair['chair_name']: translations.get(lang, {}).get(
+                self.chair_keys[chair['chair_name']], chair['chair_name'],
+            ) for chair in self.chairs
+        }
 
-            translation = translations.get(lang, {}).get(
-                chair_key, chair['chair_name'],
-            )
-            chair['chair_name_en'] = translation
+        for index, card in enumerate(self.result):
+            for chair_index, chair_name in enumerate(card['chairs']):
+                translated_name = translation_mapping.get(chair_name)
+                if translated_name:
+                    self.result[index]['chairs'][chair_index] = translated_name
 
     def get_cris_data(self, lang='de'):
         """Function that returns the desired result."""
         self.update_employees()
         self.employees = self.remove_duplicate_employees()
         self.update_result()
-
-        if lang == 'en':
-            self.get_translation(lang)
-
-        self.add_addresses_and_name()
-
-        for card in self.result:
-            for chair in self.chairs:
-                if card['chair'] == chair['chair_name']:
-                    if lang == 'en':
-                        card['chair'] = chair['chair_name_en']
-                    break
+        self.add_chairs()
+        self.filter_add_keys_and_order()
+        self.translate(lang)
 
         return make_response(
             json.dumps(self.result, ensure_ascii=False), 200,
