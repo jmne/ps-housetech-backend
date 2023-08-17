@@ -39,14 +39,13 @@ class EInkGenerator:
             for pixel in row:
                 red, green, blue = pixel  # Access individual RGB values
                 # Check the color value and convert it to black, red, or white
-                if red == 133 and green == 35 and blue == 57:
+                red, green, blue = pixel  # Access individual RGB values
+                # Check the color value and convert it to black, red, or white
+                if (130 < red < 140 and green < 40 and blue < 60) \
+                        | (red > 190 and green < 150 and blue < 160):
                     result.append('RED')
-                elif red < 5 and green < 5 and blue < 5:
-                    result.append('BLACK')
-                elif red == 135 and green == 151 and blue == 163:
-                    result.append('BLACK')
-                elif red == 145 and green == 160 and blue == 170:
-                    result.append('BLACK')
+                elif red > 180 and green > 180 and blue > 180:
+                    result.append('WHITE')
                 else:
                     result.append('BLACK')
         return result
