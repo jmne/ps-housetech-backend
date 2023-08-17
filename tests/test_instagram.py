@@ -11,7 +11,7 @@ class TestInstagram:
 
     @pytest.mark.parametrize(
         'media_id',
-        ['17992906505065103'],
+        ['18231215743226312', '17861579396985953', '17893044365851471'],
     )
     def test_get_post_data(self, tracker, media_id):
         json = tracker.get_post_data(media_id)
