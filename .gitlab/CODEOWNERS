@@ -1,0 +1,5 @@
+.gitlab/ @jmenne
+LICENSE @jmenne
+pyproject.toml @jmenne
+CONTRIBUTING.md @jmenne
+.pre-commit-config.yaml @jmenne

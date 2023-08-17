@@ -1,0 +1,81 @@
+[tool.poetry]
+name = "PS HouseTech Backend"
+version = "0.1.0"
+description = "Backend for modernizing displays at Leonardo Campus."
+readme = "README.md"
+license = "MIT"
+authors = [
+    "Florian Robrecht <frobrech@uni-muenster.de>",
+    "Jan Menne <jmenne@uni-muenster.de>",
+    "Jingyi Zhang <j_zhan12@uni-muenster.de>",
+]
+include = ["CHANGELOG.md"]
+homepage = "https://ml-de.zivgitlabpages.uni-muenster.de/teaching/ps-housetech/ps-housetech-backend/"
+repository = "https://zivgitlab.uni-muenster.de/ml-de/teaching/ps-house-tech"
+documentation = "https://ml-de.zivgitlabpages.uni-muenster.de/teaching/ps-housetech/ps-housetech-website/docs/intro"
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Intended Audience :: Education",
+    "Natural Language :: German",
+    "Natural Language :: English",
+]
+packages = [
+    { include = "src" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.11.3"
+pre-commit = "^3.3.3"
+pytest = "^7.3.2"
+pytest-cov = "^4.0.0"
+pydocstyle = "^6.3.0"
+Flake8-pyproject = "^1.2.2"
+coverage = "^7.2.1"
+flask = "^2.3.2"
+flask-cors = "^4.0.0"
+flask-restful = "^0.3.8"
+python-decouple = "^3.8"
+requests = "^2.29.0"
+DateTime = "^5.1"
+regex = "^2023.5.5"
+python-dotenv = "^1.0.0"
+exchangelib = "^5.0.3"
+xmltodict= "^0.13.0"
+pyinstrument = "^4.5.1"
+Flask-Caching="^2.0.2"
+Pillow = "^10.0.0"
+python-i18n = "^0.3.9"
+html2image = "^2.0.3"
+numpy = "^1.25.1"
+
+[pytest]
+addopts = [
+    "--import-mode=importlib",
+]
+pythonpath = ["src", ]
+testpaths = ["tests", ]
+
+[tool.pydocstyle]
+convention = "google"
+match-dir = "(src).*"
+add-ignore = ["D104", "D212", "D100", "D401"]
+
+[tool.flake8]
+extend-ignore = ["E203", "SFS301"]
+exclude = [".git", "__pycache__", "old", "build", "dist"]
+max-complexity = 10
+max-line-length = 90
+per-file-ignores = ["__init__.py:F401", ]
+
+[tool.badges_gitlab]
+junit_xml = "report.xml"
+static_badges = [
+    ["Poetry", "1.0.0", "green"],
+    ["Python", "3.11.3", "green"],
+    ["Pre-commit", "3.1.1", "green"],
+    ["Pytest", "7.2.2", "green"],
+    ["Pytest-cov", "4.0.0", "green"],
+    ["Pydocstyle", "6.3.0", "green"],
+    ["Flake8-pyproject", "1.2.2", "green"],
+    ["Coverage", "7.2.1", "green"],
+]
