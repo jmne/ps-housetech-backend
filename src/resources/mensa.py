@@ -1,11 +1,9 @@
-import json
 import re
 from datetime import datetime
 
 import requests
 import xmltodict
 from flask import abort
-from flask import make_response
 
 
 class MensaTracker:
@@ -151,7 +149,4 @@ class MensaTracker:
         except Exception as e:
             abort(404, description=e)
 
-        return make_response(
-            json.dumps(self.result, ensure_ascii=False), 200,
-            {'Content-Type': 'application/json', 'charset': 'utf-8'},
-        )
+        return self.result

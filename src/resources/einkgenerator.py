@@ -85,7 +85,6 @@ class EInkGenerator:
             )
             hex_value = format(decimal_value, '02X')
             layer_hex.append('0X' + hex_value)
-
         return layer_hex
 
     def get_fused_layers(self, png):
