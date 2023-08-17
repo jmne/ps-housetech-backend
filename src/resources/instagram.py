@@ -1,11 +1,8 @@
 import json
 import os
 
-from dotenv import load_dotenv
-
 from .tracker import Tracker
 
-load_dotenv()
 INSTAGRAM_KEY = os.getenv('INSTAGRAM_KEY')
 
 
