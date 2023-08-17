@@ -45,6 +45,8 @@ class CrisTracker(Tracker):
             'DNT': '1',
             'Origin': 'https://cris-api-staging.uni-muenster.de',
         }
+        # THESE CHAIR NAMES MUST EXACTLY MATCH THE NAMES IN THE CRIS-API
+        # CHANGE HERE IN THIS DICT IF NECESSARY
         self.chairs = [
             {
                 'chair_id': '84240358', 'chair_name': (
@@ -66,7 +68,7 @@ class CrisTracker(Tracker):
             },
             {
                 'chair_id': '59575309', 'chair_name': (
-                    'Professur für'
+                    'Lehrstuhl für'
                     ' Maschinelles Lernen und Data Engineering (Prof. Gieseke)'
                 ),
             },
