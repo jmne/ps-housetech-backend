@@ -50,7 +50,7 @@ class CrisTracker(Tracker):
         self.chairs = [
             {
                 'chair_id': '84240358', 'chair_name': (
-                    'Professur für Wirtschaftsinformatik,'
+                    'Lehrstuhl für Wirtschaftsinformatik,'
                     ' insbesondere Geschäftsprozessmanagement (Prof. vom Brocke)'
                 ),
             },
@@ -62,7 +62,7 @@ class CrisTracker(Tracker):
             },
             {
                 'chair_id': '77369668', 'chair_name': (
-                    'Professur für'
+                    'Lehrstuhl für'
                     ' Digitale Innovation und der öffentliche Sektor (Prof. Brandt)'
                 ),
             },
