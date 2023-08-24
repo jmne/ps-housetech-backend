@@ -128,6 +128,11 @@ class CrisTracker(Tracker):
                 ),
             },
             {
+                'chair_id': '31916285', 'chair_name': (
+                    'WWU Centrum Europa'
+                ),
+            },
+            {
                 'chair_id': '31923392', 'chair_name': (
                     'Institut für'
                     ' Wirtschaftsinformatik'
