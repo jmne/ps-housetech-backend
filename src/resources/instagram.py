@@ -23,6 +23,22 @@ class InstagramTracker(Tracker):
         """
         super().__init__()
 
+    def refresh_key(self):
+        """Refresh Instagram API access token.
+
+        Args:
+            self.
+        """
+        url = 'https://graph.instagram.com/refresh_access_token'
+
+        querystring = {
+            'grant_type': 'ig_refresh_token',
+            'access_token': INSTAGRAM_KEY,
+        }
+        response = self.session.get(url=url, params=querystring)
+        print(response.text)
+        return
+
     def get_post_data(self, media_id):
         """
         Get post data from Instagram API.
@@ -70,6 +86,10 @@ class InstagramTracker(Tracker):
         Returns:
             dict: Latest posts.
         """
+        try:
+            self.refresh_key()
+        except Exception:
+            print('Could not refresh Instagram key.')
         latest_posts = []
         user_posts = self.get_user_posts()['data']
         if amount > len(user_posts):
